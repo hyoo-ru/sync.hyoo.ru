@@ -29,7 +29,7 @@ router.put('*',(req,res)=>{
   const key = req.headers.origin + req.url
   cache.set(key, req.body )
   
-  //res.append('Access-Control-Allow-Origin', req.headers.origin)
+  res.append('X-Cache-Key', key)
   res.send( cache.get(key) )
 })
 

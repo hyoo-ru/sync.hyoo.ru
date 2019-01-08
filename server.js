@@ -21,7 +21,7 @@ const cache = new Map
 router.get('*',(req,res)=>{
   const key = req.headers.origin + req.url
   
-  //res.append('Access-Control-Allow-Origin', req.headers.origin)
+  res.append('X-Cache-Key', key)
   res.send( cache.get(key) || {} )
 })
 

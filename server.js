@@ -5,12 +5,14 @@
 //
 var http = require('http');
 var path = require('path');
+var cors = require('cors');
 
 var express = require('express');
 
 var router = express();
 var server = http.createServer(router);
 
+router.use(cors());
 router.use(express.json());
 //router.use(express.static(path.resolve(__dirname, 'client')));
 
@@ -19,7 +21,7 @@ const cache = new Map
 router.get('*',(req,res)=>{
   const key = req.headers.origin + req.url
   
-  res.append('Access-Control-Allow-Origin', req.headers.origin)
+  //res.append('Access-Control-Allow-Origin', req.headers.origin)
   res.send( cache.get(key) || {} )
 })
 
@@ -27,7 +29,7 @@ router.put('*',(req,res)=>{
   const key = req.headers.origin + req.url
   cache.set(key, req.body )
   
-  res.append('Access-Control-Allow-Origin', req.headers.origin)
+  //res.append('Access-Control-Allow-Origin', req.headers.origin)
   res.send( cache.get(key) )
 })
 

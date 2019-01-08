@@ -4,6 +4,7 @@
   "main": "server.js",
   "repository": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "~3.2.4"
   }
 }

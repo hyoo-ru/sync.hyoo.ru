@@ -17,13 +17,17 @@ router.use(express.json());
 const cache = new Map
 
 router.get('*',(req,res)=>{
-  const key = req.headers.horigin + req.url
+  const key = req.headers.origin + req.url
+  
+  res.append('Access-Control-Allow-Origin', req.headers.origin)
   res.send( cache.get(key) || {} )
 })
 
 router.put('*',(req,res)=>{
-  const key = req.headers.horigin + req.url
+  const key = req.headers.origin + req.url
   cache.set(key, req.body )
+  
+  res.append('Access-Control-Allow-Origin', req.headers.origin)
   res.send( cache.get(key) )
 })
 

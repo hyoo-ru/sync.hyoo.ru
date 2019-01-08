@@ -1,0 +1,9 @@
+{
+  "name": "shared-cache",
+  "version": "0.0.0",
+  "main": "server.js",
+  "repository": "",
+  "dependencies": {
+    "express": "~3.2.4"
+  }
+}

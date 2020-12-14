@@ -1,8 +1,11 @@
 {
-  "name": "shared-cache",
+  "name": "sync-hyoo-ru",
   "version": "0.0.0",
   "main": "server.js",
   "repository": "",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.16.4",

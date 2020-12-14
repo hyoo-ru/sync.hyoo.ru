@@ -1,39 +1,135 @@
-//
-// # SimpleServer
-//
-// A simple chat server using Socket.IO, Express, and Async.
-//
-var http = require('http');
-var path = require('path');
-var cors = require('cors');
+const http = require('http')
+const express = require('express')
+const cors = require('cors')
+const ws = require('ws')
 
-var express = require('express');
+const router = express()
+const server = http.createServer( router )
 
-var router = express();
-var server = http.createServer(router);
+router.use( cors() )
+router.use( express.json() )
 
-router.use(cors());
-router.use(express.json());
-//router.use(express.static(path.resolve(__dirname, 'client')));
-
-const cache = new Map
-
-router.get('*',(req,res)=>{
-  const key = req.headers.origin + req.url
-  
-  res.append('X-Cache-Key', key)
-  res.send( cache.get(key) || {} )
+const socket = new ws.Server({
+  server,
+  perMessageDeflate: {
+    zlibDeflateOptions: {
+      chunkSize: 1024,
+      memLevel: 7,
+      level: 3
+    },
+    zlibInflateOptions: {
+      chunkSize: 10 * 1024
+    },
+  }
 })
 
-router.put('*',(req,res)=>{
-  const key = req.headers.origin + req.url
-  cache.set(key, req.body )
-  
-  res.append('X-Cache-Key', key)
-  res.send( cache.get(key) )
-})
 
-server.listen(process.env.PORT || 3000, process.env.IP || "0.0.0.0", function(){
-  var addr = server.address();
-  console.log("Chat server listening at", addr.address + ":" + addr.port);
-});
+const store = new Map
+
+/** Retrns room attached to origin */
+function Room( origin ) {
+
+  let room = store.get( origin )
+  
+  if( !room ) {
+    store.set( origin, room = {
+      state: new Map,
+      watch: new Map,
+    } )
+  }
+  
+  return room
+}
+
+/** Returns value by keys and subscribes line to value cahnges */
+function get( origin, key, line ) {
+
+  const room = Room( origin )
+
+  if( line ) {
+
+    let keys = room.watch.get( line )
+    if( !keys ) room.watch.set( line, keys = new Set )
+    
+    keys.add( key )
+  }
+  
+  return room.state.get( key )
+}
+
+/** Unsubscribes line from all keys */
+function forget( origin, line ) {
+  const room = Room( origin )
+  room.watch.delete( line )
+}
+
+/** Put value by key and notify all subscribed lines except current */
+function put( origin, key, val, line ) {
+
+  const room = Room( origin )
+
+  val = Object.assign( room.state.get( key ) ?? {}, val )
+  room.state.set( key, val )
+
+  for( const [ other, keys ] of room.watch ) {
+    if( line === other ) continue
+    if( !keys.has( key ) ) continue
+    other.send( JSON.stringify([ key, val ]) )
+  }
+  
+  return val
+}
+
+/** GET /key */
+router.get( '*', ( req, res )=> {
+  res.set( 'Content-Type', 'application/json' )
+  res.send( JSON.stringify( get( req.headers.origin, req.url.slice(1) ) ?? null ) )
+} )
+
+/** PUT /key */
+router.put( '*', ( req, res )=> {
+  res.set( 'Content-Type', 'application/json' )
+  res.send( JSON.stringify( put( req.headers.origin, req.url.slice(1), req.body ) ?? null ) )
+} )
+
+/**
+ * Get & Subscribe: [ key ]
+ * Put | Notification: [ key, patch ]
+ * Unsubscribe: disconnect
+ */
+socket.on( 'connection' , ( line, req )=> {
+
+  const origin = req.headers.origin
+
+  line
+  .on( 'message' , message => {
+    
+    try {
+      message = JSON.parse( message )
+    } catch( error ) {
+      console.error( error )
+      return
+    }
+
+    if( !Array.isArray( message ) ) return
+
+    const [ key, val ] = message
+
+    if( val ) {
+      put( origin, key, val, line )
+    } else {
+      line.send( JSON.stringify([ key, get( origin, key, line ) ]) )
+    }
+
+  } )
+  .on( 'close', ( code, reason )=> {
+    forget( origin, line )
+  } )
+
+} )
+
+
+server.listen( process.env.PORT || 3000, process.env.IP || "0.0.0.0", ()=> {
+  var addr = server.address()
+  console.log( "Server listening at ", addr.address + ":" + addr.port )
+} )

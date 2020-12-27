@@ -68,7 +68,7 @@ function put( origin, key, val, line ) {
 
   const room = Room( origin )
 
-  val = Object.assign( room.state.get( key ) ?? {}, val )
+  val = Object.assign( room.state.get( key ) || {}, val )
   room.state.set( key, val )
 
   for( const [ other, keys ] of room.watch ) {
@@ -83,13 +83,13 @@ function put( origin, key, val, line ) {
 /** GET /key */
 router.get( '*', ( req, res )=> {
   res.set( 'Content-Type', 'application/json' )
-  res.send( JSON.stringify( get( req.headers.origin, req.url.slice(1) ) ?? null ) )
+  res.send( JSON.stringify( get( req.headers.origin, req.url.slice(1) ) || null ) )
 } )
 
 /** PUT /key */
 router.put( '*', ( req, res )=> {
   res.set( 'Content-Type', 'application/json' )
-  res.send( JSON.stringify( put( req.headers.origin, req.url.slice(1), req.body ) ?? null ) )
+  res.send( JSON.stringify( put( req.headers.origin, req.url.slice(1), req.body ) || null ) )
 } )
 
 /**

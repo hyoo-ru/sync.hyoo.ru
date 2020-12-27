@@ -26,7 +26,7 @@ const socket = new ws.Server({
 
 const store = new Map
 
-/** Retrns room attached to origin */
+/** Returns room attached to origin */
 function Room( origin ) {
 
   let room = store.get( origin )

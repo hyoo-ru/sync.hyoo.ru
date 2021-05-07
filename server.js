@@ -83,7 +83,7 @@ const main = async() => {
   async function put( origin, key, val, line ) {
 
     const room = Room( origin )
-    const prev = await get( origin, key ) || {}
+    const prev = await get( origin, key, line ) || {}
     val = Object.assign( prev, val )
     
     const res = await db.query(

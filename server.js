@@ -115,7 +115,7 @@ const main = async() => {
 
   function merge( left, right ) {
     if( like_delta( left ) && like_delta( right ) ) {
-      const store = $mol_crowd_graph.make()
+      const store = $hyoo_crowd_graph.make()
       store.apply( left ).apply( right )
       return store.delta()
     } else {

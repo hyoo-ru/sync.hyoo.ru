@@ -3,6 +3,7 @@ const express = require('express')
 const cors = require('cors')
 const ws = require('ws')
 const { Pool } = require('pg')
+const { $hyoo_crowd_graph } = require('hyoo_crowd_lib')
 
 const main = async() => {
   
@@ -84,7 +85,7 @@ const main = async() => {
 
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}
-    val = Object.assign( prev, val )
+    val = merge( prev, val )
     
     const res = await db.query(
       `
@@ -103,6 +104,23 @@ const main = async() => {
     }
     
     return val
+  }
+  
+  function like_delta( val ) {
+    if( !val ) return false
+    if( !Array.isArray( val.stamps ) ) return false
+    if( !Array.isArray( val.values ) ) return false
+    return true
+  }
+
+  function merge( left, right ) {
+    if( like_delta( left ) && like_delta( right ) ) {
+      const store = $mol_crowd_graph.make()
+      store.apply( left ).apply( right )
+      return store.delta()
+    } else {
+      return Object.assign( left, right )
+    }
   }
 
   /** GET /key */

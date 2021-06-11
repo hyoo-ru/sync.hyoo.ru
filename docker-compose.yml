@@ -1,0 +1,59 @@
+version: '3.5'
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-app}
+      PGDATA: /data/postgres
+    volumes:
+      - ./db/data:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+  
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - pgadmin:/root/.pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+    logging:
+      driver: none
+  
+  server:
+    build: .
+    container_name: server_container
+    environment:
+      DATABASE_URL: ${DATABASE_URL:-postgres://postgres:changeme@postgres:5432/app}
+      PORT: 3000
+      IP: 0.0.0.0
+    ports:
+      - 3000:3000 
+    volumes:
+      - ./node_modules:/usr/src/app
+    networks:
+      - postgres
+    restart: unless-stopped
+
+
+networks:
+  postgres:
+    driver: bridge
+    
+volumes: 
+  pgadmin:

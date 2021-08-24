@@ -95,7 +95,7 @@ const main = async() => {
   async function put( origin, key, delta, line ) {
 
     const room = Room( origin )
-    const prev = await get( origin, key, line ) || {}
+    const prev = room.cache.get( key ) ?? await get( origin, key, line ) || {}
     
     const next = merge( prev, delta )
     room.cache.set( key, next )

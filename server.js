@@ -166,12 +166,12 @@ const main = async() => {
       const [ key, val ] = message
 
       if( val ) {
-        line.send(
-          JSON.stringify([
-            key,
+        // line.send(
+          // JSON.stringify([
+            // key,
             await put( origin, key, val, line ),
-          ])
-        )
+          // ])
+        // )
       } else {
         line.send(
           JSON.stringify([

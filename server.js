@@ -89,7 +89,7 @@ const main = async() => {
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}
     const next = merge( prev, delta )
-    
+    console.log({ delta, next, room })
     const res = await db.query(
       `
       INSERT INTO store ( key, value )

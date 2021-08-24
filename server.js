@@ -3,7 +3,10 @@ const express = require('express')
 const cors = require('cors')
 const ws = require('ws')
 const { Pool } = require('pg')
-const { $hyoo_crowd_graph } = require('hyoo_crowd_lib')
+const {
+  $hyoo_crowd_doc,
+  $hyoo_crowd_clock
+} = require('hyoo_crowd_lib')
 
 const main = async() => {
   
@@ -81,11 +84,17 @@ const main = async() => {
   }
 
   /** Put value by key and notify all subscribed lines except current */
-  async function put( origin, key, val, line ) {
+  async function put( origin, key, delat, line ) {
 
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}
-    val = merge( prev, val )
+    const next = merge( prev, delta )
+    
+    for( const [ other, keys ] of room.watch ) {
+      if( line === other ) continue
+      if( !keys.has( key ) ) continue
+      other.send( JSON.stringify([ key, delta ]) )
+    }
     
     const res = await db.query(
       `
@@ -94,28 +103,21 @@ const main = async() => {
       ON CONFLICT( key ) DO UPDATE
       SET value = $2::json;
       `,
-      [ origin + '/' + key, val ]
+      [ origin + '/' + key, next ]
     )
 
-    for( const [ other, keys ] of room.watch ) {
-      if( line === other ) continue
-      if( !keys.has( key ) ) continue
-      other.send( JSON.stringify([ key, val ]) )
-    }
-    
     return val
   }
   
   function like_delta( val ) {
     if( !val ) return false
-    if( !Array.isArray( val.stamps ) ) return false
-    if( !Array.isArray( val.values ) ) return false
+    if( !Array.isArray( val ) ) return false
     return true
   }
 
   function merge( left, right ) {
     if( like_delta( left ) && like_delta( right ) ) {
-      const store = $hyoo_crowd_graph.make()
+      const store = $hyoo_crowd_doc( 0 )
       store.apply( left ).apply( right )
       return store.delta()
     } else {

@@ -74,7 +74,7 @@ const main = async() => {
     }
     
     const res = await db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
-    return res.rows[0] ? res.rows[0].value : null
+    return res.rows[0] ? res.rows[0].value.delta || res.rows[0].value : null
   }
 
   /** Unsubscribes line from all keys */
@@ -103,7 +103,7 @@ const main = async() => {
       ON CONFLICT( key ) DO UPDATE
       SET value = $2::json;
       `,
-      [ origin + '/' + key, next ]
+      [ origin + '/' + key, { delta: next } ]
     )
 
     return next

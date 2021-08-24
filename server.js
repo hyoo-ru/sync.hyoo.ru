@@ -95,7 +95,7 @@ const main = async() => {
   async function put( origin, key, delta, line ) {
 
     const room = Room( origin )
-    const prev = room.cache.get( key )
+    let prev = room.cache.get( key )
     
     if( prev === undefined ) prev = get( origin, key, line )
     if( prev instanceof Promise ) await prev

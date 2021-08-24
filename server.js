@@ -89,7 +89,7 @@ const main = async() => {
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}
     const next = merge( prev, delta )
-    console.log({ delta, next, room })
+    
     const res = await db.query(
       `
       INSERT INTO store ( key, value )
@@ -117,7 +117,7 @@ const main = async() => {
 
   function merge( left, right ) {
     if( like_delta( right ) ) {
-      const store = $hyoo_crowd_doc( 0 )
+      const store = new $hyoo_crowd_doc( 0 )
       if( like_delta( left ) ) store.apply( left )
       store.apply( right )
       return store.delta()

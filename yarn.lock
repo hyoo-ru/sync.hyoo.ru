@@ -458,10 +458,10 @@ http-signature@~1.2.0:
     jsprim "^1.2.2"
     sshpk "^1.7.0"
 
-hyoo_crowd_lib@^1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/hyoo_crowd_lib/-/hyoo_crowd_lib-1.0.31.tgz#4636246d5508ae12339fca44c5f42988173d67f5"
-  integrity sha512-4g6ys9vtB0HpqDXD6tUSAMAzHugOyXqHiEPllzh6sqFIxlwvK+Jr0ww5ldMmKQGScV+c+hp5LvonBGugZDZ71Q==
+hyoo_crowd_lib@^2.0.48:
+  version "2.0.48"
+  resolved "https://registry.yarnpkg.com/hyoo_crowd_lib/-/hyoo_crowd_lib-2.0.48.tgz#d247499de345f4b5a3f81d5fcc33e299d37391c2"
+  integrity sha512-inkqPhPmws4l3qM9wuUub+nHQit/I8NiSCERsxwvgXxbLLE3y3tde/n5mn77uxJM+HFx04H3mhI3gVQnr/vt2w==
   dependencies:
     colorette "*"
     jsdom "*"

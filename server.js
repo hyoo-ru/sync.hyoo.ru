@@ -95,7 +95,11 @@ const main = async() => {
   async function put( origin, key, delta, line ) {
 
     const room = Room( origin )
-    const prev = ( room.cache.get( key ) ?? ( await get( origin, key, line ) ) ) || {}
+    const prev = room.cache.get( key )
+    
+    if( prev === undefined ) prev = get( origin, key, line )
+    if( prev instanceof Promise ) await prev
+    prev = room.cache.get( key )
     
     const next = merge( prev, delta )
     room.cache.set( key, next )
@@ -132,7 +136,7 @@ const main = async() => {
       store.apply( right )
       return store.delta()
     } else {
-      return Object.assign( left, right )
+      return Object.assign( left||{}, right )
     }
   }
 

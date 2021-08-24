@@ -106,7 +106,7 @@ const main = async() => {
       [ origin + '/' + key, next ]
     )
 
-    return val
+    return next
   }
   
   function like_delta( val ) {

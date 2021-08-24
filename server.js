@@ -151,6 +151,9 @@ const main = async() => {
     line
     .on( 'message' , async( message )=> {
       
+      // ping
+      if( !message ) return
+
       try {
         message = JSON.parse( message )
       } catch( error ) {

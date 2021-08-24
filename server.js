@@ -54,6 +54,7 @@ const main = async() => {
     if( !room ) {
       store.set( origin, room = {
         watch: new Map,
+        cache: new Map,
       } )
     }
     
@@ -62,19 +63,26 @@ const main = async() => {
 
   /** Returns value by keys and subscribes line to value cahnges */
   async function get( origin, key, line ) {
+    
+    const room = Room( origin )
 
     if( line ) {
-
-      const room = Room( origin )
 
       let keys = room.watch.get( line )
       if( !keys ) room.watch.set( line, keys = new Set )
       
       keys.add( key )
     }
+
+    let val = room.cache.has( key )
+    if( val !== undefined ) return val
     
     const res = await db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
-    return res.rows[0] ? res.rows[0].value.delta : null
+    
+    const val = res.rows[0] ? res.rows[0].value.delta : null
+    room.cache.set( key, val )
+
+    return val
   }
 
   /** Unsubscribes line from all keys */
@@ -88,7 +96,9 @@ const main = async() => {
 
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}
+    
     const next = merge( prev, delta )
+    room.cache.set( key, next )
     
     for( const [ other, keys ] of room.watch ) {
       if( line === other ) continue

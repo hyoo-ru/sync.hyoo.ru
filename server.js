@@ -110,15 +110,15 @@ const main = async() => {
       other.send( JSON.stringify([ key, delta ]) )
     }
     
-    const res = await db.query(
-      `
-      INSERT INTO store ( key, value )
-      VALUES( $1::text, $2::json )
-      ON CONFLICT( key ) DO UPDATE
-      SET value = $2::json;
-      `,
-      [ origin + '/' + key, { delta: next } ]
-    )
+    // const res = await db.query(
+    //   `
+    //   INSERT INTO store ( key, value )
+    //   VALUES( $1::text, $2::json )
+    //   ON CONFLICT( key ) DO UPDATE
+    //   SET value = $2::json;
+    //   `,
+    //   [ origin + '/' + key, { delta: next } ]
+    // )
 
     return next
   }

@@ -116,7 +116,6 @@ const main = async() => {
   }
 
   function merge( left, right ) {
-    console.log(like_delta( left ),like_delta( right ))
     if( like_delta( right ) ) {
       const store = $hyoo_crowd_doc( 0 )
       if( like_delta( left ) ) store.apply( left )

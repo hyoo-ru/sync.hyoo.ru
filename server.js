@@ -79,7 +79,7 @@ const main = async() => {
     
     const res = await db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
     
-    const val = res.rows[0] ? res.rows[0].value.delta : null
+    val = res.rows[0] ? res.rows[0].value.delta : null
     room.cache.set( key, val )
 
     return val

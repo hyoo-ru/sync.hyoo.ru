@@ -84,7 +84,7 @@ const main = async() => {
   }
 
   /** Put value by key and notify all subscribed lines except current */
-  async function put( origin, key, delat, line ) {
+  async function put( origin, key, delta, line ) {
 
     const room = Room( origin )
     const prev = await get( origin, key, line ) || {}

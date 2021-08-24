@@ -90,6 +90,12 @@ const main = async() => {
     const prev = await get( origin, key, line ) || {}
     const next = merge( prev, delta )
     
+    for( const [ other, keys ] of room.watch ) {
+      if( line === other ) continue
+      if( !keys.has( key ) ) continue
+      other.send( JSON.stringify([ key, delta ]) )
+    }
+    
     const res = await db.query(
       `
       INSERT INTO store ( key, value )
@@ -100,12 +106,6 @@ const main = async() => {
       [ origin + '/' + key, { delta: next } ]
     )
 
-    for( const [ other, keys ] of room.watch ) {
-      if( line === other ) continue
-      if( !keys.has( key ) ) continue
-      other.send( JSON.stringify([ key, delta ]) )
-    }
-    
     return next
   }
   

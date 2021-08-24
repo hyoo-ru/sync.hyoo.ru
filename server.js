@@ -74,7 +74,7 @@ const main = async() => {
     }
     
     const res = await db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
-    return res.rows[0] ? res.rows[0].value.delta || res.rows[0].value : null
+    return res.rows[0] ? res.rows[0].value : null
   }
 
   /** Unsubscribes line from all keys */
@@ -90,12 +90,6 @@ const main = async() => {
     const prev = await get( origin, key, line ) || {}
     const next = merge( prev, delta )
     
-    for( const [ other, keys ] of room.watch ) {
-      if( line === other ) continue
-      if( !keys.has( key ) ) continue
-      other.send( JSON.stringify([ key, delta ]) )
-    }
-    
     const res = await db.query(
       `
       INSERT INTO store ( key, value )
@@ -103,9 +97,15 @@ const main = async() => {
       ON CONFLICT( key ) DO UPDATE
       SET value = $2::json;
       `,
-      [ origin + '/' + key, { delta: next } ]
+      [ origin + '/' + key, next ]
     )
 
+    for( const [ other, keys ] of room.watch ) {
+      if( line === other ) continue
+      if( !keys.has( key ) ) continue
+      other.send( JSON.stringify([ key, delta ]) )
+    }
+    
     return next
   }
   

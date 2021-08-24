@@ -77,8 +77,10 @@ const main = async() => {
     let val = room.cache.get( key )
     if( val !== undefined ) return val
     
-    const res = {rows:[]} //await db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
-    
+    const res = db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
+    room.cache.set( key, res )
+    await res
+
     val = res.rows[0] ? res.rows[0].value.delta : null
     room.cache.set( key, val )
 
@@ -110,15 +112,15 @@ const main = async() => {
       other.send( JSON.stringify([ key, delta ]) )
     }
     
-    // const res = await db.query(
-    //   `
-    //   INSERT INTO store ( key, value )
-    //   VALUES( $1::text, $2::json )
-    //   ON CONFLICT( key ) DO UPDATE
-    //   SET value = $2::json;
-    //   `,
-    //   [ origin + '/' + key, { delta: next } ]
-    // )
+    const res = await db.query(
+      `
+      INSERT INTO store ( key, value )
+      VALUES( $1::text, $2::json )
+      ON CONFLICT( key ) DO UPDATE
+      SET value = $2::json;
+      `,
+      [ origin + '/' + key, { delta: next } ]
+    )
 
     return next
   }

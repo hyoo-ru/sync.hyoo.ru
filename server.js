@@ -77,7 +77,7 @@ const main = async() => {
     let val = room.cache.get( key )
     if( val !== undefined ) return val
     
-    const res = db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
+    let res = db.query(`SELECT value FROM store WHERE key = $1::text`, [ origin + '/' + key ] )
     room.cache.set( key, res )
     res = await res
 

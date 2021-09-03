@@ -100,6 +100,8 @@ const main = async() => {
     let prev = room.cache.get( key )
     
     if( prev === undefined ) prev = get( origin, key, line )
+    else get( origin, key, line )
+    
     if( prev instanceof Promise ) await prev
     prev = room.cache.get( key )
     

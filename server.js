@@ -184,7 +184,7 @@ const main = async() => {
 
       const [ key, ... val ] = message
 
-      if( val ) {
+      if( val.length ) {
         // line.send(
           // JSON.stringify([
             // key,

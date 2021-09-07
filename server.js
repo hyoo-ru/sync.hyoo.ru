@@ -111,7 +111,7 @@ const main = async() => {
     for( const [ other, keys ] of room.watch ) {
       if( line === other ) continue
       if( !keys.has( key ) ) continue
-      other.send( JSON.stringify([ key, delta ]) )
+      other.send( JSON.stringify([ key, ... delta ]) )
     }
     
     const res = await db.query(

@@ -182,7 +182,7 @@ const main = async() => {
 
       if( !Array.isArray( message ) ) return
 
-      const [ key, val ] = message
+      const [ key, ... val ] = message
 
       if( val ) {
         // line.send(

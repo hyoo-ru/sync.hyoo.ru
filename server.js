@@ -195,7 +195,7 @@ const main = async() => {
         line.send(
           JSON.stringify([
             key,
-            ... (await get( origin, key, line )),
+            ... (await get( origin, key, line )) ?? [],
           ])
         )
       }

@@ -114,6 +114,9 @@ const main = async() => {
       other.send( JSON.stringify([ key, ... delta ]) )
     }
     
+    if( /^http:\/\/127\.0\.0\.1/.test( origin ) ) return next
+    if( /^http:\/\/localhost/.test( origin ) ) return next
+    
     const res = await db.query(
       `
       INSERT INTO store ( key, value )

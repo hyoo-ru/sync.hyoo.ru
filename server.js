@@ -195,11 +195,9 @@ const main = async() => {
           // ])
         // )
       } else {
-        line.send(
-          JSON.stringify([
-            key,
-            ... (await get( origin, key, line )) ?? [],
-          ])
+        const data = await get( origin, key, line )
+        if( data.length ) line.send(
+          JSON.stringify([ key, ... data ])
         )
       }
 

@@ -1,7 +1,7 @@
 {
   "name": "hyoo_sync",
   "version": "0.0.1",
-  "main": "server/_server.js",
+  "main": "node.js",
   "module": "node.esm.js",
   "browser": "web.js",
   "types": "web.d.ts",
@@ -95,8 +95,7 @@
     "jsdom": "*",
     "ws": "*"
   },
-  "repository": "",
   "scripts": {
-    "start": "node server/_server.js"
+    "start": "node node.js"
   }
 }

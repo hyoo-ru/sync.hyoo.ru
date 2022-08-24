@@ -191,6 +191,7 @@ namespace $ {
 		
 	}
 	
-	$mol_wire_async( $hyoo_sync_server ).run( Number( process.env.PORT ) || 9876 )
+	let port = Number( process.env.PORT || $mol_state_arg.value( 'port' ) )
+	if( port ) $hyoo_sync_server.run( port )
 	
 }

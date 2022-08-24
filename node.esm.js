@@ -3259,7 +3259,7 @@ var $;
         http() {
             const server = $node.http.createServer((req, res) => {
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end('Hello World!');
+                res.end('$hyoo_sync_server is ON');
             });
             server.listen(this.port());
             console.log('Server started http://localhost:' + this.port() + '/');
@@ -3301,6 +3301,7 @@ var $;
                     });
                 });
                 line.on('message', async (message, isBinary) => {
+                    console.log(message);
                     if (!isBinary)
                         return;
                     if (message instanceof Array)

@@ -191,6 +191,6 @@ namespace $ {
 		
 	}
 	
-	$hyoo_sync_server.run( 9090 )
+	$mol_wire_async( $hyoo_sync_server ).run( 9090 )
 	
 }

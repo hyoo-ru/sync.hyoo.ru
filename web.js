@@ -2896,9 +2896,6 @@ var $;
                     });
                 });
                 line.on('message', async (message, isBinary) => {
-                    console.log(isBinary);
-                    if (!isBinary)
-                        return;
                     const data = new Int32Array(new Uint8Array(message).buffer);
                     if (data[0] << 1 >> 1 ^ data[0]) {
                         const line_bin = new $hyoo_crowd_clock_bin(data.buffer);

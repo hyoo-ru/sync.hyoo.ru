@@ -1,4 +1,4 @@
-# $hyoo_crowd_sync
+# $hyoo_sync
 
 Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/crowd.hyoo.ru) conflict resolution.
 

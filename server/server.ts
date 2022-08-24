@@ -192,6 +192,6 @@ namespace $ {
 	}
 	
 	let port = Number( process.env.PORT || $mol_state_arg.value( 'port' ) )
-	if( port ) $hyoo_sync_server/***/.run( port )
+	if( port ) $hyoo_sync_server.run( port )
 	
 }

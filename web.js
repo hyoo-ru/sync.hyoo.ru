@@ -2896,10 +2896,7 @@ var $;
                     });
                 });
                 line.on('message', async (message, isBinary) => {
-                    console.log(message);
                     if (!isBinary)
-                        return;
-                    if (message instanceof Array)
                         return;
                     const data = new Int32Array(new Uint8Array(message).buffer);
                     if (data[0] << 1 >> 1 ^ data[0]) {

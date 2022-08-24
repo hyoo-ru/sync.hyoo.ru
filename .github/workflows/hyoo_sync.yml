@@ -17,7 +17,8 @@ jobs:
     - uses: hyoo-ru/mam_build@master2
       with:
         token: ${{ secrets.GH_PAT }}
-        package: 'hyoo/sync/server'
+        package: 'hyoo/sync'
+		module: 'server'
     
     - uses: alex-page/blazing-fast-gh-pages-deploy@v1.1.0
       if: github.ref == 'refs/heads/master'

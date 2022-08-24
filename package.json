@@ -1,10 +1,10 @@
 {
   "name": "hyoo_sync",
   "version": "0.0.0",
-  "main": "server.js",
+  "main": "server/_server.js",
   "repository": "",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/_server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

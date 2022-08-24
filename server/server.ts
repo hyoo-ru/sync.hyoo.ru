@@ -68,7 +68,7 @@ namespace $ {
 				const necks = new $mol_dict< $mol_int62_pair, Promise<any> >()
 				
 				line.on( 'message', async( message, isBinary )=> {
-					
+					console.log(message, message.toString(), isBinary)
 					const data = new Int32Array( new Uint8Array( message ).buffer )
 					
 					const land_id = {

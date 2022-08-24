@@ -3294,6 +3294,7 @@ var $;
                 });
                 const necks = new $mol_dict();
                 line.on('message', async (message, isBinary) => {
+                    console.log(message.toString());
                     const data = new Int32Array(new Uint8Array(message).buffer);
                     const land_id = {
                         lo: data[0] << 1 >> 1,

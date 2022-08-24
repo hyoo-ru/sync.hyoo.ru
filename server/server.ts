@@ -180,7 +180,7 @@ namespace $ {
 			return new $hyoo_crowd_world
 		}
 
-		port() { return 9090 }
+		port() { return process.env.PORT || 9090 }
 		
 		static run( port: number ) {
 			const server = new this

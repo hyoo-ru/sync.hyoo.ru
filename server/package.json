@@ -1,8 +1,5 @@
 {
   "name": "hyoo_sync",
-  "dependencies": {
-	"ws": "^8.8.1"
-  },
   "scripts": {
     "start": "node node.js"
   }

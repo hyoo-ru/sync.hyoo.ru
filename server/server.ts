@@ -67,6 +67,7 @@ namespace $ {
 				
 				line.on( 'message', async( message, isBinary )=> {
 					
+					console.log(isBinary)
 					if( !isBinary ) return
 					
 					const data = new Int32Array( new Uint8Array( message ).buffer )

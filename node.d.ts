@@ -824,20 +824,4 @@ declare namespace $ {
     }
 }
 
-/// <reference types="node" />
-declare namespace $ {
-    class $hyoo_sync_server extends $mol_object2 {
-        http(): import("http").Server;
-        lines: Set<import("ws")>;
-        line_clocks({ line, land }: {
-            line: InstanceType<typeof $node.ws.WebSocket>;
-            land: $mol_int62_pair;
-        }): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
-        socket(): import("ws").Server<import("ws").WebSocket>;
-        world(): $hyoo_crowd_world;
-        port(): number;
-        static run(port: number): $.$hyoo_sync_server;
-    }
-}
-
 export = $;

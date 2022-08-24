@@ -180,7 +180,7 @@ namespace $ {
 			return new $hyoo_crowd_world
 		}
 
-		port() { return process.env.PORT || 9876 }
+		port() { return 0 }
 		
 		static run( port: number ) {
 			const server = new this
@@ -191,6 +191,6 @@ namespace $ {
 		
 	}
 	
-	$mol_wire_async( $hyoo_sync_server ).run( 9090 )
+	$mol_wire_async( $hyoo_sync_server ).run( Number( process.env.PORT ) || 9876 )
 	
 }

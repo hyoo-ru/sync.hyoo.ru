@@ -32,9 +32,9 @@ namespace $ {
 		}
 		
 		server() {
-			return `ws://localhost:9090/`
+			// return `ws://localhost:9090/`
 			// return $mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' )
-			// return `wss://sync-hyoo-ru.herokuapp.com/`
+			return `wss://sync-hyoo-ru.herokuapp.com/`
 		}
 		
 		readonly _db_clocks = new Map< $mol_int62_string, readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ] >()

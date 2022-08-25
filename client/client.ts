@@ -37,14 +37,13 @@ namespace $ {
 			return `wss://sync-hyoo-ru.herokuapp.com/`
 		}
 		
-		readonly _db_clocks = new Map< $mol_int62_string, readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ] >()
-		
-		db_clocks( land: $mol_int62_string ) {
-			
-			let clock = this._db_clocks.get( land )
-			if( !clock ) this._db_clocks.set( land, clock = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const )
-			
-			return clock
+		@ $mol_mem_key
+		db_clocks(
+			land: $mol_int62_string,
+			next = null as null | readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ],
+		) {
+			$mol_wire_solid()
+			return next
 		}
 		
 		@ $mol_mem_key
@@ -98,6 +97,7 @@ namespace $ {
 		
 		@ $mol_mem_key
 		land_init( land: $mol_int62_string ) {
+			$mol_wire_solid()
 			$mol_wire_sync( this ).db_load( land )
 			// this.server_init( land.id )
 		}
@@ -130,7 +130,7 @@ namespace $ {
 			units.sort( $hyoo_crowd_unit_compare )
 			
 			// const world = this.world()
-			const clocks = this.db_clocks( land_id )
+			// let clocks = this.db_clocks( land_id )
 			
 			// const queue = units.slice().reverse()
 			
@@ -165,11 +165,14 @@ namespace $ {
 				
 			// }
 			
-			const land = this.world().land( land_id )
+			const clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const
+			this.db_clocks( land_id, clocks )
+			
+			const land = this.world()._lands.get( land_id )!
 			land.apply( units )
 			
-			for( let i = 0; i < clocks.length; ++i ) {
-				clocks[i].sync( land._clocks[i] )
+			for( const unit of units ) {
+				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
 			this.$.$mol_log3_done({
@@ -188,8 +191,9 @@ namespace $ {
 			
 			for( const land of this.world().lands.values() ) {
 				
-				const db_clocks = this._db_clocks.get( land.id() )
 				const land_clocks = land.clocks
+				
+				const db_clocks = this.db_clocks( land.id() )
 				
 				if( db_clocks ) {
 					const ahead = land_clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
@@ -208,7 +212,7 @@ namespace $ {
 		
 		async db_save( land: $hyoo_crowd_land ) {
 			
-			const clocks = this.db_clocks( land.id() )
+			const clocks = this.db_clocks( land.id() )!
 			
 			const units = [] as $hyoo_crowd_unit[]
 			for( const unit of await this.world().delta_land( land, clocks ) ) {
@@ -273,13 +277,13 @@ namespace $ {
 		@ $mol_mem_key
 		server_init( land: $mol_int62_string ) {
 			
+			$mol_wire_solid()
+			
 			const socket = this.socket()
-			const clocks = this.world().land( land )._clocks
+			const clocks = this.world()._lands.get( land )!._clocks
 			const bin = $hyoo_crowd_clock_bin.from( land, clocks )
 			
 			socket.send( bin )
-			
-			// this.$.$mol_wait_timeout( 1000 )
 			
 			this.$.$mol_log3_come({
 				place: this,

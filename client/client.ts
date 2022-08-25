@@ -7,36 +7,39 @@ namespace $ {
 			return $mol_wire_sync( this as $hyoo_sync_client ).db_init()
 		}
 		
-		db_init() {
+		async db_init() {
 			
 			type Scheme = {
 				Unit: {
-					//  land_lo, land_hi, head_lo, head_hi, self_lo, self_hi
-					Key: [ number, number, number, number , number, number ]
-					Doc: Omit< $hyoo_crowd_unit, 'data' >
+					//     land,              head,              self
+					Key: [ $mol_int62_string, $mol_int62_string, $mol_int62_string ]
+					Doc: $hyoo_crowd_unit
 					Indexes: {
-						//     land_lo, land_hi, time, spin
-						Land: [ number, number ]
+						//      land
+						Land: [ $mol_int62_string ]
 					}
 				}
 			}
 			
-			return this.$.$mol_db< Scheme >( '$hyoo_sync_client_db',
+			const db1 = await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db' )
+			await db1.kill()
+			
+			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2',
 				mig => mig.store_make( 'Unit' ),
-				mig => mig.stores.Unit.index_make( 'Land', [ 'land_lo', 'land_hi' ] ),
+				mig => mig.stores.Unit.index_make( 'Land', [ 'land' ] ),
 			)
 			
 		}
 		
 		server() {
-			// return `ws://localhost:9090/`
+			return `ws://localhost:9090/`
 			// return $mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' )
-			return `wss://sync-hyoo-ru.herokuapp.com/`
+			// return `wss://sync-hyoo-ru.herokuapp.com/`
 		}
 		
-		readonly _db_clocks = new $mol_dict< $mol_int62_pair, readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ] >()
+		readonly _db_clocks = new Map< $mol_int62_string, readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ] >()
 		
-		db_clocks( land: $mol_int62_pair ) {
+		db_clocks( land: $mol_int62_string ) {
 			
 			let clock = this._db_clocks.get( land )
 			if( !clock ) this._db_clocks.set( land, clock = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const )
@@ -46,7 +49,7 @@ namespace $ {
 		
 		@ $mol_mem_key
 		server_clocks(
-			land: $mol_int62_pair,
+			land: $mol_int62_string,
 			next = null as null | readonly [ $hyoo_crowd_clock, $hyoo_crowd_clock ]
 		) {
 			return next
@@ -94,7 +97,7 @@ namespace $ {
 		}
 		
 		@ $mol_mem_key
-		land_init( land: $hyoo_crowd_land ) {
+		land_init( land: $mol_int62_string ) {
 			$mol_wire_sync( this ).db_load( land )
 			// this.server_init( land.id )
 		}
@@ -107,19 +110,27 @@ namespace $ {
 			)
 		}
 		
-		async db_load( land: $hyoo_crowd_land ) {
+		async db_load( land_id: $mol_int62_string ) {
 			
 			const db = this.db()
 			const Unit = db.read( 'Unit' ).Unit
 			
-			const recs = await Unit.indexes.Land.select([ land.id().lo, land.id().hi ])
+			const recs = await Unit.indexes.Land.select([ land_id ])
 			if( !recs ) return
 			
-			const units = recs.map( rec => new $hyoo_crowd_unit_bin( rec.bin!.buffer ).unit() )
+			const units = recs.map( rec => {
+				return new $hyoo_crowd_unit(
+					rec.land, rec.auth,
+					rec.head, rec.self,
+					rec.next, rec.prev,
+					rec.time, rec.data,
+					new $hyoo_crowd_unit_bin( rec.bin!.buffer ),
+				)
+			} )
 			units.sort( $hyoo_crowd_unit_compare )
 			
 			// const world = this.world()
-			const clocks = this.db_clocks( land.id() )
+			const clocks = this.db_clocks( land_id )
 			
 			// const queue = units.slice().reverse()
 			
@@ -154,6 +165,7 @@ namespace $ {
 				
 			// }
 			
+			const land = this.world().land( land_id )
 			land.apply( units )
 			
 			for( let i = 0; i < clocks.length; ++i ) {
@@ -163,7 +175,7 @@ namespace $ {
 			this.$.$mol_log3_done({
 				place: this,
 				message: 'DB Load',
-				land: $mol_int62_to_string( land.id() ),
+				land: land_id,
 				units,
 			})
 			
@@ -210,8 +222,7 @@ namespace $ {
 			const Unit = trans.stores.Unit
 			
 			for( const unit of units ) {
-				const { data, ... doc } = unit
-				Unit.put( doc as Omit<$hyoo_crowd_unit, "data">, unit.bin!.ids() as any )
+				Unit.put( unit, [ unit.land, unit.head, unit.self ] )
 			}
 			
 			for( const [ index, clock ] of Object.entries( clocks ) ) {
@@ -223,7 +234,7 @@ namespace $ {
 			this.$.$mol_log3_done({
 				place: this,
 				message: 'DB Save',
-				land: $mol_int62_to_string( land.id() ),
+				land: land.id(),
 				units,
 			})
 			
@@ -239,7 +250,7 @@ namespace $ {
 				
 				try {
 				
-					this.land_init( land )
+					this.land_init( land.id() )
 					this.server_init( land.id() )
 					
 					const server_clocks = this.server_clocks( land.id() )
@@ -260,7 +271,7 @@ namespace $ {
 		}
 		
 		@ $mol_mem_key
-		server_init( land: $mol_int62_pair ) {
+		server_init( land: $mol_int62_string ) {
 			
 			const socket = this.socket()
 			const clocks = this.world().land( land )._clocks
@@ -273,7 +284,7 @@ namespace $ {
 			this.$.$mol_log3_come({
 				place: this,
 				message: 'Sync Ask',
-				land: $mol_int62_to_string( land ),
+				land,
 				clocks,
 			})
 			
@@ -294,7 +305,7 @@ namespace $ {
 			this.$.$mol_log3_rise({
 				place: this,
 				message: 'Send',
-				land: $mol_int62_to_string( land.id() ),
+				land: land.id(),
 				delta,
 			})
 			
@@ -312,7 +323,7 @@ namespace $ {
 		}
 		
 		@ $mol_mem_key
-		land( id: $mol_int62_pair ) {
+		land( id: $mol_int62_string ) {
 			return this.world().land_sync( id )
 		}
 		
@@ -323,7 +334,7 @@ namespace $ {
 			base_level = $hyoo_crowd_peer_level.get,
 		) {
 			
-			let land_id = reg.value() as $mol_int62_pair | null
+			let land_id = reg.value() as $mol_int62_string | null
 			if( land_id ) return this.land( land_id )
 			
 			const land = this.grab( king_level, base_level )
@@ -345,7 +356,7 @@ namespace $ {
 			const socket = new $mol_dom_context.WebSocket( this.server() )
 			socket.binaryType = 'arraybuffer'
 			
-			const necks = new $mol_dict< $mol_int62_pair, Promise<any> >()
+			const necks = new Map< $mol_int62_string, Promise<any> >()
 			
 			socket.onmessage = event => {
 				
@@ -360,12 +371,12 @@ namespace $ {
 				}
 				
 				const data = new Int32Array( message )
-				const land_id = {
+				const land_id = $mol_int62_to_string({
 					lo: data[0] << 1 >> 1,
 					hi: data[1] << 1 >> 1,
-				}
+				})
 				
-				if( land_id.lo ^ data[0] ) {
+				if( data[0] << 1 >> 1 ^ data[0] ) {
 						
 					const bin = new $hyoo_crowd_clock_bin( data.buffer )
 					
@@ -378,7 +389,7 @@ namespace $ {
 					this.$.$mol_log3_done({
 						place: this,
 						message: 'Sync Ans',
-						land: $mol_int62_to_string( land_id ),
+						land: land_id,
 						clocks,
 					})
 					
@@ -398,22 +409,22 @@ namespace $ {
 						this.$.$mol_log3_fail({
 							place: this,
 							message: error,
-							land: $mol_int62_to_string( unit.land() ),
+							land: unit.land,
 							unit,
 						})
 						
 					} else {
 						
-						let clocks = this.server_clocks( unit.land() )
+						let clocks = this.server_clocks( unit.land )
 						if( clocks ) {
 							const clock = clocks[ unit.group() ]
-							clock.see_peer( $mol_int62_to_string( unit.auth() ), unit.time )
+							clock.see_peer( unit.auth, unit.time )
 						}
 						
 						this.$.$mol_log3_rise({
 							place: this,
 							message: 'Come Unit',
-							land: $mol_int62_to_string( unit.land() ),
+							land: unit.land,
 							unit,
 						})
 						

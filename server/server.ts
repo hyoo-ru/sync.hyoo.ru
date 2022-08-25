@@ -22,7 +22,7 @@ namespace $ {
 		@ $mol_mem_key
 		line_clocks( { line, land }: {
 			line: InstanceType< typeof $node.ws.WebSocket >,
-			land: $mol_int62_pair,
+			land: $mol_int62_string,
 		} ) {
 			return [
 				new $hyoo_crowd_clock,
@@ -65,7 +65,7 @@ namespace $ {
 					})	
 				} )
 				
-				const necks = new $mol_dict< $mol_int62_pair, Promise<any> >()
+				const necks = new Map< $mol_int62_string, Promise<any> >()
 				
 				line.on( 'message', async( message )=> {
 					
@@ -74,18 +74,20 @@ namespace $ {
 					
 					const data = new Int32Array( new Uint8Array( message ).buffer )
 					
-					const land_id = {
+					const land_id = $mol_int62_to_string({
 						lo: data[0] << 1 >> 1,
 						hi: data[1] << 1 >> 1,
-					}
+					})
 						
 					const handle = async( prev?: Promise<any> )=> {
 						
-						if( land_id.lo ^ data[0] ) {
+						if( prev ) await prev
+						
+						if( data[0] << 1 >> 1 ^ data[0] ) {
 							
 							const line_bin = new $hyoo_crowd_clock_bin( data.buffer )
-							const land = this.world().land( line_bin.land() )
-							const line_clocks = this.line_clocks({ line, land: land.id() })
+							const land = this.world().land( land_id )
+							const line_clocks = this.line_clocks({ line, land: land_id })
 		
 							line_clocks[ $hyoo_crowd_unit_group.auth ].see_bin( line_bin, $hyoo_crowd_unit_group.auth )
 							line_clocks[ $hyoo_crowd_unit_group.data ].see_bin( line_bin, $hyoo_crowd_unit_group.data )
@@ -97,7 +99,7 @@ namespace $ {
 								place: this,
 								message: 'Sync Start',
 								line: $mol_key( line ),
-								land: $mol_int62_to_string( land.id() ),
+								land: land_id,
 							})
 							
 							const delta = await this.world().delta_land( land, line_clocks )
@@ -121,12 +123,12 @@ namespace $ {
 								line: $mol_key( line ),
 								unit: {
 									kind: $hyoo_crowd_unit_kind[ unit.kind() ],
-									land: $mol_int62_to_string( unit.land() ),
-									auth: $mol_int62_to_string( unit.auth() ),
-									head: $mol_int62_to_string( unit.head() ),
-									self: $mol_int62_to_string( unit.self() ),
-									next: $mol_int62_to_string( unit.next() ),
-									prev: $mol_int62_to_string( unit.prev() ),
+									land: unit.land,
+									auth: unit.auth,
+									head: unit.head,
+									self: unit.self,
+									next: unit.next,
+									prev: unit.prev,
 									time: unit.time,
 								},
 							})
@@ -134,12 +136,11 @@ namespace $ {
 							
 						}
 						
-						const land = this.world().land( unit.land() )
+						const land = this.world().land( unit.land )
 						const line_clocks = this.line_clocks({ line, land: land.id() })
 						
 						const clock = line_clocks[ unit.group() ]
-						const auth_id = $mol_int62_to_string( unit.auth() )
-						clock.see_peer( auth_id, unit.time )
+						clock.see_peer( unit.auth, unit.time )
 						
 						// this.$.$mol_log3_rise({
 						// 	place: this,
@@ -147,12 +148,12 @@ namespace $ {
 						// 	line: $mol_key( line ),
 						// 	unit: {
 						// 		kind: $hyoo_crowd_unit_kind[ unit.kind() ],
-						// 		land: $mol_int62_to_string( unit.land() ),
-						// 		auth: $mol_int62_to_string( unit.auth() ),
-						// 		head: $mol_int62_to_string( unit.head() ),
-						// 		self: $mol_int62_to_string( unit.self() ),
-						// 		next: $mol_int62_to_string( unit.next() ),
-						// 		prev: $mol_int62_to_string( unit.prev() ),
+						// 		land: unit.land,
+						// 		auth: unit.auth,
+						// 		head: unit.head,
+						// 		self: unit.self,
+						// 		next: unit.next,
+						// 		prev: unit.prev,
 						// 		time: unit.time,
 						// 	},
 						// })
@@ -160,7 +161,7 @@ namespace $ {
 						for( const other of this.lines ) {
 							if( line === other ) continue
 							const other_clocks = this.line_clocks({ line: other, land: land.id() })
-							if( other_clocks[ unit.group() ].fresh( auth_id, unit.time ) ) {
+							if( other_clocks[ unit.group() ].fresh( unit.auth, unit.time ) ) {
 								other.send( message, { binary: true } )
 							}
 						}

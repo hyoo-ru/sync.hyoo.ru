@@ -292,8 +292,11 @@ declare namespace $ {
     function $mol_int62_compare(left_lo: number, left_hi: number, right_lo: number, right_hi: number): number;
     function $mol_int62_inc(lo: number, hi: number, max?: number): $mol_int62_pair;
     function $mol_int62_random(): $mol_int62_pair;
-    function $mol_int62_hash_string(str: string, seed_lo?: number, seed_hi?: number): $mol_int62_pair;
-    function $mol_int62_hash_buffer(buf: Uint8Array, seed_lo?: number, seed_hi?: number): $mol_int62_pair;
+    function $mol_int62_hash_string(str: string): `${string}_${string}`;
+    function $mol_int62_hash_buffer(buf: Uint8Array, seed?: {
+        lo: number;
+        hi: number;
+    }): $mol_int62_pair;
 }
 
 declare namespace $ {
@@ -385,8 +388,7 @@ declare namespace $ {
         readonly key_public_serial: Uint8Array;
         readonly key_private: $mol_crypto_auditor_private;
         readonly key_private_serial: Uint8Array;
-        id: $mol_int62_pair;
-        ids: $mol_int62_string;
+        id: $mol_int62_string;
         constructor(key_public: $mol_crypto_auditor_public, key_public_serial: Uint8Array, key_private: $mol_crypto_auditor_private, key_private_serial: Uint8Array);
         static generate(): Promise<$hyoo_crowd_peer>;
         static restore(public_serial: Uint8Array, private_serial: Uint8Array): Promise<$hyoo_crowd_peer>;
@@ -394,7 +396,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type $mol_charset_encoding = 'utf8' | 'ibm866' | 'iso-8859-2' | 'iso-8859-3' | 'iso-8859-4' | 'iso-8859-5' | 'iso-8859-6' | 'iso-8859-7' | 'iso-8859-8' | 'iso-8859-8i' | 'iso-8859-10' | 'iso-8859-13' | 'iso-8859-14' | 'iso-8859-15' | 'iso-8859-16' | 'koi8-r' | 'koi8-u' | 'koi8-r' | 'macintosh' | 'windows-874' | 'windows-1250' | 'windows-1251' | 'windows-1252' | 'windows-1253' | 'windows-1254' | 'windows-1255' | 'windows-1256' | 'windows-1257' | 'windows-1258' | 'x-mac-cyrillic' | 'gbk' | 'gb18030' | 'hz-gb-2312' | 'big5' | 'euc-jp' | 'iso-2022-jp' | 'shift-jis' | 'euc-kr' | 'iso-2022-kr';
+    type $mol_charset_encoding = 'utf8' | 'utf-16le' | 'utf-16be' | 'ibm866' | 'iso-8859-2' | 'iso-8859-3' | 'iso-8859-4' | 'iso-8859-5' | 'iso-8859-6' | 'iso-8859-7' | 'iso-8859-8' | 'iso-8859-8i' | 'iso-8859-10' | 'iso-8859-13' | 'iso-8859-14' | 'iso-8859-15' | 'iso-8859-16' | 'koi8-r' | 'koi8-u' | 'koi8-r' | 'macintosh' | 'windows-874' | 'windows-1250' | 'windows-1251' | 'windows-1252' | 'windows-1253' | 'windows-1254' | 'windows-1255' | 'windows-1256' | 'windows-1257' | 'windows-1258' | 'x-mac-cyrillic' | 'gbk' | 'gb18030' | 'hz-gb-2312' | 'big5' | 'euc-jp' | 'iso-2022-jp' | 'shift-jis' | 'euc-kr' | 'iso-2022-kr';
 }
 
 declare namespace $ {
@@ -413,29 +415,17 @@ declare namespace $ {
         data = 1
     }
     class $hyoo_crowd_unit extends Object {
-        readonly land_lo: number;
-        readonly land_hi: number;
-        readonly auth_lo: number;
-        readonly auth_hi: number;
-        readonly head_lo: number;
-        readonly head_hi: number;
-        readonly self_lo: number;
-        readonly self_hi: number;
-        readonly next_lo: number;
-        readonly next_hi: number;
-        readonly prev_lo: number;
-        readonly prev_hi: number;
+        readonly land: $mol_int62_string;
+        readonly auth: $mol_int62_string;
+        readonly head: $mol_int62_string;
+        readonly self: $mol_int62_string;
+        readonly next: $mol_int62_string;
+        readonly prev: $mol_int62_string;
         readonly time: number;
         readonly data: unknown;
         bin: $hyoo_crowd_unit_bin | null;
-        constructor(land_lo: number, land_hi: number, auth_lo: number, auth_hi: number, head_lo: number, head_hi: number, self_lo: number, self_hi: number, next_lo: number, next_hi: number, prev_lo: number, prev_hi: number, time: number, data: unknown, bin: $hyoo_crowd_unit_bin | null);
-        id(): $hyoo_crowd_unit_id;
-        land(): $mol_int62_pair;
-        auth(): $mol_int62_pair;
-        head(): $mol_int62_pair;
-        next(): $mol_int62_pair;
-        prev(): $mol_int62_pair;
-        self(): $mol_int62_pair;
+        constructor(land: $mol_int62_string, auth: $mol_int62_string, head: $mol_int62_string, self: $mol_int62_string, next: $mol_int62_string, prev: $mol_int62_string, time: number, data: unknown, bin: $hyoo_crowd_unit_bin | null);
+        get id(): $hyoo_crowd_unit_id;
         kind(): $hyoo_crowd_unit_kind;
         group(): $hyoo_crowd_unit_group;
         level(): $hyoo_crowd_peer_level;
@@ -446,7 +436,6 @@ declare namespace $ {
         sign(next?: Uint8Array): Uint8Array;
         size(): number;
         sens(): Uint8Array;
-        ids(): readonly [number, number, number, number, number, number];
         unit(): $hyoo_crowd_unit;
     }
     function $hyoo_crowd_unit_compare(left: $hyoo_crowd_unit, right: $hyoo_crowd_unit): number;
@@ -474,11 +463,8 @@ declare namespace $ {
         tick(peer: $mol_int62_string): number;
     }
     class $hyoo_crowd_clock_bin extends DataView {
-        static from(land: $mol_int62_pair, clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): $hyoo_crowd_clock_bin;
-        land(): {
-            lo: number;
-            hi: number;
-        };
+        static from(land_id: $mol_int62_string, clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): $hyoo_crowd_clock_bin;
+        land(): `${string}_${string}`;
     }
 }
 
@@ -537,12 +523,81 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_const<Value>(value: Value): {
+        (): Value;
+        '()': Value;
+    };
+}
+
+declare namespace $ {
+    class $hyoo_crowd_world extends $mol_object2 {
+        readonly peer?: $hyoo_crowd_peer | undefined;
+        constructor(peer?: $hyoo_crowd_peer | undefined);
+        readonly lands_pub: $mol_wire_pub;
+        _lands: $mol_dict<`${string}_${string}`, $hyoo_crowd_land>;
+        get lands(): $mol_dict<`${string}_${string}`, $hyoo_crowd_land>;
+        land_init(id: $mol_int62_string): void;
+        land(id: $mol_int62_string): $hyoo_crowd_land;
+        land_sync(id: $mol_int62_string): $hyoo_crowd_land;
+        home(): $hyoo_crowd_land;
+        _knights: $mol_dict<`${string}_${string}`, $hyoo_crowd_peer>;
+        _signs: WeakMap<$hyoo_crowd_unit, Uint8Array>;
+        grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): Promise<$hyoo_crowd_land>;
+        delta_land(land: $hyoo_crowd_land, clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<readonly $hyoo_crowd_unit[]>;
+        delta(clocks?: Map<`${string}_${string}`, readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]>): Promise<$hyoo_crowd_unit[]>;
+        apply(delta: Uint8Array): Promise<[$hyoo_crowd_unit, string][]>;
+        apply_unit(unit: $hyoo_crowd_unit): Promise<string>;
+        audit(unit: $hyoo_crowd_unit): Promise<void>;
+    }
+}
+
+declare namespace $ {
     namespace $$ { }
     const $mol_object_field: unique symbol;
     class $mol_object extends $mol_object2 {
         static make<Instance>(this: {
             new (): Instance;
         }, config: Partial<Instance>): Instance;
+    }
+}
+
+declare namespace $ {
+    var $mol_dom_context: typeof globalThis;
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_state_arg extends $mol_object {
+        prefix: string;
+        static href(next?: string): string;
+        static href_normal(): string;
+        static href_absolute(): string;
+        static dict(next?: {
+            [key: string]: string | null;
+        }): {
+            [key: string]: string;
+        };
+        static dict_cut(except: string[]): {
+            [key: string]: string;
+        };
+        static value(key: string, next?: string | null): string | null;
+        static link(next: {
+            [key: string]: string;
+        }): string;
+        static prolog: string;
+        static separator: string;
+        static make_link(next: {
+            [key: string]: string | null;
+        }): string;
+        static encode(str: string): string;
+        constructor(prefix?: string);
+        value(key: string, next?: string): string | null;
+        sub(postfix: string): $mol_state_arg;
+        link(next: {
+            [key: string]: string;
+        }): string;
     }
 }
 
@@ -561,13 +616,6 @@ declare namespace $ {
     class $mol_memo extends $mol_wrapper {
         static wrap<This extends object, Value>(task: (this: This, next?: Value) => Value): (this: This, next?: Value) => Value | undefined;
     }
-}
-
-declare namespace $ {
-    var $mol_dom_context: typeof globalThis;
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -623,9 +671,9 @@ declare namespace $ {
 declare namespace $ {
     class $hyoo_crowd_node {
         readonly land: $hyoo_crowd_land;
-        readonly head: $mol_int62_pair;
-        constructor(land: $hyoo_crowd_land, head: $mol_int62_pair);
-        static for<Node extends typeof $hyoo_crowd_node>(this: Node, land: $hyoo_crowd_land, head: $mol_int62_pair): InstanceType<Node>;
+        readonly head: $mol_int62_string;
+        constructor(land: $hyoo_crowd_land, head: $mol_int62_string);
+        static for<Node extends typeof $hyoo_crowd_node>(this: Node, land: $hyoo_crowd_land, head: $mol_int62_string): InstanceType<Node>;
         world(): $hyoo_crowd_world;
         as<Node extends typeof $hyoo_crowd_node>(Node: Node): InstanceType<Node>;
         units(): readonly $hyoo_crowd_unit[];
@@ -641,7 +689,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $hyoo_crowd_land extends $mol_object {
-        id(): $mol_int62_pair;
+        id(): `${string}_${string}`;
         peer(): $hyoo_crowd_peer;
         world(): $hyoo_crowd_world;
         get clock_auth(): $hyoo_crowd_clock;
@@ -650,7 +698,7 @@ declare namespace $ {
         readonly pub: $mol_wire_pub;
         readonly _clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
         protected _unit_all: Map<`${string}_${string}/${string}_${string}`, $hyoo_crowd_unit>;
-        unit(head: $mol_int62_pair, self: $mol_int62_pair): $hyoo_crowd_unit | undefined;
+        unit(head: $mol_int62_string, self: $mol_int62_string): $hyoo_crowd_unit | undefined;
         protected _unit_lists: Map<`${string}_${string}`, ($hyoo_crowd_unit[] & {
             dirty: boolean;
         }) | undefined>;
@@ -659,85 +707,23 @@ declare namespace $ {
         protected unit_list(head: $mol_int62_string): $hyoo_crowd_unit[] & {
             dirty: boolean;
         };
-        unit_alives(head: $mol_int62_pair): readonly $hyoo_crowd_unit[];
+        unit_alives(head: $mol_int62_string): readonly $hyoo_crowd_unit[];
         chief: $hyoo_crowd_struct;
-        id_new(): $mol_int62_pair;
+        id_new(): $mol_int62_string;
         fork(auth: $hyoo_crowd_peer): $hyoo_crowd_land;
         delta(clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): readonly $hyoo_crowd_unit[];
-        resort(head: $mol_int62_pair): $hyoo_crowd_unit[] & {
+        resort(head: $mol_int62_string): $hyoo_crowd_unit[] & {
             dirty: boolean;
         };
         apply(delta: readonly $hyoo_crowd_unit[]): this;
         _joined: boolean;
         join(): void;
         level_base(next?: $hyoo_crowd_peer_level): void;
-        level(peer: $mol_int62_pair, next?: $hyoo_crowd_peer_level): $hyoo_crowd_peer_level;
-        put(head: $mol_int62_pair, self: $mol_int62_pair, prev: $mol_int62_pair, data: unknown): $hyoo_crowd_unit;
+        level(peer: $mol_int62_string, next?: $hyoo_crowd_peer_level): $hyoo_crowd_peer_level;
+        put(head: $mol_int62_string, self: $mol_int62_string, prev: $mol_int62_string, data: unknown): $hyoo_crowd_unit;
         wipe(unit: $hyoo_crowd_unit): $hyoo_crowd_unit;
-        move(unit: $hyoo_crowd_unit, head: $mol_int62_pair, prev: $mol_int62_pair): $hyoo_crowd_unit;
-        insert(unit: $hyoo_crowd_unit, head: $mol_int62_pair, seat: number): $hyoo_crowd_unit;
-    }
-}
-
-declare namespace $ {
-    function $mol_const<Value>(value: Value): {
-        (): Value;
-        '()': Value;
-    };
-}
-
-declare namespace $ {
-    class $hyoo_crowd_world extends $mol_object2 {
-        readonly peer?: $hyoo_crowd_peer | undefined;
-        constructor(peer?: $hyoo_crowd_peer | undefined);
-        readonly lands_pub: $mol_wire_pub;
-        _lands: $mol_dict<$mol_int62_pair, $hyoo_crowd_land>;
-        get lands(): $mol_dict<$mol_int62_pair, $hyoo_crowd_land>;
-        land_init(id: $hyoo_crowd_land): void;
-        land(id: $mol_int62_pair): $hyoo_crowd_land;
-        land_sync(id: $mol_int62_pair): $hyoo_crowd_land;
-        home(): $hyoo_crowd_land;
-        _knights: $mol_dict<$mol_int62_pair, $hyoo_crowd_peer>;
-        _signs: WeakMap<$hyoo_crowd_unit, Uint8Array>;
-        grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): Promise<$hyoo_crowd_land>;
-        delta_land(land: $hyoo_crowd_land, clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<readonly $hyoo_crowd_unit[]>;
-        delta(clocks?: $mol_dict<$mol_int62_pair, readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]>): Promise<$hyoo_crowd_unit[]>;
-        apply(delta: Uint8Array): Promise<[$hyoo_crowd_unit, string][]>;
-        apply_unit(unit: $hyoo_crowd_unit): Promise<string>;
-        audit(unit: $hyoo_crowd_unit): Promise<void>;
-    }
-}
-
-declare namespace $ {
-    class $mol_state_arg extends $mol_object {
-        prefix: string;
-        static href(next?: string): string;
-        static href_normal(): string;
-        static href_absolute(): string;
-        static dict(next?: {
-            [key: string]: string | null;
-        }): {
-            [key: string]: string;
-        };
-        static dict_cut(except: string[]): {
-            [key: string]: string;
-        };
-        static value(key: string, next?: string | null): string | null;
-        static link(next: {
-            [key: string]: string;
-        }): string;
-        static prolog: string;
-        static separator: string;
-        static make_link(next: {
-            [key: string]: string | null;
-        }): string;
-        static encode(str: string): string;
-        constructor(prefix?: string);
-        value(key: string, next?: string): string | null;
-        sub(postfix: string): $mol_state_arg;
-        link(next: {
-            [key: string]: string;
-        }): string;
+        move(unit: $hyoo_crowd_unit, head: $mol_int62_string, prev: $mol_int62_string): $hyoo_crowd_unit;
+        insert(unit: $hyoo_crowd_unit, head: $mol_int62_string, seat: number): $hyoo_crowd_unit;
     }
 }
 
@@ -747,7 +733,7 @@ declare namespace $ {
         lines: Set<any>;
         line_clocks({ line, land }: {
             line: InstanceType<typeof $node.ws.WebSocket>;
-            land: $mol_int62_pair;
+            land: $mol_int62_string;
         }): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
         socket(): any;
         world(): $hyoo_crowd_world;

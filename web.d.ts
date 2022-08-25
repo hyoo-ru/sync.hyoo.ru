@@ -279,6 +279,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_int62_string = `${string}_${string}`;
     type $mol_int62_pair = {
         readonly lo: number;
         readonly hi: number;
@@ -293,29 +294,6 @@ declare namespace $ {
     function $mol_int62_random(): $mol_int62_pair;
     function $mol_int62_hash_string(str: string, seed_lo?: number, seed_hi?: number): $mol_int62_pair;
     function $mol_int62_hash_buffer(buf: Uint8Array, seed_lo?: number, seed_hi?: number): $mol_int62_pair;
-}
-
-declare namespace $ {
-    let $mol_dict_key: typeof $mol_key;
-    class $mol_dict<Key, Value> extends Map<Key, Value> {
-        get(key: Key): Value | undefined;
-        has(key: Key): boolean;
-        set(key: Key, value: Value): this;
-        delete(key: Key): boolean;
-        forEach(back: (value: Value, key: Key, dict: Map<Key, Value>) => void, context?: any): void;
-        keys(): {
-            [Symbol.iterator](): any;
-            next(): IteratorReturnResult<any> | IteratorYieldResult<Key>;
-        };
-        entries(): {
-            [Symbol.iterator](): any;
-            next(): IteratorReturnResult<any> | IteratorYieldResult<[Key, Value]>;
-        };
-        [Symbol.iterator](): {
-            [Symbol.iterator](): any;
-            next(): IteratorReturnResult<any> | IteratorYieldResult<[Key, Value]>;
-        };
-    }
 }
 
 declare namespace $ {
@@ -408,6 +386,7 @@ declare namespace $ {
         readonly key_private: $mol_crypto_auditor_private;
         readonly key_private_serial: Uint8Array;
         id: $mol_int62_pair;
+        ids: $mol_int62_string;
         constructor(key_public: $mol_crypto_auditor_public, key_public_serial: Uint8Array, key_private: $mol_crypto_auditor_private, key_private_serial: Uint8Array);
         static generate(): Promise<$hyoo_crowd_peer>;
         static restore(public_serial: Uint8Array, private_serial: Uint8Array): Promise<$hyoo_crowd_peer>;
@@ -416,14 +395,14 @@ declare namespace $ {
 
 declare namespace $ {
     type $mol_charset_encoding = 'utf8' | 'ibm866' | 'iso-8859-2' | 'iso-8859-3' | 'iso-8859-4' | 'iso-8859-5' | 'iso-8859-6' | 'iso-8859-7' | 'iso-8859-8' | 'iso-8859-8i' | 'iso-8859-10' | 'iso-8859-13' | 'iso-8859-14' | 'iso-8859-15' | 'iso-8859-16' | 'koi8-r' | 'koi8-u' | 'koi8-r' | 'macintosh' | 'windows-874' | 'windows-1250' | 'windows-1251' | 'windows-1252' | 'windows-1253' | 'windows-1254' | 'windows-1255' | 'windows-1256' | 'windows-1257' | 'windows-1258' | 'x-mac-cyrillic' | 'gbk' | 'gb18030' | 'hz-gb-2312' | 'big5' | 'euc-jp' | 'iso-2022-jp' | 'shift-jis' | 'euc-kr' | 'iso-2022-kr';
-    function $mol_charset_decode(value: BufferSource, code?: $mol_charset_encoding): string;
 }
 
 declare namespace $ {
-    type $hyoo_crowd_unit_id = {
-        readonly head: $mol_int62_pair;
-        readonly self: $mol_int62_pair;
-    };
+    function $mol_charset_decode(buffer: BufferSource, encoding?: $mol_charset_encoding): string;
+}
+
+declare namespace $ {
+    type $hyoo_crowd_unit_id = `${$mol_int62_string}/${$mol_int62_string}`;
     enum $hyoo_crowd_unit_kind {
         join = 0,
         give = 1,
@@ -479,20 +458,20 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_clock extends $mol_dict<$mol_int62_pair, number> {
+    class $hyoo_crowd_clock extends Map<$mol_int62_string, number> {
         static begin: number;
         last_time: number;
-        constructor(entries?: Iterable<readonly [$mol_int62_pair, number]>);
+        constructor(entries?: Iterable<readonly [$mol_int62_string, number]>);
         sync(right: $hyoo_crowd_clock): void;
         see_time(time: number): void;
-        see_peer(peer: $mol_int62_pair, time: number): void;
+        see_peer(peer: $mol_int62_string, time: number): void;
         see_bin(bin: $hyoo_crowd_clock_bin, group: $hyoo_crowd_unit_group): void;
-        fresh(peer: $mol_int62_pair, time: number): boolean;
+        fresh(peer: $mol_int62_string, time: number): boolean;
         ahead(clock: $hyoo_crowd_clock): boolean;
-        time(peer: $mol_int62_pair): number;
+        time(peer: $mol_int62_string): number;
         now(): number;
         last_stamp(): number;
-        tick(peer: $mol_int62_pair): number;
+        tick(peer: $mol_int62_string): number;
     }
     class $hyoo_crowd_clock_bin extends DataView {
         static from(land: $mol_int62_pair, clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): $hyoo_crowd_clock_bin;
@@ -532,6 +511,29 @@ declare namespace $ {
 
 declare namespace $ {
     function $mol_log3_web_make(level: $mol_type_keys_extract<Console, Function>, color: string): (this: $, event: $mol_log3_event<{}>) => () => void;
+}
+
+declare namespace $ {
+    let $mol_dict_key: typeof $mol_key;
+    class $mol_dict<Key, Value> extends Map<Key, Value> {
+        get(key: Key): Value | undefined;
+        has(key: Key): boolean;
+        set(key: Key, value: Value): this;
+        delete(key: Key): boolean;
+        forEach(back: (value: Value, key: Key, dict: Map<Key, Value>) => void, context?: any): void;
+        keys(): {
+            [Symbol.iterator](): any;
+            next(): IteratorReturnResult<any> | IteratorYieldResult<Key>;
+        };
+        entries(): {
+            [Symbol.iterator](): any;
+            next(): IteratorReturnResult<any> | IteratorYieldResult<[Key, Value]>;
+        };
+        [Symbol.iterator](): {
+            [Symbol.iterator](): any;
+            next(): IteratorReturnResult<any> | IteratorYieldResult<[Key, Value]>;
+        };
+    }
 }
 
 declare namespace $ {
@@ -647,14 +649,14 @@ declare namespace $ {
         get clocks(): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
         readonly pub: $mol_wire_pub;
         readonly _clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
-        protected _unit_all: $mol_dict<$hyoo_crowd_unit_id, $hyoo_crowd_unit>;
+        protected _unit_all: Map<`${string}_${string}/${string}_${string}`, $hyoo_crowd_unit>;
         unit(head: $mol_int62_pair, self: $mol_int62_pair): $hyoo_crowd_unit | undefined;
-        protected _unit_lists: $mol_dict<$mol_int62_pair, ($hyoo_crowd_unit[] & {
+        protected _unit_lists: Map<`${string}_${string}`, ($hyoo_crowd_unit[] & {
             dirty: boolean;
         }) | undefined>;
-        protected _unit_alives: $mol_dict<$mol_int62_pair, $hyoo_crowd_unit[] | undefined>;
+        protected _unit_alives: Map<`${string}_${string}`, $hyoo_crowd_unit[] | undefined>;
         size(): number;
-        protected unit_list(head: $mol_int62_pair): $hyoo_crowd_unit[] & {
+        protected unit_list(head: $mol_int62_string): $hyoo_crowd_unit[] & {
             dirty: boolean;
         };
         unit_alives(head: $mol_int62_pair): readonly $hyoo_crowd_unit[];

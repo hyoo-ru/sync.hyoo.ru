@@ -407,7 +407,7 @@ namespace $ {
 						let clocks = this.server_clocks( unit.land() )
 						if( clocks ) {
 							const clock = clocks[ unit.group() ]
-							clock.see_peer( unit.auth(), unit.time )
+							clock.see_peer( $mol_int62_to_string( unit.auth() ), unit.time )
 						}
 						
 						this.$.$mol_log3_rise({

@@ -70,6 +70,8 @@ namespace $ {
 				line.on( 'message', async( message )=> {
 					
 					if( typeof message === 'string' ) return
+					if( message instanceof Array ) return
+					
 					const data = new Int32Array( new Uint8Array( message ).buffer )
 					
 					const land_id = {
@@ -136,7 +138,8 @@ namespace $ {
 						const line_clocks = this.line_clocks({ line, land: land.id() })
 						
 						const clock = line_clocks[ unit.group() ]
-						clock.see_peer( unit.auth(), unit.time )
+						const auth_id = $mol_int62_to_string( unit.auth() )
+						clock.see_peer( auth_id, unit.time )
 						
 						// this.$.$mol_log3_rise({
 						// 	place: this,
@@ -157,7 +160,7 @@ namespace $ {
 						for( const other of this.lines ) {
 							if( line === other ) continue
 							const other_clocks = this.line_clocks({ line: other, land: land.id() })
-							if( other_clocks[ unit.group() ].fresh( unit.auth(), unit.time ) ) {
+							if( other_clocks[ unit.group() ].fresh( auth_id, unit.time ) ) {
 								other.send( message, { binary: true } )
 							}
 						}

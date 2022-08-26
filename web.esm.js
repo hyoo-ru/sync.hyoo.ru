@@ -3891,7 +3891,10 @@ var $;
                 });
                 const query = $hyoo_harp_from_string(query_str);
                 if (!query.land) {
-                    res.writeHead(200, { 'Content-Type': 'text/plain;charset=utf-8' });
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain;charset=utf-8',
+                        'Access-Control-Allow-Origin': '*',
+                    });
                     res.end('$hyoo_sync_server ✅');
                     return;
                 }
@@ -3947,7 +3950,10 @@ var $;
                     },
                     land: reply,
                 };
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.writeHead(200, {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                });
                 res.end(JSON.stringify(response, null, '\t'));
             });
             server.listen(this.port());

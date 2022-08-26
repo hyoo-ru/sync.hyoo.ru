@@ -3270,7 +3270,7 @@ var $;
         http() {
             const server = $node.http.createServer((req, res) => {
                 res.writeHead(200, { 'Content-Type': 'text/plain' });
-                res.end('$hyoo_sync_server is ON');
+                res.end('$hyoo_sync_server ✅');
             });
             server.listen(this.port());
             console.log('Server started http://localhost:' + this.port() + '/');

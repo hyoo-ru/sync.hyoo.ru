@@ -6,7 +6,7 @@ namespace $ {
 		http() {
 			
 			const server = $node.http.createServer( ( req, res )=> {
-				res.writeHead( 200, { 'Content-Type': 'text/plain' } )
+				res.writeHead( 200, { 'Content-Type': 'text/plain;charset=utf-8' } )
 				res.end( '$hyoo_sync_server ✅' )
 			} )
 			

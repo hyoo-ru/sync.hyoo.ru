@@ -6,8 +6,100 @@ namespace $ {
 		http() {
 			
 			const server = $node.http.createServer( ( req, res )=> {
-				res.writeHead( 200, { 'Content-Type': 'text/plain;charset=utf-8' } )
-				res.end( '$hyoo_sync_server ✅' )
+				
+				const world = this.world()
+				
+				const query_str = req.url!.slice(1)
+				
+				this.$.$mol_log3_come({
+					place: this,
+					message: 'Query',
+					query: query_str,
+				})
+				
+				const query = $hyoo_harp_from_string( query_str )
+				if( !query.land ) {
+					res.writeHead( 200, { 'Content-Type': 'text/plain;charset=utf-8' } )
+					res.end( '$hyoo_sync_server ✅' )
+					return
+				}
+				
+				const entry = query.land["="]![0][0]
+				const land = world.land( entry )
+				
+				const reply = {
+					[ entry ]: {}
+				}
+				
+				function proceed( data: {}, node: $hyoo_crowd_struct, query: $hyoo_harp_query ) {
+					
+					for( let fetch in query ) {
+						
+						if( /^!?=$/.test( fetch ) ) continue
+						
+						const [ _, field, type ] = fetch.match( /^(\w+)_([a-z]+)$/ ) ?? [ '', fetch, '' ]
+						if( !type ) continue
+						
+						switch( type ) {
+							
+							case 'reg':
+								data[ fetch ] = node.sub( field, $hyoo_crowd_reg ).value()
+								continue
+							
+							case 'ref':
+								
+								const id = node.sub( field, $hyoo_crowd_reg ).value()
+								
+								if( typeof id !== 'string' ) {
+									data[ fetch ] = null
+									continue
+								}
+								
+								const sub = reply[ id ] = {}
+								
+								const land = world.land( id as $mol_int62_string )
+								if( !land ) continue
+								
+								proceed( sub, land.chief, query[ fetch ] )
+								
+								continue
+							
+							case 'list':
+								data[ fetch ] = node.sub( field, $hyoo_crowd_list ).list()
+								continue
+							
+							case 'json':
+								data[ fetch ] = node.sub( field, $hyoo_crowd_json ).json()
+								continue
+							
+							case 'text':
+								data[ fetch ] = node.sub( field, $hyoo_crowd_text ).text()
+								continue
+							
+							case 'html':
+								data[ fetch ] = node.sub( field, $hyoo_crowd_html ).html()
+								continue
+							
+						}
+						
+					}
+					
+				}
+				
+				proceed( reply[ entry ], land.chief, query.land )
+				
+				const response = {
+					_query: {
+						[ query_str ]: {
+							reply: [ `land=${ entry }` ],
+						},
+					},
+					land: reply,
+				}
+				
+				res.writeHead( 200, { 'Content-Type': 'application/json' } )
+				res.end( JSON.stringify( response, null, '\t' ) )
+				
 			} )
 			
 			server.listen( this.port() )

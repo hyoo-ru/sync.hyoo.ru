@@ -3257,7 +3257,7 @@ var $;
                 --from;
                 next = String(list[from].data) + next;
             }
-            const words = next.match($hyoo_crowd_tokenizer);
+            const words = next.match($hyoo_crowd_tokenizer) ?? [];
             this.as($hyoo_crowd_list).insert(words, from, to);
             return this;
         }
@@ -6277,19 +6277,6 @@ var $;
 //mol/reconcile/reconcile.test.tsx
 ;
 "use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'const returns stored value'() {
-            const foo = { bar: $mol_const(Math.random()) };
-            $mol_assert_equal(foo.bar(), foo.bar());
-            $mol_assert_equal(foo.bar(), foo.bar['()']);
-        },
-    });
-})($ || ($ = {}));
-//mol/const/const.test.ts
-;
-"use strict";
 //mol/type/merge/merge.test.ts
 ;
 "use strict";
@@ -6617,6 +6604,19 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/tokenizer/tokenizer.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'const returns stored value'() {
+            const foo = { bar: $mol_const(Math.random()) };
+            $mol_assert_equal(foo.bar(), foo.bar());
+            $mol_assert_equal(foo.bar(), foo.bar['()']);
+        },
+    });
+})($ || ($ = {}));
+//mol/const/const.test.ts
 ;
 "use strict";
 var $;
@@ -7210,6 +7210,18 @@ var $;
             $mol_assert_like(store.chief.as($hyoo_crowd_reg).str(), '');
             $mol_assert_like(store.chief.as($hyoo_crowd_list).list(), []);
             $mol_assert_like(store.delta(), []);
+        },
+        async 'Return default state'() {
+            const store = await make_land();
+            const reg = store.chief.as($hyoo_crowd_reg);
+            const list = store.chief.as($hyoo_crowd_list);
+            const text = store.chief.as($hyoo_crowd_text);
+            $mol_assert_like(reg.bool(false), false);
+            $mol_assert_like(reg.str(''), '');
+            $mol_assert_like(reg.numb(0), 0);
+            $mol_assert_like(text.text(''), '');
+            $mol_assert_like(reg.value(null), null);
+            $mol_assert_like(list.list(), []);
         },
         async 'Serial changes'() {
             const store = await make_land();

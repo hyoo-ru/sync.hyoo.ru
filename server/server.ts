@@ -23,7 +23,7 @@ namespace $ {
 						'Content-Type': 'text/plain;charset=utf-8',
 						'Access-Control-Allow-Origin': '*',
 					} )
-					res.end( '$hyoo_sync_server ✅' )
+					res.end( '$hyoo_sync_server ✅✅s' )
 					return
 				}
 				

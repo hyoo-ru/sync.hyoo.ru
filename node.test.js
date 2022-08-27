@@ -4310,7 +4310,7 @@ var $;
                         'Content-Type': 'text/plain;charset=utf-8',
                         'Access-Control-Allow-Origin': '*',
                     });
-                    res.end('$hyoo_sync_server ✅✅s');
+                    res.end('$hyoo_sync_server ✅');
                     return;
                 }
                 const entry = query.land["="][0][0];

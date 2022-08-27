@@ -170,20 +170,21 @@ namespace $ {
 					if( typeof message === 'string' ) return
 					if( message instanceof Array ) return
 					
-					const data = new Int32Array( new Uint8Array( message ).buffer )
+					const data8 = new Uint8Array( message )
+					const data32 = new Int32Array( data8.buffer )
 					
 					const land_id = $mol_int62_to_string({
-						lo: data[0] << 1 >> 1,
-						hi: data[1] << 1 >> 1,
+						lo: data32[0] << 1 >> 1,
+						hi: data32[1] << 1 >> 1,
 					})
 						
 					const handle = async( prev?: Promise<any> )=> {
 						
 						if( prev ) await prev
 						
-						if( data[0] << 1 >> 1 ^ data[0] ) {
+						if( data32[0] << 1 >> 1 ^ data32[0] ) {
 							
-							const line_bin = new $hyoo_crowd_clock_bin( data.buffer )
+							const line_bin = new $hyoo_crowd_clock_bin( data32.buffer )
 							const land = this.world().land( land_id )
 							const line_clocks = this.line_clocks({ line, land: land_id })
 		
@@ -200,20 +201,16 @@ namespace $ {
 								land: land_id,
 							})
 							
-							const delta = await this.world().delta_land( land, line_clocks )
-							
-							for( const unit of delta ) {
-								line.send( unit.bin!, { binary: true } )
+							for await( const batch of this.world().delta_batch( land, line_clocks ) ) {
+								line.send( batch, { binary: true } )
 							}
 							
 							return
 						}
 							
-						const bin = new $hyoo_crowd_unit_bin( data.buffer )
-						const unit = bin.unit()
+						const { allow, forbid } = await this.world().apply( data8 )
 						
-						let error = await this.world().apply_unit( unit )
-						if( error ) {
+						for( const [ unit, error ] of forbid ) {
 							
 							this.$.$mol_log3_fail({
 								place: this,
@@ -230,39 +227,38 @@ namespace $ {
 									time: unit.time,
 								},
 							})
-							return
 							
 						}
-						
-						const land = this.world().land( unit.land )
+								
+						if( !allow.length ) return
+								
+						const land = this.world().land( allow[0].land )
 						const line_clocks = this.line_clocks({ line, land: land.id() })
 						
-						const clock = line_clocks[ unit.group() ]
-						clock.see_peer( unit.auth, unit.time )
+						for( const unit of allow ) {
+							line_clocks[ unit.group() ].see_peer( unit.auth, unit.time )
+						}
 						
-						// this.$.$mol_log3_rise({
-						// 	place: this,
-						// 	message: 'Come',
-						// 	line: $mol_key( line ),
-						// 	unit: {
-						// 		kind: $hyoo_crowd_unit_kind[ unit.kind() ],
-						// 		land: unit.land,
-						// 		auth: unit.auth,
-						// 		head: unit.head,
-						// 		self: unit.self,
-						// 		next: unit.next,
-						// 		prev: unit.prev,
-						// 		time: unit.time,
-						// 	},
-						// })
-
+						this.$.$mol_log3_done({
+							place: this,
+							message: 'Come',
+							line: $mol_key( line ),
+							land: land.id(),
+							units: allow.length
+						})
+					
 						for( const other of this.lines ) {
 							if( line === other ) continue
-							const other_clocks = this.line_clocks({ line: other, land: land.id() })
-							if( other_clocks[ unit.group() ].fresh( unit.auth, unit.time ) ) {
-								other.send( message, { binary: true } )
-							}
+							other.send( message, { binary: true } )
 						}
+						
+						// for( const other of this.lines ) {
+						// 	if( line === other ) continue
+						// 	const other_clocks = this.line_clocks({ line: other, land: land.id() })
+						// 	if( other_clocks[ unit.group() ].fresh( unit.auth, unit.time ) ) {
+						// 		other.send( message, { binary: true } )
+						// 	}
+						// }
 						
 					}
 					

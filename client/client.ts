@@ -300,18 +300,15 @@ namespace $ {
 			
 			let clocks = this.server_clocks( land.id() )!
 			
-			const delta = await this.world().delta_land( land, clocks )
-			
-			for( const unit of delta ) {
-				socket.send( unit.bin! )
+			for await( const batch of this.world().delta_batch( land, clocks ) ) {
+				socket.send( batch )
+				this.$.$mol_log3_rise({
+					place: this,
+					message: 'Send',
+					land: land.id(),
+					batch: batch.length,
+				})
 			}
-			
-			this.$.$mol_log3_rise({
-				place: this,
-				message: 'Send',
-				land: land.id(),
-				delta,
-			})
 			
 			for( let i = 0; i < clocks?.length; ++i ) {
 				clocks[i].sync( land.clocks[i] )
@@ -404,35 +401,30 @@ namespace $ {
 					
 					if( prev ) await prev
 					
-					const bin = new $hyoo_crowd_unit_bin( data.buffer )
-					const unit = bin.unit()
+					const { allow, forbid } = await world.apply( new Uint8Array( data.buffer ) )
 					
-					const error = await world.apply_unit( unit )
-					if( error ) {
-						
+					for( const [ unit, error ] of forbid ) {
 						this.$.$mol_log3_fail({
 							place: this,
 							message: error,
 							land: unit.land,
 							unit,
 						})
-						
-					} else {
-						
-						let clocks = this.server_clocks( unit.land )
-						if( clocks ) {
-							const clock = clocks[ unit.group() ]
-							clock.see_peer( unit.auth, unit.time )
-						}
-						
-						this.$.$mol_log3_rise({
-							place: this,
-							message: 'Come Unit',
-							land: unit.land,
-							unit,
-						})
-						
 					}
+					
+					if( !allow.length ) return
+					
+					let clocks = this.server_clocks( allow[0].land )!
+					for( const unit of allow ) {
+						clocks[ unit.group() ].see_peer( unit.auth, unit.time )
+					}
+						
+					this.$.$mol_log3_done({
+						place: this,
+						message: 'Come Unit',
+						land: allow[0].land,
+						units: allow,
+					})
 						
 				}
 				

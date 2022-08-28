@@ -32,7 +32,7 @@ namespace $ {
 		}
 		
 		server() {
-			// return `ws://localhost:9090/`
+			return `ws://localhost:9090/`
 			// return $mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' )
 			return 'wss://sync-hyoo-ru.herokuapp.com/'
 			// return `wss://sync.hyoo.ru/`
@@ -346,7 +346,13 @@ namespace $ {
 		}
 		
 		@ $mol_mem
+		reconnect( reset?: null ) {
+			return Math.random()
+		}
+		
+		@ $mol_mem
 		socket( reset?: null ) {
+			this.reconnect()
 			return $mol_wire_sync( this ).socket_connect() as WebSocket
 		}
 		
@@ -433,11 +439,13 @@ namespace $ {
 				
 			}
 
-			socket.onclose = ()=> {
-				setTimeout( $mol_wire_async( ()=> this.socket( null ) ), 5000 )
-			}
+			socket.onclose = ()=> setTimeout( ()=> this.reconnect( null ), 5000 )
 			
-			return new Promise< typeof socket >( done => socket.addEventListener( 'open', ()=> done( socket ) ) )
+			return new Promise< typeof socket >( ( done, fail )=> {
+				socket.addEventListener( 'open', ()=> done( socket ) )
+				socket.addEventListener( 'error', ()=> fail( new Error( 'Disconnected' ) ) )
+			})
+			
 		}
 		
 		// @ $mol_mem

@@ -1,5 +1,5 @@
 $hyoo_sync_online $mol_view
-	status false
+	status null
 	sub / <= Well $mol_icon_sync
 	Fail $mol_icon_sync_off
 	attr *

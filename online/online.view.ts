@@ -6,7 +6,7 @@ namespace $.$$ {
 			
 			try {
 				
-				this.online()
+				this.status()
 				return this.hint()
 			
 			} catch( error ) {
@@ -24,7 +24,7 @@ namespace $.$$ {
 			
 			try {
 				
-				this.online()
+				this.status()
 				return [ this.Well() ]
 			
 			} catch( error ) {

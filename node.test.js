@@ -1821,7 +1821,7 @@ var $;
 //hyoo/harp/from/string/string.ts
 ;
 "use strict";
-let $hyoo_crowd_test = "1";
+let $hyoo_crowd_test = "2";
 //hyoo/crowd/-meta.tree/crowd.meta.tree.ts
 ;
 "use strict";
@@ -4314,7 +4314,7 @@ var $;
                         'Content-Type': 'text/plain;charset=utf-8',
                         'Access-Control-Allow-Origin': '*',
                     });
-                    res.end('$hyoo_sync_server ✅' + $hyoo_crowd_test);
+                    res.end('$hyoo_sync_server ✅ ' + $hyoo_crowd_test);
                     return;
                 }
                 const entry = query.land["="][0][0];

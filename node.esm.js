@@ -1829,6 +1829,10 @@ var $;
 //hyoo/harp/from/string/string.ts
 ;
 "use strict";
+let $hyoo_crowd_test = "1";
+//hyoo/crowd/-meta.tree/crowd.meta.tree.ts
+;
+"use strict";
 var $;
 (function ($) {
 })($ || ($ = {}));
@@ -4309,7 +4313,7 @@ var $;
                 const query_str = req.url.slice(1);
                 this.$.$mol_log3_come({
                     place: this,
-                    message: 'Query',
+                    message: 'HTTP Query',
                     query: query_str,
                 });
                 const query = $hyoo_harp_from_string(query_str);
@@ -4318,7 +4322,7 @@ var $;
                         'Content-Type': 'text/plain;charset=utf-8',
                         'Access-Control-Allow-Origin': '*',
                     });
-                    res.end('$hyoo_sync_server ✅');
+                    res.end('$hyoo_sync_server ✅' + $hyoo_crowd_test);
                     return;
                 }
                 const entry = query.land["="][0][0];

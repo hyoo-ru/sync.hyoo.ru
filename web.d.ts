@@ -338,6 +338,8 @@ declare namespace $ {
     function $hyoo_harp_from_string(uri: string): $hyoo_harp_query;
 }
 
+declare let $hyoo_crowd_test: string;
+
 declare namespace $ {
     var $mol_dom_context: typeof globalThis;
 }

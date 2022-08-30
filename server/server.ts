@@ -1,11 +1,11 @@
 namespace $ {
 	
-	export class $hyoo_sync_server extends $mol_object2 {
+	export class $hyoo_sync_server extends $hyoo_sync_yard {
 		
 		@ $mol_mem
 		http() {
 			
-			const server = $node.http.createServer( ( req, res )=> {
+			const server = $node.http.createServer( $mol_wire_async( ( req, res )=> {
 				
 				const world = this.world()
 				
@@ -23,7 +23,7 @@ namespace $ {
 						'Content-Type': 'text/plain;charset=utf-8',
 						'Access-Control-Allow-Origin': '*',
 					} )
-					res.end( '$hyoo_sync_server ✅ ' + $hyoo_crowd_test )
+					res.end( '$hyoo_sync_server ✅' )
 					return
 				}
 				
@@ -106,7 +106,7 @@ namespace $ {
 				} )
 				res.end( JSON.stringify( response, null, '\t' ) )
 				
-			} )
+			} ) )
 			
 			server.listen( this.port() )
 			
@@ -130,6 +130,8 @@ namespace $ {
 		
 		@ $mol_mem
 		socket() {
+			
+			const world = this.world()
 
 			const socket = new $node.ws.Server({
 				server : this.http() ,
@@ -185,7 +187,7 @@ namespace $ {
 						if( data32[0] << 1 >> 1 ^ data32[0] ) {
 							
 							const line_bin = new $hyoo_crowd_clock_bin( data32.buffer )
-							const land = this.world().land( land_id )
+							const land = world.land( land_id )
 							const line_clocks = this.line_clocks({ line, land: land_id })
 		
 							line_clocks[ $hyoo_crowd_unit_group.auth ].see_bin( line_bin, $hyoo_crowd_unit_group.auth )
@@ -201,14 +203,14 @@ namespace $ {
 								land: land_id,
 							})
 							
-							for await( const batch of this.world().delta_batch( land, line_clocks ) ) {
+							for await( const batch of world.delta_batch( land, line_clocks ) ) {
 								line.send( batch, { binary: true } )
 							}
 							
 							return
 						}
 							
-						const { allow, forbid } = await this.world().apply( data8 )
+						const { allow, forbid } = await world.apply( data8 )
 						
 						for( const [ unit, error ] of forbid ) {
 							
@@ -232,7 +234,7 @@ namespace $ {
 								
 						if( !allow.length ) return
 								
-						const land = this.world().land( allow[0].land )
+						const land = world.land( allow[0].land )
 						const line_clocks = this.line_clocks({ line, land: land.id() })
 						
 						for( const unit of allow ) {
@@ -272,23 +274,22 @@ namespace $ {
 
 		}
 		
-		@ $mol_mem
-		world() {
-			return new $hyoo_crowd_world
-		}
-
 		port() { return 0 }
 		
-		static run( port: number ) {
+		@ $mol_mem_key
+		static port( port: number ) {
 			const server = new this
 			server.port = $mol_const( port )
-			server.socket()
 			return server
+		}
+		
+		static run( port: number ) {
+			this.port( port ).socket()
 		}
 		
 	}
 	
 	let port = Number( process.env.PORT || $mol_state_arg.value( 'port' ) )
-	if( port ) $hyoo_sync_server.run( port )
+	if( port ) $mol_wire_async( $hyoo_sync_server ).run( port )
 	
 }

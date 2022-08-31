@@ -2182,7 +2182,7 @@ var $;
                 const bin = unit.bin;
                 bins.push(bin);
                 size += bin.byteLength;
-                if (size >= 2 ** 17)
+                if (size >= 2 ** 15)
                     yield pack();
             }
             if (size)
@@ -4098,7 +4098,7 @@ var $;
                         'Content-Type': 'text/plain;charset=utf-8',
                         'Access-Control-Allow-Origin': '*',
                     });
-                    res.end('$hyoo_sync_server ✅');
+                    res.end('$hyoo_sync_server ✅✅');
                     return;
                 }
                 const entry = query.land["="][0][0];

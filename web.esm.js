@@ -32,8 +32,18 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "f79c4c4";
+let $hyoo_sync_revision = "ce0861b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_sync_masters = [
+        'wss://sync-hyoo-ru.herokuapp.com/',
+        `wss://sync.hyoo.ru/`,
+    ];
+})($ || ($ = {}));
+//hyoo/sync/sync.ts
 ;
 "use strict";
 var $;

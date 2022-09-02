@@ -319,7 +319,16 @@ namespace $ {
 				
 				const lands = this.line_lands( line )
 				if( lands.includes( land ) ) {
-					console.log('!!!')
+					
+					this.$.$mol_log3_warn({
+						place: this,
+						land: land.id(),
+						message: 'Already syncing',
+						hint: 'Bug at $hyoo_sync_yard',
+						line: $mol_key( line ),
+						clocks,
+					})
+					
 				} else {
 					
 					this.line_lands( line, [ ... lands, land ] )

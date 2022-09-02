@@ -69,6 +69,10 @@ namespace $ {
 			
 		}
 		
+		home() {
+			return this.land( this.peer().id )
+		}
+		
 		
 		@ $mol_mem
 		sync() {

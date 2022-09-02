@@ -4,4 +4,4 @@ $hyoo_sync_online $mol_view
 	Fail $mol_icon_sync_off
 	attr *
 		^
-		title <= message <= hint \Sync
+		title <= message <= hint \$hyoo_sync

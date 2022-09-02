@@ -1,13 +1,9 @@
 namespace $ {
 	
-	export class $hyoo_sync_client extends $hyoo_sync_yard {
+	export class $hyoo_sync_client extends $hyoo_sync_yard< WebSocket > {
 		
-		@ $mol_mem
-		db() {
-			return $mol_wire_sync( this as $hyoo_sync_client ).db_init()
-		}
-		
-		async db_init() {
+		@ $mol_memo.method
+		async db() {
 			
 			type Scheme = {
 				Unit: {
@@ -21,172 +17,40 @@ namespace $ {
 				}
 			}
 			
-			const db1 = await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db' )
-			await db1.kill()
+			const db2 = await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2' )
+			await db2.kill()
 			
-			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2',
+			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db',
 				mig => mig.store_make( 'Unit' ),
 				mig => mig.stores.Unit.index_make( 'Land', [ 'land' ] ),
 			)
 			
 		}
 		
-		server() {
-			// return `ws://localhost:9090/`
-			// return $mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' )
-			return 'wss://sync-hyoo-ru.herokuapp.com/'
-			// return `wss://sync.hyoo.ru/`
-		}
-		
-		@ $mol_mem_key
-		db_clocks(
-			land: $mol_int62_string,
-			next = null as null | readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ],
-		) {
-			$mol_wire_solid()
-			return next
-		}
-		
-		@ $mol_mem_key
-		server_clocks(
-			land: $mol_int62_string,
-			next = null as null | readonly [ $hyoo_crowd_clock, $hyoo_crowd_clock ]
-		) {
-			return next
-		}
-		
-		@ $mol_mem
-		request_done( next?: ( res: unknown )=> void ) {
-			return ( res: unknown )=> {}
-		}
-		
-		@ $mol_mem_key
-		land_init( land: $mol_int62_string ) {
-			$mol_wire_solid()
-			$mol_wire_sync( this ).db_load( land )
-			// this.server_init( land.id )
-		}
-		
-		@ $mol_mem
-		sync() {
-			$mol_wire_race(
-				()=> this.db_sync(),
-				()=> this.server_sync(),
-			)
-		}
-		
-		async db_load( land_id: $mol_int62_string ) {
+		async db_land_load( land: $hyoo_crowd_land ) {
 			
-			const db = this.db()
+			const db = await this.db()
 			const Unit = db.read( 'Unit' ).Unit
 			
-			const recs = await Unit.indexes.Land.select([ land_id ])
-			if( !recs ) return
+			const recs = await Unit.indexes.Land.select([ land.id() ])
+			if( !recs ) return []
 			
-			const units = recs.map( rec => {
-				return new $hyoo_crowd_unit(
-					rec.land, rec.auth,
-					rec.head, rec.self,
-					rec.next, rec.prev,
-					rec.time, rec.data,
-					new $hyoo_crowd_unit_bin( rec.bin!.buffer ),
-				)
-			} )
+			const units = recs.map( rec => new $hyoo_crowd_unit(
+				rec.land, rec.auth,
+				rec.head, rec.self,
+				rec.next, rec.prev,
+				rec.time, rec.data,
+				new $hyoo_crowd_unit_bin( rec.bin!.buffer ),
+			) )
+			
 			units.sort( $hyoo_crowd_unit_compare )
 			
-			// const world = this.world()
-			// let clocks = this.db_clocks( land_id )
-			
-			// const queue = units.slice().reverse()
-			
-			
-			// const apply = async( unit: $hyoo_crowd_unit )=> {
-				
-			// 	const error = await world.apply_unit( unit )
-					
-			// 	if( error ) {
-			// 		this.$.$mol_log3_fail({
-			// 			place: this,
-			// 			message: error,
-			// 			unit,
-			// 		})
-			// 	} else {
-			// 		clocks[ unit.group() ].see_peer( unit.auth(), unit.time )
-			// 	}
-				
-			// }
-			
-			// while( queue.length ) {
-				
-			// 	const unit = queue.pop()!
-				
-			// 	if( unit.group() === $hyoo_crowd_unit_group.auth ) {
-			// 		await apply( unit )
-			// 		continue
-			// 	} else {
-			// 		await Promise.allSettled( queue.map( apply ) )
-			// 		break
-			// 	}
-				
-			// }
-			
-			const clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const
-			this.db_clocks( land_id, clocks )
-			
-			const land = this.world()._lands.get( land_id )!
-			land.apply( units )
-			
-			for( const unit of units ) {
-				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
-			}
-			
-			this.$.$mol_log3_done({
-				place: this,
-				message: 'DB Load',
-				land: land_id,
-				units,
-			})
-			
+			return units
 		}
 		
-		@ $mol_mem
-		db_sync() {
+		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) {
 			
-			this.db()
-			
-			for( const land of this.world().lands.values() ) {
-				
-				const land_clocks = land.clocks
-				
-				const db_clocks = this.db_clocks( land.id() )
-				
-				if( db_clocks ) {
-					const ahead = land_clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
-					if( !ahead ) continue
-				}
-				
-				try {
-					$mol_wire_sync( this ).db_save( land )
-				} catch( error ) {
-					$mol_fail_log( error )
-				}
-				
-			}
-			
-		}
-		
-		async db_save( land: $hyoo_crowd_land ) {
-			
-			const clocks = this.db_clocks( land.id() )!
-			
-			const units = [] as $hyoo_crowd_unit[]
-			for( const unit of await this.world().delta_land( land, clocks ) ) {
-				units.push( unit )
-			}
-			
-			if( units.length === 0 ) return null
-			
-			const db = this.db()
+			const db = await this.db()
 			const trans = db.change( 'Unit' )
 			const Unit = trans.stores.Unit
 			
@@ -194,260 +58,68 @@ namespace $ {
 				Unit.put( unit, [ unit.land, unit.head, unit.self ] )
 			}
 			
-			for( const [ index, clock ] of Object.entries( clocks ) ) {
-				clock.sync( land.clocks[ index ] )
-			}
-			
 			await trans.commit()
 			
-			this.$.$mol_log3_done({
-				place: this,
-				message: 'DB Save',
-				land: land.id(),
-				units,
-			})
-			
-			return null
+		}
+		
+		
+		servers() {
+			return [
+				`ws://localhost:9090/`,
+				$mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' ),
+				'wss://sync-hyoo-ru.herokuapp.com/',
+				`wss://sync.hyoo.ru/`,
+			]
 		}
 		
 		@ $mol_mem
-		server_sync() {
+		reconnects( reset?: null ): number {
+			return ( $mol_wire_probe( ()=> this.reconnects() ) ?? 0 ) + 1
+		}
+		
+		@ $mol_mem
+		master() {
 			
-			// this.socket()
+			this.reconnects()
 			
-			for( const land of this.world().lands.values() ) {
+			const line = new $mol_dom_context.WebSocket( this.servers()[0] )
+			line.binaryType = 'arraybuffer'
+			
+			line.onmessage = async( event )=> {
 				
-				try {
-				
-					this.land_init( land.id() )
-					this.server_init( land.id() )
+				if( event.data instanceof ArrayBuffer ) {
+					await this.line_receive( line, new Uint8Array( event.data ) )
+				} else {
 					
-					const server_clocks = this.server_clocks( land.id() )
-					const land_clocks = land.clocks
-
-					if( server_clocks ) {
-						const ahead = land_clocks.some( ( land_clock, i )=> land_clock.ahead( server_clocks[i] ) )
-						if( !ahead ) continue
-						$mol_wire_sync( this ).server_send( land )
-					}
-				
-				} catch( error ) {
-					$mol_fail_log( error )
-				}
-				
-			}
-
-		}
-		
-		@ $mol_mem_key
-		server_init( land: $mol_int62_string ) {
-			
-			$mol_wire_solid()
-			
-			const socket = this.socket()
-			const clocks = this.world()._lands.get( land )!._clocks
-			const bin = $hyoo_crowd_clock_bin.from( land, clocks )
-			
-			socket.send( bin )
-			
-			this.$.$mol_log3_come({
-				place: this,
-				message: 'Sync Ask',
-				land,
-				clocks,
-			})
-			
-		}
-		
-		async server_send( land: $hyoo_crowd_land ) {
-			
-			const socket = this.socket()
-			
-			let clocks = this.server_clocks( land.id() )!
-			
-			for await( const batch of this.world().delta_batch( land, clocks ) ) {
-				socket.send( batch )
-				this.$.$mol_log3_rise({
-					place: this,
-					message: 'Send',
-					land: land.id(),
-					batch: batch.length,
-				})
-			}
-			
-			for( let i = 0; i < clocks?.length; ++i ) {
-				clocks[i].sync( land.clocks[i] )
-			}
-			
-		}
-		
-		grab(
-			king_level = $hyoo_crowd_peer_level.law,
-			base_level = $hyoo_crowd_peer_level.get,
-		) {
-			return $mol_wire_sync( this.world() ).grab( king_level, base_level )
-		}
-		
-		@ $mol_mem_key
-		land( id: $mol_int62_string ) {
-			return this.world().land_sync( id )
-		}
-		
-		@ $mol_action
-		file(
-			reg: $hyoo_crowd_reg,
-			king_level = $hyoo_crowd_peer_level.law,
-			base_level = $hyoo_crowd_peer_level.get,
-		) {
-			
-			let land_id = reg.value() as $mol_int62_string | null
-			if( land_id ) return this.land( land_id )
-			
-			const land = this.grab( king_level, base_level )
-			reg.value( land.id() )
-			return land
-			
-		}
-		
-		@ $mol_mem
-		reconnect( reset?: null ) {
-			return Math.random()
-		}
-		
-		@ $mol_mem
-		socket( reset?: null ) {
-			this.reconnect()
-			return $mol_wire_sync( this ).socket_connect() as WebSocket
-		}
-		
-		socket_connect() {
-			
-			// this.heartbeat()
-			
-			const world = this.world()
-			const socket = new $mol_dom_context.WebSocket( this.server() )
-			socket.binaryType = 'arraybuffer'
-			
-			const necks = new Map< $mol_int62_string, Promise<any> >()
-			
-			socket.onmessage = event => {
-				
-				const message = event.data
-				if(!( message instanceof ArrayBuffer )) {
 					this.$.$mol_log3_fail({
 						place: this,
 						message: 'Wrong data',
-						data: message
-					})
-					return
-				}
-				
-				const data = new Int32Array( message )
-				const land_id = $mol_int62_to_string({
-					lo: data[0] << 1 >> 1,
-					hi: data[1] << 1 >> 1,
-				})
-				
-				if( data[0] << 1 >> 1 ^ data[0] ) {
-						
-					const bin = new $hyoo_crowd_clock_bin( data.buffer )
-					
-					let clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const
-					this.server_clocks( land_id, clocks )
-					
-					clocks[ $hyoo_crowd_unit_group.auth ].see_bin( bin, $hyoo_crowd_unit_group.auth )
-					clocks[ $hyoo_crowd_unit_group.data ].see_bin( bin, $hyoo_crowd_unit_group.data )
-					
-					this.$.$mol_log3_done({
-						place: this,
-						message: 'Sync Ans',
-						land: land_id,
-						clocks,
+						data: event.data
 					})
 					
-					return
 				}
-			
-				const handle = async( prev?: Promise<any> )=> {
-					
-					if( prev ) await prev
-					
-					const { allow, forbid } = await world.apply( new Uint8Array( data.buffer ) )
-					
-					for( const [ unit, error ] of forbid ) {
-						this.$.$mol_log3_fail({
-							place: this,
-							message: error,
-							land: unit.land,
-							unit,
-						})
-					}
-					
-					if( !allow.length ) return
-					
-					let clocks = this.server_clocks( allow[0].land )!
-					for( const unit of allow ) {
-						clocks[ unit.group() ].see_peer( unit.auth, unit.time )
-					}
-						
-					this.$.$mol_log3_done({
-						place: this,
-						message: 'Come Unit',
-						land: allow[0].land,
-						units: allow,
-					})
-						
-				}
-				
-				necks.set( land_id, handle( necks.get( land_id ) ) )
 				
 			}
 
-			socket.onclose = ()=> setTimeout( ()=> this.reconnect( null ), 5000 )
+			line.onclose = ()=> {
+				setTimeout( ()=> this.reconnects( null ), 5000 )
+			}
 			
-			return new Promise< typeof socket >( ( done, fail )=> {
-				socket.addEventListener( 'open', ()=> done( socket ) )
-				socket.addEventListener( 'error', ()=> fail( new Error( 'Disconnected' ) ) )
-			})
+			Object.assign( line, {
+				destructor: ()=> line.close()
+			} )
+			
+			return new Promise< typeof line >( ( done, fail )=> {
+				
+				line.onopen = ()=> done( line )
+				line.onerror = ()=> fail( new Error( 'Disconnected' ) )
+				
+			} ) as any as WebSocket
 			
 		}
 		
-		// @ $mol_mem
-		// heartbeat() {
-			
-		// 	const timer = setInterval( ()=> {
-		// 		const socket = this.socket()
-		// 		if( socket.readyState !== socket.OPEN ) return
-		// 		socket.send('')
-		// 	}, 30000 )
-			
-		// 	return {
-		// 		destructor: ()=> clearInterval( timer )
-		// 	}
-			
-		// }
-		
-		// @ $mol_action
-		// send( key: string, next?: readonly $hyoo_crowd_unit[] ) {
-			
-		// 	const socket = this.socket()
-		// 	$mol_wire_sync( this ).wait_connection()
-			
-		// 	if( socket.readyState !== socket.OPEN ) return
-			
-		// 	const message = next === undefined ? [ key ] : [ key, ... next ]
-		// 	socket.send( JSON.stringify( message ) )
-			
-		// }
-		
-		// wait_connection() {
-		// 	const socket = this.socket()
-		// 	if( socket.readyState !== socket.CONNECTING ) return
-		// 	return new Promise( done => socket.addEventListener( 'open', done ) )
-		// }
-		
-		[ $mol_dev_format_head ]() {
-			return $mol_dev_format_native( this )
+		line_send( line: WebSocket, message: Uint8Array ) {
+			line.send( message )
 		}
 		
 	}

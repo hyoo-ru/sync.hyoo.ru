@@ -2222,6 +2222,19 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'const returns stored value'() {
+            const foo = { bar: $mol_const(Math.random()) };
+            $mol_assert_equal(foo.bar(), foo.bar());
+            $mol_assert_equal(foo.bar(), foo.bar['()']);
+        },
+    });
+})($ || ($ = {}));
+//mol/const/const.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'Primitives'() {
             $mol_assert_equal($mol_key(null), 'null');
             $mol_assert_equal($mol_key(false), 'false');
@@ -2360,19 +2373,6 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'const returns stored value'() {
-            const foo = { bar: $mol_const(Math.random()) };
-            $mol_assert_equal(foo.bar(), foo.bar());
-            $mol_assert_equal(foo.bar(), foo.bar['()']);
-        },
-    });
-})($ || ($ = {}));
-//mol/const/const.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
         'fresh'() {
             const clock = new $hyoo_crowd_clock;
             clock.see_peer('b_33', 1);
@@ -2467,7 +2467,7 @@ var $;
             const world2 = new $hyoo_crowd_world(await $hyoo_crowd_peer.generate());
             const land = world1.land(world1.peer.id);
             land.chief.as($hyoo_crowd_list).list([123, 456]);
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 $mol_assert_like((await world2.apply(batch)).forbid, new Map);
             }
             $mol_assert_like(world2.land(land.id()).chief.as($hyoo_crowd_list).list(), [123, 456]);
@@ -2479,7 +2479,7 @@ var $;
             const clock = land.clock_data;
             clock.see_time(clock.now() + 60 * 60 * 24 * 10);
             land.chief.as($hyoo_crowd_reg).numb(123);
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], ['Far future']);
             }
             $mol_assert_like(world2.land(land.id()).delta().length, 3);
@@ -2489,7 +2489,7 @@ var $;
             const world2 = new $hyoo_crowd_world(await $hyoo_crowd_peer.generate());
             const land = await world1.grab();
             land.chief.as($hyoo_crowd_reg).numb(123);
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], ['Alien join key', 'No auth key']);
             }
             $mol_assert_like(world2.land(land.id()).delta().length, 2);
@@ -2499,7 +2499,7 @@ var $;
             const world2 = new $hyoo_crowd_world(await $hyoo_crowd_peer.generate());
             const land = world1.land('1_1');
             land.chief.as($hyoo_crowd_reg).numb(123);
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], ['No join key', 'Level too low']);
             }
             $mol_assert_like(world2.land(land.id()).delta().length, 0);
@@ -2508,7 +2508,7 @@ var $;
             const world1 = new $hyoo_crowd_world(await $hyoo_crowd_peer.generate());
             const world2 = new $hyoo_crowd_world(await $hyoo_crowd_peer.generate());
             const land = await world1.grab();
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 batch[152] = ~batch[152];
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], ['Wrong join sign', 'Level too low']);
             }
@@ -2521,7 +2521,7 @@ var $;
             const land = await world1.grab();
             land.chief.as($hyoo_crowd_reg).numb(123);
             world2.land(land.id()).chief.as($hyoo_crowd_reg).numb(234);
-            for await (const batch of world1.delta_batch(land)) {
+            for (const batch of await world1.delta_batch(land)) {
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], ['Already join']);
             }
             $mol_assert_like(world2.land(land.id()).delta().length, 5);
@@ -2541,7 +2541,7 @@ var $;
             land2.level(peer.id, $hyoo_crowd_peer_level.law);
             $mol_assert_like(land1.delta().length, 4);
             level_get: {
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Level too low', 'Level too low', 'Level too low']);
                 }
                 $mol_assert_like(land1.delta().length, 5);
@@ -2551,7 +2551,7 @@ var $;
             }
             level_add: {
                 land1.level(land2.peer().id, $hyoo_crowd_peer_level.add);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Already join', 'Level too low', 'Level too low']);
                 }
                 $mol_assert_like(land1.delta().length, 7);
@@ -2561,7 +2561,7 @@ var $;
             }
             level_mod: {
                 land1.level(land2.peer().id, $hyoo_crowd_peer_level.mod);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Already join', 'Level too low']);
                 }
                 $mol_assert_like(land1.delta().length, 7);
@@ -2571,7 +2571,7 @@ var $;
             }
             level_law: {
                 land1.level(land2.peer().id, $hyoo_crowd_peer_level.law);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Already join']);
                 }
                 $mol_assert_like(land1.delta().length, 8);
@@ -2587,7 +2587,7 @@ var $;
             const land1 = await world1.grab();
             const land2 = world2.land(land1.id());
             land1.chief.sub('foo', $hyoo_crowd_reg).numb(123);
-            for await (const batch of world1.delta_batch(land1)) {
+            for (const batch of await world1.delta_batch(land1)) {
                 $mol_assert_like([...(await world2.apply(batch)).forbid.values()], []);
             }
             land2.chief.sub('foo', $hyoo_crowd_reg).numb(234);
@@ -2596,7 +2596,7 @@ var $;
             $mol_assert_like(land1.delta().length, 4);
             level_add: {
                 land1.level_base($hyoo_crowd_peer_level.add);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Level too low', 'Level too low']);
                 }
                 $mol_assert_like(land1.delta().length, 7);
@@ -2606,7 +2606,7 @@ var $;
             }
             level_mod: {
                 land1.level_base($hyoo_crowd_peer_level.mod);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Already join', 'Level too low']);
                 }
                 $mol_assert_like(land1.delta().length, 7);
@@ -2616,7 +2616,7 @@ var $;
             }
             level_law: {
                 land1.level_base($hyoo_crowd_peer_level.law);
-                for await (const batch of world2.delta_batch(land2)) {
+                for (const batch of await world2.delta_batch(land2)) {
                     $mol_assert_like([...(await world1.apply(batch)).forbid.values()], ['Already join', 'Already join', 'Already join']);
                 }
                 $mol_assert_like(land1.delta().length, 8);
@@ -2628,67 +2628,6 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/world/world.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_wire_log extends $mol_object2 {
-        static watch(task) {
-            return task;
-        }
-        static track(fiber) {
-            const prev = $mol_wire_probe(() => this.track(fiber));
-            let next;
-            try {
-                next = fiber.sync();
-            }
-            finally {
-                for (const pub of fiber.pub_list) {
-                    if (pub instanceof $mol_wire_fiber) {
-                        this.track(pub);
-                    }
-                }
-            }
-            if (prev !== undefined && !$mol_compare_deep(prev, next)) {
-                this.$.$mol_log3_rise({
-                    message: 'Changed',
-                    place: fiber,
-                });
-            }
-            return next;
-        }
-        static active() {
-            try {
-                this.watch()?.();
-            }
-            finally {
-                for (const pub of $mol_wire_auto().pub_list) {
-                    if (pub instanceof $mol_wire_fiber) {
-                        this.track(pub);
-                    }
-                }
-            }
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_wire_log, "watch", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_wire_log, "track", null);
-    __decorate([
-        $mol_mem
-    ], $mol_wire_log, "active", null);
-    $.$mol_wire_log = $mol_wire_log;
-})($ || ($ = {}));
-//mol/wire/log/log.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_wire_log.active();
-})($ || ($ = {}));
-//mol/wire/atom/atom.test.ts
 ;
 "use strict";
 var $;
@@ -3264,6 +3203,67 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/land/land.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_wire_log extends $mol_object2 {
+        static watch(task) {
+            return task;
+        }
+        static track(fiber) {
+            const prev = $mol_wire_probe(() => this.track(fiber));
+            let next;
+            try {
+                next = fiber.sync();
+            }
+            finally {
+                for (const pub of fiber.pub_list) {
+                    if (pub instanceof $mol_wire_fiber) {
+                        this.track(pub);
+                    }
+                }
+            }
+            if (prev !== undefined && !$mol_compare_deep(prev, next)) {
+                this.$.$mol_log3_rise({
+                    message: 'Changed',
+                    place: fiber,
+                });
+            }
+            return next;
+        }
+        static active() {
+            try {
+                this.watch()?.();
+            }
+            finally {
+                for (const pub of $mol_wire_auto().pub_list) {
+                    if (pub instanceof $mol_wire_fiber) {
+                        this.track(pub);
+                    }
+                }
+            }
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_wire_log, "watch", null);
+    __decorate([
+        $mol_mem_key
+    ], $mol_wire_log, "track", null);
+    __decorate([
+        $mol_mem
+    ], $mol_wire_log, "active", null);
+    $.$mol_wire_log = $mol_wire_log;
+})($ || ($ = {}));
+//mol/wire/log/log.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_wire_log.active();
+})($ || ($ = {}));
+//mol/wire/atom/atom.test.ts
 ;
 "use strict";
 var $;

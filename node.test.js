@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "ce0861b";
+let $hyoo_sync_revision = "2c0a4d7";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3325,6 +3325,9 @@ var $;
             const land = this.land_grab(king_level, base_level);
             reg.value(land.id());
             return land;
+        }
+        home() {
+            return this.land(this.peer().id);
         }
         sync() {
             for (const land of this.world().lands.values()) {

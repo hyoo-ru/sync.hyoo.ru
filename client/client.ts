@@ -63,15 +63,6 @@ namespace $ {
 		}
 		
 		
-		servers() {
-			return [
-				// `ws://localhost:9090/`,
-				// $mol_dom_context.document.location.origin.replace( /^\w+:/ , 'ws:' ),
-				'wss://sync-hyoo-ru.herokuapp.com/',
-				`wss://sync.hyoo.ru/`,
-			]
-		}
-		
 		@ $mol_mem
 		reconnects( reset?: null ): number {
 			return ( $mol_wire_probe( ()=> this.reconnects() ) ?? 0 ) + 1
@@ -82,7 +73,7 @@ namespace $ {
 			
 			this.reconnects()
 			
-			const line = new $mol_dom_context.WebSocket( this.servers()[0] )
+			const line = new $mol_dom_context.WebSocket( this.$.$hyoo_sync_masters[0] )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

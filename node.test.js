@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "5fea102";
+let $hyoo_sync_revision = "f79c4c4";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3458,7 +3458,14 @@ var $;
                 }
                 const lands = this.line_lands(line);
                 if (lands.includes(land)) {
-                    console.log('!!!');
+                    this.$.$mol_log3_warn({
+                        place: this,
+                        land: land.id(),
+                        message: 'Already syncing',
+                        hint: 'Bug at $hyoo_sync_yard',
+                        line: $mol_key(line),
+                        clocks,
+                    });
                 }
                 else {
                     this.line_lands(line, [...lands, land]);

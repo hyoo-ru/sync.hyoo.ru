@@ -37,5 +37,10 @@ namespace $.$$ {
 			
 		}
 		
+		@ $mol_mem
+		hint() {
+			return super.hint() + ' ' + $hyoo_sync_revision
+		}
+		
 	}
 }

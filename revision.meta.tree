@@ -1,0 +1,1 @@
+build $hyoo_sync_revision \git rev-parse --short HEAD

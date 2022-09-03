@@ -667,20 +667,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    let $mol_action: typeof $mol_wire_method;
-}
-
-declare namespace $ {
-    class $hyoo_crowd_reg extends $hyoo_crowd_node {
-        value(next?: unknown): {} | null;
-        str(next?: string): string;
-        numb(next?: number): number;
-        bool(next?: boolean): boolean;
-        yoke(king_level: $hyoo_crowd_peer_level, base_level: $hyoo_crowd_peer_level): $hyoo_crowd_land;
-    }
-}
-
-declare namespace $ {
     function $mol_wire_race<Tasks extends (() => any)[]>(...tasks: Tasks): {
         [index in keyof Tasks]: ReturnType<Tasks[index]>;
     };
@@ -736,7 +722,6 @@ declare namespace $ {
         world(): $hyoo_crowd_world;
         land(id: $mol_int62_string): $hyoo_crowd_land;
         land_grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): $hyoo_crowd_land;
-        file(reg: $hyoo_crowd_reg, king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): $hyoo_crowd_land;
         home(): $hyoo_crowd_land;
         sync(): void;
         land_sync(land: $hyoo_crowd_land): void;
@@ -801,6 +786,16 @@ declare namespace $ {
 
 declare namespace $ {
     function $hyoo_harp_from_string(uri: string): $hyoo_harp_query;
+}
+
+declare namespace $ {
+    class $hyoo_crowd_reg extends $hyoo_crowd_node {
+        value(next?: unknown): {} | null;
+        str(next?: string): string;
+        numb(next?: number): number;
+        bool(next?: boolean): boolean;
+        yoke(king_level: $hyoo_crowd_peer_level, base_level: $hyoo_crowd_peer_level): $hyoo_crowd_land | null;
+    }
 }
 
 declare namespace $ {

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2c0a4d7";
+let $hyoo_sync_revision = "3f649c9";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3145,63 +3145,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_action = $mol_wire_method;
-})($ || ($ = {}));
-//mol/action/action.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $hyoo_crowd_reg extends $hyoo_crowd_node {
-        value(next) {
-            const units = this.units();
-            let last;
-            for (const unit of units) {
-                if (!last || $hyoo_crowd_unit_compare(unit, last) > 0)
-                    last = unit;
-            }
-            if (next === undefined) {
-                return last?.data ?? null;
-            }
-            else {
-                if (last?.data === next)
-                    return next;
-                for (const unit of units) {
-                    if (unit === last)
-                        continue;
-                    this.land.wipe(unit);
-                }
-                const self = last?.self ?? this.land.id_new();
-                this.land.put(this.head, self, '0_0', next);
-                return next;
-            }
-        }
-        str(next) {
-            return String(this.value(next) ?? '');
-        }
-        numb(next) {
-            return Number(this.value(next));
-        }
-        bool(next) {
-            return Boolean(this.value(next));
-        }
-        yoke(king_level, base_level) {
-            const world = this.world();
-            let land_id = (this.value() ?? '0_0');
-            if (land_id !== '0_0')
-                return world.land_sync(land_id);
-            const land = $mol_wire_sync(world).grab(king_level, base_level);
-            this.value(land.id());
-            return land;
-        }
-    }
-    $.$hyoo_crowd_reg = $hyoo_crowd_reg;
-})($ || ($ = {}));
-//hyoo/crowd/reg/reg.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_wire_race(...tasks) {
         const results = tasks.map(task => {
             try {
@@ -3318,14 +3261,6 @@ var $;
         land_grab(king_level = $hyoo_crowd_peer_level.law, base_level = $hyoo_crowd_peer_level.get) {
             return $mol_wire_sync(this.world()).grab(king_level, base_level);
         }
-        file(reg, king_level = $hyoo_crowd_peer_level.law, base_level = $hyoo_crowd_peer_level.get) {
-            let land_id = reg.value();
-            if (land_id)
-                return this.land(land_id);
-            const land = this.land_grab(king_level, base_level);
-            reg.value(land.id());
-            return land;
-        }
         home() {
             return this.land(this.peer().id);
         }
@@ -3339,6 +3274,7 @@ var $;
             $mol_wire_race(...this.slaves().map(line => () => this.line_sync(line)));
         }
         land_sync(land) {
+            this.db_land_init(land);
             try {
                 this.db_land_sync(land);
             }
@@ -3368,16 +3304,14 @@ var $;
         db_land_sync(land) {
             this.db_land_init(land);
             const db_clocks = this.db_land_clocks(land.id());
-            const ahead = land.clocks.some((land_clock, i) => land_clock.ahead(db_clocks[i]));
-            if (!ahead)
-                return;
+            land.clocks;
             const units = $mol_wire_sync(this.world()).delta_land(land, db_clocks);
             if (!units.length)
                 return;
+            $mol_wire_sync(this).db_land_save(land, units);
             for (const unit of units) {
                 db_clocks[unit.group()].see_peer(unit.auth, unit.time);
             }
-            $mol_wire_sync(this).db_land_save(land, units);
             this.$.$mol_log3_done({
                 place: this,
                 land: land.id(),
@@ -3533,9 +3467,6 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_yard.prototype, "land", null);
-    __decorate([
-        $mol_action
-    ], $hyoo_sync_yard.prototype, "file", null);
     __decorate([
         $mol_mem
     ], $hyoo_sync_yard.prototype, "sync", null);
@@ -3734,6 +3665,58 @@ var $;
     $.$hyoo_harp_from_string = $hyoo_harp_from_string;
 })($ || ($ = {}));
 //hyoo/harp/from/string/string.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $hyoo_crowd_reg extends $hyoo_crowd_node {
+        value(next) {
+            const units = this.units();
+            let last;
+            for (const unit of units) {
+                if (!last || $hyoo_crowd_unit_compare(unit, last) > 0)
+                    last = unit;
+            }
+            if (next === undefined) {
+                return last?.data ?? null;
+            }
+            else {
+                if (last?.data === next)
+                    return next;
+                for (const unit of units) {
+                    if (unit === last)
+                        continue;
+                    this.land.wipe(unit);
+                }
+                const self = last?.self ?? this.land.id_new();
+                this.land.put(this.head, self, '0_0', next);
+                return next;
+            }
+        }
+        str(next) {
+            return String(this.value(next) ?? '');
+        }
+        numb(next) {
+            return Number(this.value(next));
+        }
+        bool(next) {
+            return Boolean(this.value(next));
+        }
+        yoke(king_level, base_level) {
+            const world = this.world();
+            let land_id = (this.value() ?? '0_0');
+            if (land_id !== '0_0')
+                return world.land_sync(land_id);
+            if (this.land.level(this.land.peer().id) < $hyoo_crowd_peer_level.add)
+                return null;
+            const land = $mol_wire_sync(world).grab(king_level, base_level);
+            this.value(land.id());
+            return land;
+        }
+    }
+    $.$hyoo_crowd_reg = $hyoo_crowd_reg;
+})($ || ($ = {}));
+//hyoo/crowd/reg/reg.ts
 ;
 "use strict";
 var $;

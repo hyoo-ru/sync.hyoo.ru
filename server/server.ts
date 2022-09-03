@@ -163,6 +163,11 @@ namespace $ {
 				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
 			`)
 			
+			this.$.$mol_log3_come({
+				place: this,
+				message: 'Base Ready',
+			})
+			
 			return db
 		}
 		

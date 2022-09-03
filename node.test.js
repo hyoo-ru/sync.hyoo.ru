@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "f00981f";
+let $hyoo_sync_revision = "8fd1a71";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4929,6 +4929,10 @@ var $;
             await db.query(`
 				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
 			`);
+            this.$.$mol_log3_come({
+                place: this,
+                message: 'Base Ready',
+            });
             return db;
         }
         async db_land_load(land) {

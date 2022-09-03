@@ -303,6 +303,7 @@ namespace $ {
 		static run( port: number ) {
 			try {
 				this.port( port ).socket()
+				this.port( port ).db()
 				this.port( port ).sync()
 			} catch( error ) {
 				$mol_fail_log( error )

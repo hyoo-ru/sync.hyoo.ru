@@ -43,8 +43,6 @@ namespace $ {
 				new $hyoo_crowd_unit_bin( rec.bin!.buffer ),
 			) )
 			
-			units.sort( $hyoo_crowd_unit_compare )
-			
 			return units
 		}
 		

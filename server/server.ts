@@ -118,17 +118,121 @@ namespace $ {
 			
 			server.listen( this.port() )
 			
-			console.log( 'Server started http://localhost:' + this.port() + '/' )
+			this.$.$mol_log3_come({
+				place: this,
+				message: 'Server Started',
+				link: 'http://0.0.0.0:' + this.port() + '/',
+			})
 			
 			return server
 		}
 		
-		async db_land_load( land: $hyoo_crowd_land ): Promise< readonly $hyoo_crowd_unit[] >  {
-			return []
+		@ $mol_memo.method
+		db_link() {
+			return $mol_state_arg.value( 'db' ) || process.env.DATABASE_URL
+		}
+		
+		@ $mol_memo.method
+		async db() {
+			
+			const link = this.db_link()
+			if( !link ) return null
+			
+			const db = new $node.pg.Pool({
+				connectionString: link,
+				ssl: { rejectUnauthorized: false },
+			})
+			
+			await db.connect()
+			
+			await db.query(`
+				CREATE TABLE IF NOT EXISTS Unit (
+					land varchar(16) NOT NULL, auth varchar(16) NOT NULL,
+					head varchar(16) NOT NULL, self varchar(16) NOT NULL,
+					next varchar(16) NOT NULL, prev varchar(16) NOT NULL,
+					time int4 NOT NULL, data jsonb,
+					bin bytea NOT NULL
+				);
+			`)
+			
+			await db.query(`
+				CREATE UNIQUE INDEX IF NOT EXISTS LandHeadSelf ON Unit ( land, head, self );
+			`)
+			
+			await db.query(`
+				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
+			`)
+			
+			return db
+		}
+		
+		async db_land_load( land: $hyoo_crowd_land ): Promise< $hyoo_crowd_unit[] >  {
+			
+			const link = this.db_link()
+			if( !link ) return []
+			
+			const db = await this.db()
+			if( !db ) return []
+
+			const res = await db.query(
+				`SELECT bin FROM Unit WHERE land = $1::varchar(16)`,
+				[ land.id() ],
+			)
+			
+			const units = res.rows.map( row => {
+				
+				const bin = new $hyoo_crowd_unit_bin(
+					row.bin.buffer,
+					row.bin.byteOffset,
+					row.bin.byteLength,
+				)
+				
+				return bin.unit()
+			})
+			
+			return units
 		}
 		
 		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) {
 			
+			const link = this.db_link()
+			if( !link ) return
+			
+			const db = await this.db()
+			if( !db ) return
+			
+			const tasks = units.map( unit => {
+				return db.query(
+					`
+						INSERT INTO Unit VALUES(
+							$1::varchar(16), $2::varchar(16),
+							$3::varchar(16), $4::varchar(16),
+							$5::varchar(16), $6::varchar(16),
+							$7::int4, $8::jsonb,
+							$9::bytea
+						)
+						ON CONFLICT( land, head, self ) DO UPDATE
+						SET
+							auth = $2::varchar(16),
+							next = $5::varchar(16),
+							prev = $6::varchar(16),
+							time = $7::int4,
+							data = $8::jsonb,
+							bin = $9::bytea
+						;
+					`,
+					[
+						unit.land, unit.auth,
+						unit.head, unit.self,
+						unit.next, unit.prev,
+						unit.time, unit.data instanceof Uint8Array ? null : JSON.stringify( unit.data ),
+						Buffer.from( unit.bin!.buffer ),
+					]
+				)
+			} )
+			
+			await Promise.all( tasks )
+		  
 		}
 		
 		@ $mol_mem
@@ -202,7 +306,7 @@ namespace $ {
 		
 	}
 	
-	let port = Number( process.env.PORT || $mol_state_arg.value( 'port' ) )
+	let port = Number( $mol_state_arg.value( 'port' ) || process.env.PORT )
 	if( port ) $hyoo_sync_server.run( port )
 	
 }

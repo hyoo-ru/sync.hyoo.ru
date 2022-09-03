@@ -151,7 +151,8 @@ namespace $ {
 		db_land_init( land: $hyoo_crowd_land ) {
 
 			const units = $mol_wire_sync< $hyoo_sync_yard< Line > >( this ).db_land_load( land )
-			
+			units.sort( $hyoo_crowd_unit_compare )
+
 			const clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const
 			this.db_land_clocks( land.id(), clocks )
 			
@@ -170,7 +171,7 @@ namespace $ {
 			
 		}
 		
-		abstract db_land_load( land: $hyoo_crowd_land ): Promise< readonly $hyoo_crowd_unit[] >
+		abstract db_land_load( land: $hyoo_crowd_land ): Promise< $hyoo_crowd_unit[] >
 		abstract db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ): void
 		
 		master() {

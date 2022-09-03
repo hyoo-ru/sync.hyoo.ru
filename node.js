@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "8fd1a71";
+let $hyoo_sync_revision = "02ed983";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5036,6 +5036,7 @@ var $;
         static run(port) {
             try {
                 this.port(port).socket();
+                this.port(port).db();
                 this.port(port).sync();
             }
             catch (error) {

@@ -53,22 +53,6 @@ namespace $ {
 			return $mol_wire_sync( this.world() ).grab( king_level, base_level )
 		}
 		
-		@ $mol_action
-		file(
-			reg: $hyoo_crowd_reg,
-			king_level = $hyoo_crowd_peer_level.law,
-			base_level = $hyoo_crowd_peer_level.get,
-		) {
-			
-			let land_id = reg.value() as $mol_int62_string | null
-			if( land_id ) return this.land( land_id )
-			
-			const land = this.land_grab( king_level, base_level )
-			reg.value( land.id() )
-			return land
-			
-		}
-		
 		home() {
 			return this.land( this.peer().id )
 		}
@@ -98,6 +82,8 @@ namespace $ {
 		
 		@ $mol_mem_key
 		land_sync( land: $hyoo_crowd_land ) {
+			
+			this.db_land_init( land )
 			
 			try {
 				this.db_land_sync( land )
@@ -139,19 +125,19 @@ namespace $ {
 			this.db_land_init( land )
 			
 			const db_clocks = this.db_land_clocks( land.id() )!
-			
-			const ahead = land.clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
-			if( !ahead ) return
+			land.clocks
+			// const ahead = land.clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
+			// if( !ahead ) return
 			
 			const units = $mol_wire_sync( this.world() ).delta_land( land, db_clocks )
 			if( !units.length ) return
+			
+			$mol_wire_sync( this ).db_land_save( land, units )
 			
 			for( const unit of units ) {
 				db_clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
-			$mol_wire_sync( this ).db_land_save( land, units )
-
 			this.$.$mol_log3_done({
 				place: this,
 				land: land.id(),

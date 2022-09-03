@@ -562,8 +562,19 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $hyoo_crowd_reg extends $hyoo_crowd_node {
+        value(next?: unknown): {} | null;
+        str(next?: string): string;
+        numb(next?: number): number;
+        bool(next?: boolean): boolean;
+        yoke(king_level: $hyoo_crowd_peer_level, base_level: $hyoo_crowd_peer_level): $hyoo_crowd_land | null;
+    }
+}
+
+declare namespace $ {
     class $hyoo_crowd_struct extends $hyoo_crowd_node {
         sub<Node extends typeof $hyoo_crowd_node>(key: string, Node: Node): InstanceType<Node>;
+        yoke<Node extends typeof $hyoo_crowd_node>(key: string, Node: Node, king_level: $hyoo_crowd_peer_level, base_level: $hyoo_crowd_peer_level): InstanceType<Node> | null;
     }
 }
 
@@ -608,6 +619,7 @@ declare namespace $ {
         join(): void;
         level_base(next?: $hyoo_crowd_peer_level): void;
         level(peer: $mol_int62_string, next?: $hyoo_crowd_peer_level): $hyoo_crowd_peer_level;
+        lords(): readonly `${string}_${string}`[];
         put(head: $mol_int62_string, self: $mol_int62_string, prev: $mol_int62_string, data: unknown): $hyoo_crowd_unit;
         wipe(unit: $hyoo_crowd_unit): $hyoo_crowd_unit;
         move(unit: $hyoo_crowd_unit, head: $mol_int62_string, prev: $mol_int62_string): $hyoo_crowd_unit;
@@ -728,7 +740,7 @@ declare namespace $ {
         db_land_clocks(land: $mol_int62_string, next?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock] | undefined;
         db_land_sync(land: $hyoo_crowd_land): void;
         db_land_init(land: $hyoo_crowd_land): void;
-        abstract db_land_load(land: $hyoo_crowd_land): Promise<readonly $hyoo_crowd_unit[]>;
+        abstract db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
         abstract db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): void;
         master(): Line | null;
         slaves(next?: readonly Line[]): readonly Line[];
@@ -786,16 +798,6 @@ declare namespace $ {
 
 declare namespace $ {
     function $hyoo_harp_from_string(uri: string): $hyoo_harp_query;
-}
-
-declare namespace $ {
-    class $hyoo_crowd_reg extends $hyoo_crowd_node {
-        value(next?: unknown): {} | null;
-        str(next?: string): string;
-        numb(next?: number): number;
-        bool(next?: boolean): boolean;
-        yoke(king_level: $hyoo_crowd_peer_level, base_level: $hyoo_crowd_peer_level): $hyoo_crowd_land | null;
-    }
 }
 
 declare namespace $ {

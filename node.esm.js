@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "3f649c9";
+let $hyoo_sync_revision = "f00981f";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -859,7 +859,7 @@ var $;
         if (left instanceof RegExp)
             return left.source === right['source'] && left.flags === right['flags'];
         if (left instanceof Error)
-            return left.stack === right['stack'];
+            return left.message === right['message'] && left.stack === right['stack'];
         let left_cache = $.$mol_compare_deep_cache.get(left);
         if (left_cache) {
             const right_cache = left_cache.get(right);
@@ -2613,9 +2613,67 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $hyoo_crowd_reg extends $hyoo_crowd_node {
+        value(next) {
+            const units = this.units();
+            let last;
+            for (const unit of units) {
+                if (!last || $hyoo_crowd_unit_compare(unit, last) > 0)
+                    last = unit;
+            }
+            if (next === undefined) {
+                return last?.data ?? null;
+            }
+            else {
+                if (last?.data === next)
+                    return next;
+                for (const unit of units) {
+                    if (unit === last)
+                        continue;
+                    this.land.wipe(unit);
+                }
+                const self = last?.self ?? this.land.id_new();
+                this.land.put(this.head, self, '0_0', next);
+                return next;
+            }
+        }
+        str(next) {
+            return String(this.value(next) ?? '');
+        }
+        numb(next) {
+            return Number(this.value(next));
+        }
+        bool(next) {
+            return Boolean(this.value(next));
+        }
+        yoke(king_level, base_level) {
+            const world = this.world();
+            let land_id = (this.value() ?? '0_0');
+            if (land_id !== '0_0')
+                return world.land_sync(land_id);
+            if (this.land.level(this.land.peer().id) < $hyoo_crowd_peer_level.add)
+                return null;
+            const land = $mol_wire_sync(world).grab(king_level, base_level);
+            this.value(land.id());
+            return land;
+        }
+    }
+    $.$hyoo_crowd_reg = $hyoo_crowd_reg;
+})($ || ($ = {}));
+//hyoo/crowd/reg/reg.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $hyoo_crowd_struct extends $hyoo_crowd_node {
         sub(key, Node) {
             return new Node(this.land, $mol_int62_hash_string(key + '\n' + this.head));
+        }
+        yoke(key, Node, king_level, base_level) {
+            return this.sub(key, $hyoo_crowd_reg)
+                .yoke(king_level, base_level)?.chief
+                .sub(key, Node)
+                ?? null;
         }
     }
     $.$hyoo_crowd_struct = $hyoo_crowd_struct;
@@ -2816,6 +2874,16 @@ var $;
             this._unit_all.set(level_id, level_unit);
             this.pub.emit();
             return next;
+        }
+        lords() {
+            this.pub.promote();
+            const lords = [];
+            for (const unit of this._unit_all.values()) {
+                if (unit.kind() !== $hyoo_crowd_unit_kind.give)
+                    continue;
+                lords.push(unit.self);
+            }
+            return lords;
         }
         put(head, self, prev, data) {
             this.join();
@@ -3329,6 +3397,7 @@ var $;
         }
         db_land_init(land) {
             const units = $mol_wire_sync(this).db_land_load(land);
+            units.sort($hyoo_crowd_unit_compare);
             const clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
             this.db_land_clocks(land.id(), clocks);
             land.apply(units);
@@ -3673,58 +3742,6 @@ var $;
     $.$hyoo_harp_from_string = $hyoo_harp_from_string;
 })($ || ($ = {}));
 //hyoo/harp/from/string/string.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $hyoo_crowd_reg extends $hyoo_crowd_node {
-        value(next) {
-            const units = this.units();
-            let last;
-            for (const unit of units) {
-                if (!last || $hyoo_crowd_unit_compare(unit, last) > 0)
-                    last = unit;
-            }
-            if (next === undefined) {
-                return last?.data ?? null;
-            }
-            else {
-                if (last?.data === next)
-                    return next;
-                for (const unit of units) {
-                    if (unit === last)
-                        continue;
-                    this.land.wipe(unit);
-                }
-                const self = last?.self ?? this.land.id_new();
-                this.land.put(this.head, self, '0_0', next);
-                return next;
-            }
-        }
-        str(next) {
-            return String(this.value(next) ?? '');
-        }
-        numb(next) {
-            return Number(this.value(next));
-        }
-        bool(next) {
-            return Boolean(this.value(next));
-        }
-        yoke(king_level, base_level) {
-            const world = this.world();
-            let land_id = (this.value() ?? '0_0');
-            if (land_id !== '0_0')
-                return world.land_sync(land_id);
-            if (this.land.level(this.land.peer().id) < $hyoo_crowd_peer_level.add)
-                return null;
-            const land = $mol_wire_sync(world).grab(king_level, base_level);
-            this.value(land.id());
-            return land;
-        }
-    }
-    $.$hyoo_crowd_reg = $hyoo_crowd_reg;
-})($ || ($ = {}));
-//hyoo/crowd/reg/reg.ts
 ;
 "use strict";
 var $;
@@ -4886,13 +4903,90 @@ var $;
                 res.end(JSON.stringify(response, null, '\t'));
             }));
             server.listen(this.port());
-            console.log('Server started http://localhost:' + this.port() + '/');
+            this.$.$mol_log3_come({
+                place: this,
+                message: 'Server Started',
+                link: 'http://0.0.0.0:' + this.port() + '/',
+            });
             return server;
         }
+        db_link() {
+            return $mol_state_arg.value('db') || process.env.DATABASE_URL;
+        }
+        async db() {
+            const link = this.db_link();
+            if (!link)
+                return null;
+            const db = new $node.pg.Pool({
+                connectionString: link,
+                ssl: { rejectUnauthorized: false },
+            });
+            await db.connect();
+            await db.query(`
+				CREATE TABLE IF NOT EXISTS Unit (
+					land varchar(16) NOT NULL, auth varchar(16) NOT NULL,
+					head varchar(16) NOT NULL, self varchar(16) NOT NULL,
+					next varchar(16) NOT NULL, prev varchar(16) NOT NULL,
+					time int4 NOT NULL, data jsonb,
+					bin bytea NOT NULL
+				);
+			`);
+            await db.query(`
+				CREATE UNIQUE INDEX IF NOT EXISTS LandHeadSelf ON Unit ( land, head, self );
+			`);
+            await db.query(`
+				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
+			`);
+            return db;
+        }
         async db_land_load(land) {
-            return [];
+            const link = this.db_link();
+            if (!link)
+                return [];
+            const db = await this.db();
+            if (!db)
+                return [];
+            const res = await db.query(`SELECT bin FROM Unit WHERE land = $1::varchar(16)`, [land.id()]);
+            const units = res.rows.map(row => {
+                const bin = new $hyoo_crowd_unit_bin(row.bin.buffer, row.bin.byteOffset, row.bin.byteLength);
+                return bin.unit();
+            });
+            return units;
         }
         async db_land_save(land, units) {
+            const link = this.db_link();
+            if (!link)
+                return;
+            const db = await this.db();
+            if (!db)
+                return;
+            const tasks = units.map(unit => {
+                return db.query(`
+						INSERT INTO Unit VALUES(
+							$1::varchar(16), $2::varchar(16),
+							$3::varchar(16), $4::varchar(16),
+							$5::varchar(16), $6::varchar(16),
+							$7::int4, $8::jsonb,
+							$9::bytea
+						)
+						ON CONFLICT( land, head, self ) DO UPDATE
+						SET
+							auth = $2::varchar(16),
+							next = $5::varchar(16),
+							prev = $6::varchar(16),
+							time = $7::int4,
+							data = $8::jsonb,
+							bin = $9::bytea
+						;
+					`, [
+                    unit.land, unit.auth,
+                    unit.head, unit.self,
+                    unit.next, unit.prev,
+                    unit.time, unit.data instanceof Uint8Array ? null : JSON.stringify(unit.data),
+                    Buffer.from(unit.bin.buffer),
+                ]);
+            });
+            await Promise.all(tasks);
         }
         socket() {
             this.world();
@@ -4949,6 +5043,12 @@ var $;
         $mol_mem
     ], $hyoo_sync_server.prototype, "http", null);
     __decorate([
+        $mol_memo.method
+    ], $hyoo_sync_server.prototype, "db_link", null);
+    __decorate([
+        $mol_memo.method
+    ], $hyoo_sync_server.prototype, "db", null);
+    __decorate([
         $mol_mem
     ], $hyoo_sync_server.prototype, "socket", null);
     __decorate([
@@ -4958,7 +5058,7 @@ var $;
         $mol_mem_key
     ], $hyoo_sync_server, "run", null);
     $.$hyoo_sync_server = $hyoo_sync_server;
-    let port = Number(process.env.PORT || $mol_state_arg.value('port'));
+    let port = Number($mol_state_arg.value('port') || process.env.PORT);
     if (port)
         $hyoo_sync_server.run(port);
 })($ || ($ = {}));

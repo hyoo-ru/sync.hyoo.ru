@@ -86,6 +86,7 @@
     "$hyoo_crowd_time",
     "$hyoo_crowd_struct",
     "$hyoo_crowd_node",
+    "$hyoo_crowd_reg",
     "$mol_const",
     "$mol_dict",
     "$mol_wire_race",
@@ -97,7 +98,6 @@
     "$hyoo_harp",
     "$mol_syntax2",
     "$hyoo_harp_query",
-    "$hyoo_crowd_reg",
     "$hyoo_crowd_list",
     "$mol_reconcile",
     "$hyoo_crowd_json",
@@ -125,7 +125,8 @@
   ],
   "dependencies": {
     "jsdom": "*",
-    "ws": "*"
+    "ws": "*",
+    "pg": "*"
   },
   "scripts": {
     "start": "node node.js"

@@ -118,7 +118,7 @@ namespace $ {
 			
 			server.listen( this.port() )
 			
-			this.$.$mol_log3_come({
+			this.$.$mol_log3_done({
 				place: this,
 				message: 'Server Started',
 				link: 'http://0.0.0.0:' + this.port() + '/',
@@ -163,7 +163,7 @@ namespace $ {
 				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
 			`)
 			
-			this.$.$mol_log3_come({
+			this.$.$mol_log3_done({
 				place: this,
 				message: 'Base Ready',
 			})

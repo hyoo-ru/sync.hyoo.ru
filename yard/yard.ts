@@ -259,7 +259,7 @@ namespace $ {
 			
 			this.line_send( line, new Uint8Array( bin.buffer ) )
 			
-			this.$.$mol_log3_come({
+			this.$.$mol_log3_done({
 				place: this,
 				land: land.id(),
 				message: 'Sync Open',

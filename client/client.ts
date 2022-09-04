@@ -66,12 +66,16 @@ namespace $ {
 			return ( $mol_wire_probe( ()=> this.reconnects() ) ?? 0 ) + 1
 		}
 		
+		master_cursor = 0
+		
 		@ $mol_mem
 		master() {
 			
 			this.reconnects()
 			
-			const line = new $mol_dom_context.WebSocket( this.$.$hyoo_sync_masters[0] )
+			const line = new $mol_dom_context.WebSocket(
+				this.$.$hyoo_sync_masters[ this.master_cursor ]
+			)
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {
@@ -100,8 +104,21 @@ namespace $ {
 			
 			return new Promise< typeof line >( ( done, fail )=> {
 				
-				line.onopen = ()=> done( line )
-				line.onerror = ()=> fail( new Error( 'Disconnected' ) )
+				line.onopen = ()=> {
+					
+					this.$.$mol_log3_done({
+						place: this,
+						message: 'Connected to Master',
+						line: $mol_key( line ),
+					})
+		
+					done( line )
+				}
+				
+				line.onerror = ()=> {
+					this.master_cursor = ( this.master_cursor + 1 ) % this.$.$hyoo_sync_masters.length 
+					fail( new Error( `Master is unabailable` ) )
+				}
 				
 			} ) as any as WebSocket
 			

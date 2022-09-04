@@ -2,16 +2,6 @@
 function require( path ){ return $node[ path ] };
 "use strict";
 var $;
-(function ($) {
-    $.$hyoo_sync_masters = [
-        `ws://localhost:9090/`,
-        $mol_dom_context.document.location.origin.replace(/^\w+:/, 'ws:'),
-    ];
-})($ || ($ = {}));
-//hyoo/sync/sync.test.ts
-;
-"use strict";
-var $;
 (function ($_1) {
     function $mol_test(set) {
         for (let name in set) {

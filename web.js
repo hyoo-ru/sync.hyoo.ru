@@ -32,18 +32,8 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "02ed983";
+let $hyoo_sync_revision = "fb6503d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $.$hyoo_sync_masters = [
-        'wss://sync-hyoo-ru.herokuapp.com/',
-        `wss://sync.hyoo.ru/`,
-    ];
-})($ || ($ = {}));
-//hyoo/sync/sync.ts
 ;
 "use strict";
 var $;
@@ -3019,7 +3009,7 @@ var $;
             const clocks = land._clocks;
             const bin = $hyoo_crowd_clock_bin.from(land.id(), clocks);
             this.line_send(line, new Uint8Array(bin.buffer));
-            this.$.$mol_log3_come({
+            this.$.$mol_log3_done({
                 place: this,
                 land: land.id(),
                 message: 'Sync Open',
@@ -4511,7 +4501,7 @@ var $;
                 res.end(JSON.stringify(response, null, '\t'));
             }));
             server.listen(this.port());
-            this.$.$mol_log3_come({
+            this.$.$mol_log3_done({
                 place: this,
                 message: 'Server Started',
                 link: 'http://0.0.0.0:' + this.port() + '/',
@@ -4545,7 +4535,7 @@ var $;
             await db.query(`
 				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
 			`);
-            this.$.$mol_log3_come({
+            this.$.$mol_log3_done({
                 place: this,
                 message: 'Base Ready',
             });

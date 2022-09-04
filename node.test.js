@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "fb6503d";
+let $hyoo_sync_revision = "616fd42";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3370,7 +3370,7 @@ var $;
             for (const unit of units) {
                 db_clocks[unit.group()].see_peer(unit.auth, unit.time);
             }
-            this.$.$mol_log3_done({
+            this.$.$mol_log3_rise({
                 place: this,
                 land: land.id(),
                 message: 'Base Save',
@@ -3386,7 +3386,7 @@ var $;
             for (const unit of units) {
                 clocks[unit.group()].see_peer(unit.auth, unit.time);
             }
-            this.$.$mol_log3_done({
+            this.$.$mol_log3_rise({
                 place: this,
                 land: land.id(),
                 message: 'Base Load',
@@ -3416,7 +3416,7 @@ var $;
             const packs = $mol_wire_sync(this.world()).delta_batch(land, clocks);
             for (const pack of packs) {
                 this.line_send(line, pack);
-                this.$.$mol_log3_done({
+                this.$.$mol_log3_rise({
                     place: this,
                     land: land.id(),
                     message: 'Sync Sent',
@@ -3433,7 +3433,7 @@ var $;
             const clocks = land._clocks;
             const bin = $hyoo_crowd_clock_bin.from(land.id(), clocks);
             this.line_send(line, new Uint8Array(bin.buffer));
-            this.$.$mol_log3_done({
+            this.$.$mol_log3_come({
                 place: this,
                 land: land.id(),
                 message: 'Sync Open',
@@ -3503,7 +3503,7 @@ var $;
                 for (const unit of allow) {
                     clocks[unit.group()].see_peer(unit.auth, unit.time);
                 }
-                this.$.$mol_log3_done({
+                this.$.$mol_log3_rise({
                     place: this,
                     land: land.id(),
                     message: 'Sync Gain',
@@ -4812,7 +4812,7 @@ var $;
             const server = $node.http.createServer($mol_wire_async((req, res) => {
                 const world = this.world();
                 const query_str = req.url.slice(1);
-                this.$.$mol_log3_come({
+                this.$.$mol_log3_rise({
                     place: this,
                     message: 'HTTP Query',
                     query: query_str,
@@ -4885,7 +4885,7 @@ var $;
                 res.end(JSON.stringify(response, null, '\t'));
             }));
             server.listen(this.port());
-            this.$.$mol_log3_done({
+            this.$.$mol_log3_come({
                 place: this,
                 message: 'Server Started',
                 link: 'http://0.0.0.0:' + this.port() + '/',
@@ -4919,7 +4919,7 @@ var $;
             await db.query(`
 				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
 			`);
-            this.$.$mol_log3_done({
+            this.$.$mol_log3_rise({
                 place: this,
                 message: 'Base Ready',
             });

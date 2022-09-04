@@ -106,7 +106,7 @@ namespace $ {
 				
 				line.onopen = ()=> {
 					
-					this.$.$mol_log3_done({
+					this.$.$mol_log3_come({
 						place: this,
 						message: 'Connected to Master',
 						line: $mol_key( line ),

@@ -138,7 +138,7 @@ namespace $ {
 				db_clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
-			this.$.$mol_log3_done({
+			this.$.$mol_log3_rise({
 				place: this,
 				land: land.id(),
 				message: 'Base Save',
@@ -162,7 +162,7 @@ namespace $ {
 				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
-			this.$.$mol_log3_done({
+			this.$.$mol_log3_rise({
 				place: this,
 				land: land.id(),
 				message: 'Base Load',
@@ -227,7 +227,7 @@ namespace $ {
 				
 				this.line_send( line, pack )
 				
-				this.$.$mol_log3_done({
+				this.$.$mol_log3_rise({
 					place: this,
 					land: land.id(),
 					message: 'Sync Sent',
@@ -259,7 +259,7 @@ namespace $ {
 			
 			this.line_send( line, new Uint8Array( bin.buffer ) )
 			
-			this.$.$mol_log3_done({
+			this.$.$mol_log3_come({
 				place: this,
 				land: land.id(),
 				message: 'Sync Open',
@@ -361,7 +361,7 @@ namespace $ {
 					clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 				}
 					
-				this.$.$mol_log3_done({
+				this.$.$mol_log3_rise({
 					place: this,
 					land: land.id(),
 					message: 'Sync Gain',

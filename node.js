@@ -3067,8 +3067,6 @@ var $;
                 const bin = unit.bin;
                 bins.push(bin);
                 size += bin.byteLength;
-                if (size >= 2 ** 15)
-                    wrap();
             }
             if (size)
                 wrap();

@@ -17,10 +17,10 @@ namespace $ {
 				}
 			}
 			
-			const db2 = await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2' )
-			await db2.kill()
+			const db1 = await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db' )
+			await db1.kill()
 			
-			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db',
+			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2',
 				mig => mig.store_make( 'Unit' ),
 				mig => mig.stores.Unit.index_make( 'Land', [ 'land' ] ),
 			)

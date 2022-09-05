@@ -146,7 +146,7 @@ namespace $ {
 			await db.connect()
 			
 			await db.query(`
-				CREATE TABLE IF NOT EXISTS Unit (
+				CREATE TABLE IF NOT EXISTS Unit2 (
 					land varchar(16) NOT NULL, auth varchar(16) NOT NULL,
 					head varchar(16) NOT NULL, self varchar(16) NOT NULL,
 					next varchar(16) NOT NULL, prev varchar(16) NOT NULL,
@@ -156,11 +156,11 @@ namespace $ {
 			`)
 			
 			await db.query(`
-				CREATE UNIQUE INDEX IF NOT EXISTS LandHeadSelf ON Unit ( land, head, self );
+				CREATE UNIQUE INDEX IF NOT EXISTS LandHeadSelf2 ON Unit2 ( land, head, self );
 			`)
 			
 			await db.query(`
-				CREATE INDEX IF NOT EXISTS Land ON Unit ( land );
+				CREATE INDEX IF NOT EXISTS Land2 ON Unit2 ( land );
 			`)
 			
 			this.$.$mol_log3_rise({
@@ -180,7 +180,7 @@ namespace $ {
 			if( !db ) return []
 
 			const res = await db.query(
-				`SELECT bin FROM Unit WHERE land = $1::varchar(16)`,
+				`SELECT bin FROM Unit2 WHERE land = $1::varchar(16)`,
 				[ land.id() ],
 			)
 			
@@ -209,7 +209,7 @@ namespace $ {
 			const tasks = units.map( unit => {
 				return db.query(
 					`
-						INSERT INTO Unit VALUES(
+						INSERT INTO Unit2 VALUES(
 							$1::varchar(16), $2::varchar(16),
 							$3::varchar(16), $4::varchar(16),
 							$5::varchar(16), $6::varchar(16),

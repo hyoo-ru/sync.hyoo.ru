@@ -1,7 +1,10 @@
-$hyoo_sync_online $mol_view
+$hyoo_sync_online $mol_link
 	yard $hyoo_sync_yard
-	sub / <= Well $mol_icon_sync
-	Fail $mol_icon_sync_off
+	uri <= master_link \
+	sub /
+		<= Well $mol_avatar
+			id <= master_link \
+		<= Fail $mol_icon_sync_off
 	attr *
 		^
 		title <= message <= hint \$hyoo_sync

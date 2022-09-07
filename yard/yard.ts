@@ -1,5 +1,5 @@
 namespace $ {
-	export abstract class $hyoo_sync_yard< Line > extends $mol_object2 {
+	export class $hyoo_sync_yard< Line > extends $mol_object2 {
 		
 		log_pack( data: any ) {
 			return data
@@ -162,14 +162,19 @@ namespace $ {
 			
 		}
 		
-		abstract db_land_load( land: $hyoo_crowd_land ): Promise< $hyoo_crowd_unit[] >
-		abstract db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ): void
+		async db_land_load( land: $hyoo_crowd_land ) {
+			return [] as $hyoo_crowd_unit[]
+		}
+		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) { }
 		
 		
-		master_cursor = 0
+		@ $mol_mem
+		master_cursor( next = 0 ) {
+			return next
+		}
 		
 		master_link() {
-			return this.$.$hyoo_sync_masters[ this.master_cursor ]
+			return this.$.$hyoo_sync_masters[ this.master_cursor() ]
 		}
 		
 		master() {
@@ -379,7 +384,7 @@ namespace $ {
 
 		} 
 		
-		abstract line_send( line: Line, message: Uint8Array ): void
+		line_send( line: Line, message: Uint8Array ) { }
 		
 		[ $mol_dev_format_head ]() {
 			return $mol_dev_format_native( this )

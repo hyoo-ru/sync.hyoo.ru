@@ -29,7 +29,13 @@ namespace $ {
 		
 		async db_land_load( land: $hyoo_crowd_land ) {
 			
-			const db = await this.db()
+			try {
+				var db = await this.db()
+			} catch( error ) {
+				$mol_fail_log( error )
+				return []
+			}
+			
 			const Unit = db.read( 'Unit' ).Unit
 			
 			const recs = await Unit.indexes.Land.select([ land.id() ])
@@ -48,7 +54,13 @@ namespace $ {
 		
 		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) {
 			
-			const db = await this.db()
+			try {
+				var db = await this.db()
+			} catch( error ) {
+				$mol_fail_log( error )
+				return
+			}
+			
 			const trans = db.change( 'Unit' )
 			const Unit = trans.stores.Unit
 			

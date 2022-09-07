@@ -1124,7 +1124,7 @@ declare namespace $ {
 declare namespace $ {
     class $hyoo_sync_server extends $hyoo_sync_yard<InstanceType<$node['ws']>> {
         log_pack(data: any): string | number;
-        http(): import("http").Server;
+        http(): import("http").Server<typeof import("http").IncomingMessage, typeof import("http").ServerResponse>;
         db_link(): string | undefined;
         db(): Promise<import("pg").Pool | null>;
         db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;

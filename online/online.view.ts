@@ -6,7 +6,7 @@ namespace $.$$ {
 			
 			try {
 				
-				this.status()
+				this.yard().sync()
 				return this.hint()
 			
 			} catch( error ) {
@@ -24,7 +24,7 @@ namespace $.$$ {
 			
 			try {
 				
-				this.status()
+				this.yard().sync()
 				return [ this.Well() ]
 			
 			} catch( error ) {
@@ -39,7 +39,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		hint() {
-			return super.hint() + ' ' + $hyoo_sync_revision
+			return this.yard().master_link() + ' ' + $hyoo_sync_revision
 		}
 		
 	}

@@ -165,9 +165,17 @@ namespace $ {
 		abstract db_land_load( land: $hyoo_crowd_land ): Promise< $hyoo_crowd_unit[] >
 		abstract db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ): void
 		
+		
+		master_cursor = 0
+		
+		master_link() {
+			return this.$.$hyoo_sync_masters[ this.master_cursor ]
+		}
+		
 		master() {
 			return null as Line | null
 		}
+		
 		
 		@ $mol_mem
 		slaves( next = [] as readonly Line[] ) {

@@ -66,16 +66,13 @@ namespace $ {
 			return ( $mol_wire_probe( ()=> this.reconnects() ) ?? 0 ) + 1
 		}
 		
-		master_cursor = 0
-		
 		@ $mol_mem
 		master() {
 			
 			this.reconnects()
 			
-			const line = new $mol_dom_context.WebSocket(
-				this.$.$hyoo_sync_masters[ this.master_cursor ]
-			)
+			const link = this.master_link()
+			const line = new $mol_dom_context.WebSocket( link )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {
@@ -110,6 +107,7 @@ namespace $ {
 						place: this,
 						message: 'Connected to Master',
 						line: $mol_key( line ),
+						server: link,
 					})
 		
 					done( line )

@@ -1,5 +1,5 @@
 $hyoo_sync_online $mol_view
-	status null
+	yard $hyoo_sync_yard
 	sub / <= Well $mol_icon_sync
 	Fail $mol_icon_sync_off
 	attr *

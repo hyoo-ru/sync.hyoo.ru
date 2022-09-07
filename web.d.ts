@@ -710,6 +710,10 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    let $hyoo_sync_masters: string[];
+}
+
+declare namespace $ {
     function $mol_wire_async<Host extends object>(obj: Host): (Host extends (...args: infer Args) => infer Res ? Res extends Promise<any> ? Host : (...args: Args) => Promise<Res> : {}) & { [key in keyof Host]: Host[key] extends (...args: infer Args_1) => infer Res_1 ? Res_1 extends Promise<any> ? Host[key] : (...args: Args_1) => Promise<Res_1> : Host[key]; };
 }
 
@@ -728,6 +732,8 @@ declare namespace $ {
         db_land_init(land: $hyoo_crowd_land): void;
         abstract db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
         abstract db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): void;
+        master_cursor: number;
+        master_link(): string;
         master(): Line | null;
         slaves(next?: readonly Line[]): readonly Line[];
         line_lands(line: Line, next?: $hyoo_crowd_land[]): $hyoo_crowd_land[];

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6241e3d";
+let $hyoo_sync_revision = "5418040";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3248,6 +3248,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$hyoo_sync_masters = [
+        `wss://sync.hyoo.ru/`,
+        'wss://sync-hyoo-ru.herokuapp.com/',
+    ];
+})($ || ($ = {}));
+//hyoo/sync/masters/masters.ts
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_wire_async(obj) {
         let fiber;
         const temp = $mol_wire_task.getter(obj);
@@ -3378,6 +3388,10 @@ var $;
                 message: 'Base Load',
                 units: this.log_pack(units),
             });
+        }
+        master_cursor = 0;
+        master_link() {
+            return this.$.$hyoo_sync_masters[this.master_cursor];
         }
         master() {
             return null;
@@ -8220,6 +8234,16 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/land/land.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_sync_masters = [
+        `ws://localhost:9090/`,
+        $mol_dom_context.document.location.origin.replace(/^\w+:/, 'ws:'),
+    ];
+})($ || ($ = {}));
+//hyoo/sync/masters/masters.test.ts
 ;
 "use strict";
 var $;

@@ -3214,6 +3214,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$hyoo_sync_masters = [
+        `ws://localhost:9090/`,
+        $mol_dom_context.document.location.origin.replace(/^\w+:/, 'ws:'),
+    ];
+})($ || ($ = {}));
+//hyoo/sync/masters/masters.test.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_wire_log extends $mol_object2 {
         static watch(task) {
             return task;

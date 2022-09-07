@@ -1001,12 +1001,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_dom extends $hyoo_crowd_node {
-        dom(next?: Element | DocumentFragment): Element | DocumentFragment;
-    }
-}
-
-declare namespace $ {
     function $mol_dom_serialize(node: Node): string;
 }
 
@@ -1015,7 +1009,8 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_html extends $hyoo_crowd_node {
+    class $hyoo_crowd_dom extends $hyoo_crowd_node {
+        dom(next?: Element | DocumentFragment): Element | DocumentFragment;
         html(next?: string): string;
     }
 }

@@ -3312,18 +3312,18 @@ var $;
     $mol_test({
         'import exported html'() {
             const left = $hyoo_crowd_land.make({ id: () => '1_1' });
-            left.chief.as($hyoo_crowd_html).html('<body>foo<i data-xxx="yyy">ton</i>bar</body>');
-            const html = left.chief.as($hyoo_crowd_html).html();
+            left.chief.as($hyoo_crowd_dom).html('<body>foo<i data-xxx="yyy">ton</i>bar</body>');
+            const html = left.chief.as($hyoo_crowd_dom).html();
             const right = $hyoo_crowd_land.make({ id: () => '2_2' });
-            right.chief.as($hyoo_crowd_html).html(html);
+            right.chief.as($hyoo_crowd_dom).html(html);
             $mol_assert_like(left.chief.as($hyoo_crowd_list).list(), ['foo', ['i', { "data-xxx": "yyy" }], 'bar']);
             $mol_assert_equal(left.chief.nodes($hyoo_crowd_text)[1].text(), 'ton');
-            $mol_assert_equal(html, left.chief.as($hyoo_crowd_html).html());
+            $mol_assert_equal(html, left.chief.as($hyoo_crowd_dom).html());
             $mol_assert_equal(left.chief.as($hyoo_crowd_text).str(), right.chief.as($hyoo_crowd_text).str(), 'footonbar');
         },
         'import wild spans'() {
             const land = $hyoo_crowd_land.make({ id: () => '1_1' });
-            land.chief.as($hyoo_crowd_html).html('<body><span>foo bar<a href="ton"/></span></body>');
+            land.chief.as($hyoo_crowd_dom).html('<body><span>foo bar<a href="ton"/></span></body>');
             const dom = land.chief.as($hyoo_crowd_dom).dom();
             $mol_assert_equal(dom.children[0].nodeName, 'SPAN');
             $mol_assert_equal(dom.children[0].textContent, 'foo');

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "15df9ce";
+let $hyoo_sync_revision = "6241e3d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3772,7 +3772,7 @@ var $;
                 from,
                 to,
                 next,
-                equal: (next, prev) => prev.data === next,
+                equal: (next, prev) => $mol_compare_deep(prev.data, next),
                 drop: (prev, lead) => this.land.wipe(prev),
                 insert: (next, lead) => this.land.put(this.head, this.land.id_new(), lead?.self ?? '0_0', next),
                 update: (next, prev, lead) => this.land.put(prev.head, prev.self, lead?.self ?? '0_0', next),
@@ -4616,6 +4616,32 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_dom_serialize(node) {
+        const serializer = new $mol_dom_context.XMLSerializer;
+        return serializer.serializeToString(node);
+    }
+    $.$mol_dom_serialize = $mol_dom_serialize;
+})($ || ($ = {}));
+//mol/dom/serialize/serialize.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_dom_parse(text, type = 'application/xhtml+xml') {
+        const parser = new $mol_dom_context.DOMParser();
+        const doc = parser.parseFromString(text, type);
+        const error = doc.getElementsByTagName('parsererror');
+        if (error.length)
+            throw new Error(error[0].textContent);
+        return doc;
+    }
+    $.$mol_dom_parse = $mol_dom_parse;
+})($ || ($ = {}));
+//mol/dom/parse/parse.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $hyoo_crowd_dom extends $hyoo_crowd_node {
         dom(next) {
             if (next) {
@@ -4696,41 +4722,6 @@ var $;
                 }));
             }
         }
-    }
-    $.$hyoo_crowd_dom = $hyoo_crowd_dom;
-})($ || ($ = {}));
-//hyoo/crowd/dom/dom.tsx
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_dom_serialize(node) {
-        const serializer = new $mol_dom_context.XMLSerializer;
-        return serializer.serializeToString(node);
-    }
-    $.$mol_dom_serialize = $mol_dom_serialize;
-})($ || ($ = {}));
-//mol/dom/serialize/serialize.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_dom_parse(text, type = 'application/xhtml+xml') {
-        const parser = new $mol_dom_context.DOMParser();
-        const doc = parser.parseFromString(text, type);
-        const error = doc.getElementsByTagName('parsererror');
-        if (error.length)
-            throw new Error(error[0].textContent);
-        return doc;
-    }
-    $.$mol_dom_parse = $mol_dom_parse;
-})($ || ($ = {}));
-//mol/dom/parse/parse.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $hyoo_crowd_html extends $hyoo_crowd_node {
         html(next) {
             const dom = this.as($hyoo_crowd_dom);
             if (next === undefined) {
@@ -4742,9 +4733,9 @@ var $;
             }
         }
     }
-    $.$hyoo_crowd_html = $hyoo_crowd_html;
+    $.$hyoo_crowd_dom = $hyoo_crowd_dom;
 })($ || ($ = {}));
-//hyoo/crowd/html/html.tsx
+//hyoo/crowd/dom/dom.tsx
 ;
 "use strict";
 var $;
@@ -4897,7 +4888,7 @@ var $;
                                 data[fetch] = node.sub(field, $hyoo_crowd_text).text();
                                 continue;
                             case 'html':
-                                data[fetch] = node.sub(field, $hyoo_crowd_html).html();
+                                data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
                                 continue;
                         }
                     }
@@ -8391,18 +8382,18 @@ var $;
     $mol_test({
         'import exported html'() {
             const left = $hyoo_crowd_land.make({ id: () => '1_1' });
-            left.chief.as($hyoo_crowd_html).html('<body>foo<i data-xxx="yyy">ton</i>bar</body>');
-            const html = left.chief.as($hyoo_crowd_html).html();
+            left.chief.as($hyoo_crowd_dom).html('<body>foo<i data-xxx="yyy">ton</i>bar</body>');
+            const html = left.chief.as($hyoo_crowd_dom).html();
             const right = $hyoo_crowd_land.make({ id: () => '2_2' });
-            right.chief.as($hyoo_crowd_html).html(html);
+            right.chief.as($hyoo_crowd_dom).html(html);
             $mol_assert_like(left.chief.as($hyoo_crowd_list).list(), ['foo', ['i', { "data-xxx": "yyy" }], 'bar']);
             $mol_assert_equal(left.chief.nodes($hyoo_crowd_text)[1].text(), 'ton');
-            $mol_assert_equal(html, left.chief.as($hyoo_crowd_html).html());
+            $mol_assert_equal(html, left.chief.as($hyoo_crowd_dom).html());
             $mol_assert_equal(left.chief.as($hyoo_crowd_text).str(), right.chief.as($hyoo_crowd_text).str(), 'footonbar');
         },
         'import wild spans'() {
             const land = $hyoo_crowd_land.make({ id: () => '1_1' });
-            land.chief.as($hyoo_crowd_html).html('<body><span>foo bar<a href="ton"/></span></body>');
+            land.chief.as($hyoo_crowd_dom).html('<body><span>foo bar<a href="ton"/></span></body>');
             const dom = land.chief.as($hyoo_crowd_dom).dom();
             $mol_assert_equal(dom.children[0].nodeName, 'SPAN');
             $mol_assert_equal(dom.children[0].textContent, 'foo');

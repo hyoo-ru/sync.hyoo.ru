@@ -107,7 +107,7 @@
     "$mol_type_intersect",
     "$mol_type_override",
     "$mol_unicode",
-    "$hyoo_crowd_html",
+    "$hyoo_crowd_dom",
     "$mol_jsx",
     "$mol_func_name",
     "$mol_func",
@@ -115,7 +115,6 @@
     "$mol_dom_render",
     "$mol_type_partial_deep",
     "$mol_type_partial",
-    "$hyoo_crowd_dom",
     "$mol_dom_serialize",
     "$mol_dom_parse",
     "$mol_state_arg"

@@ -88,7 +88,7 @@ namespace $ {
 								continue
 							
 							case 'html':
-								data[ fetch ] = node.sub( field, $hyoo_crowd_html ).html()
+								data[ fetch ] = node.sub( field, $hyoo_crowd_dom ).html()
 								continue
 							
 						}

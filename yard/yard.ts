@@ -286,6 +286,7 @@ namespace $ {
 		
 		async line_receive( line: Line, message: Uint8Array ) {
 			
+			if( !message.byteLength ) return
 			const view = new DataView( message.buffer, message.byteOffset, message.byteLength )
 			const int0 = view.getInt32( 0, true )
 			const int1 = view.getInt32( 4, true )

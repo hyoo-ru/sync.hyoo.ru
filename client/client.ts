@@ -102,8 +102,11 @@ namespace $ {
 				}
 				
 			}
+			
+			let interval: any
 
 			line.onclose = ()=> {
+				clearInterval( interval )
 				setTimeout( ()=> this.reconnects( null ), 5000 )
 			}
 			
@@ -121,6 +124,8 @@ namespace $ {
 						line: $mol_key( line ),
 						server: link,
 					})
+					
+					interval = setInterval( ()=> line.send( new Uint8Array ), 30000 )
 		
 					done( line )
 				}

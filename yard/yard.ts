@@ -200,6 +200,8 @@ namespace $ {
 			},
 			next?: readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ]
 		) {
+			$mol_wire_solid()
+			this.master()
 			return next
 		}
 		

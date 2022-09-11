@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "78da2de";
+let $hyoo_sync_revision = "4c0ec2e";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3242,16 +3242,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$hyoo_sync_masters = [
-        `wss://sync.hyoo.ru/`,
-        'wss://sync-hyoo-ru.herokuapp.com/',
-    ];
-})($ || ($ = {}));
-//hyoo/sync/masters/masters.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_wire_solid() {
         const current = $mol_wire_auto();
         if (current.reap !== nothing) {
@@ -3264,6 +3254,16 @@ var $;
     const sub = new $mol_wire_pub_sub;
 })($ || ($ = {}));
 //mol/wire/solid/solid.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_sync_masters = [
+        `wss://sync.hyoo.ru/`,
+        'wss://sync-hyoo-ru.herokuapp.com/',
+    ];
+})($ || ($ = {}));
+//hyoo/sync/masters/masters.ts
 ;
 "use strict";
 var $;
@@ -3316,7 +3316,7 @@ var $;
         }
         world() {
             const world = new this.$.$hyoo_crowd_world(this.peer());
-            world.land_init = land => this.land_sync(land);
+            world.land_init = land => this.db_land_init(land);
             return world;
         }
         land(id) {
@@ -3363,6 +3363,7 @@ var $;
             }
         }
         db_land_clocks(land, next) {
+            $mol_wire_solid();
             return next;
         }
         db_land_sync(land) {

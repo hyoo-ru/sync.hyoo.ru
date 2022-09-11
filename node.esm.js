@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "4c0ec2e";
+let $hyoo_sync_revision = "892aca0";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4985,6 +4985,16 @@ var $;
             this.$.$mol_log3_rise({
                 place: this,
                 message: 'Base Ready',
+            });
+            const buf1 = Buffer.from([1, 2, 3]);
+            const buf2 = Buffer.from([0, 1, 2]);
+            const buf3 = Buffer.from([1, 2, 0]);
+            const sql = "SELECT $1::bytea AS buf1, $2::bytea AS buf2, $3::bytea AS buf3";
+            db.query(sql, [buf1, buf2, buf3], function (err, result) {
+                console.log(err);
+                console.log(result.rows[0].buf1.length, result.rows[0].buf1);
+                console.log(result.rows[0].buf2.length, result.rows[0].buf2);
+                console.log(result.rows[0].buf3.length, result.rows[0].buf3);
             });
             return db;
         }

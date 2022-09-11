@@ -28,7 +28,7 @@ namespace $ {
 		@ $mol_mem
 		world() {
 			const world = new this.$.$hyoo_crowd_world( this.peer() )
-			world.land_init = land => this.land_sync( land )
+			world.land_init = land => this.db_land_init( land )
 			return world
 		}
 		
@@ -107,6 +107,7 @@ namespace $ {
 			land: $mol_int62_string,
 			next?: readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ],
 		) {
+			$mol_wire_solid()
 			return next
 		}
 		

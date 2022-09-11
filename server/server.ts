@@ -168,6 +168,17 @@ namespace $ {
 				message: 'Base Ready',
 			})
 			
+			const buf1 = Buffer.from([1, 2, 3]);
+			const buf2 = Buffer.from([0, 1, 2]);
+			const buf3 = Buffer.from([1, 2, 0]);
+			const sql = "SELECT $1::bytea AS buf1, $2::bytea AS buf2, $3::bytea AS buf3";
+			db.query(sql, [buf1, buf2, buf3], function(err, result) {
+				console.log(err)
+				console.log(result.rows[0].buf1.length, result.rows[0].buf1);
+				console.log(result.rows[0].buf2.length, result.rows[0].buf2);
+				console.log(result.rows[0].buf3.length, result.rows[0].buf3);
+			});
+			
 			return db
 		}
 		
@@ -179,7 +190,7 @@ namespace $ {
 			const db = await this.db()
 			if( !db ) return []
 
-			const res = await db.query(
+			const res = await db.query<{ bin: Uint8Array }>(
 				`SELECT bin FROM Unit2 WHERE land = $1::varchar(16)`,
 				[ land.id() ],
 			)

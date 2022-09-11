@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "81c137c";
+let $hyoo_sync_revision = "393067d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3394,7 +3394,7 @@ var $;
                     land: land.id(),
                     message: error.message,
                 });
-                return;
+                units = [];
             }
             units.sort($hyoo_crowd_unit_compare);
             const clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];

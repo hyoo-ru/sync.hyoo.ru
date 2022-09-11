@@ -154,7 +154,7 @@ namespace $ {
 					message: error.message,
 				})
 				
-				return
+				units = []
 			}
 			
 			units.sort( $hyoo_crowd_unit_compare )

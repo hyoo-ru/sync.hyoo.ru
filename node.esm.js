@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6b68500";
+let $hyoo_sync_revision = "81c137c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3385,7 +3385,19 @@ var $;
             });
         }
         db_land_init(land) {
-            const units = $mol_wire_sync(this).db_land_load(land);
+            try {
+                var units = $mol_wire_sync(this).db_land_load(land);
+            }
+            catch (error) {
+                if (!(error instanceof Error))
+                    $mol_fail_hidden(error);
+                this.$.$mol_log3_fail({
+                    place: this,
+                    land: land.id(),
+                    message: error.message,
+                });
+                return;
+            }
             units.sort($hyoo_crowd_unit_compare);
             const clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
             this.db_land_clocks(land.id(), clocks);

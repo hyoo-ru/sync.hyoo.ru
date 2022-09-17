@@ -41,6 +41,10 @@ namespace $.$$ {
 			return this.land()!.node( id, $hyoo_crowd_list ).list()
 		}
 		
+		node_links( id: $mol_int62_string ) {
+			return this.land()!.node( id, $hyoo_crowd_list ).list().map( id => this.Node_link( id ) )
+		}
+		
 		node_text( id: $mol_int62_string ) {
 			return this.land()!.node( id, $hyoo_crowd_text ).text()
 		}

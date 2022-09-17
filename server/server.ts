@@ -47,7 +47,7 @@ namespace $ {
 					} )
 					
 					const path = this.$.$mol_state_arg.value( 'log' )
-					if( !path ) return
+					if( !path ) return res.end( '\\Use `log` parameter to provide path to server logs in tree format' )
 					
 					const file = $mol_file.relative( path )
 					res.end( file.text() )

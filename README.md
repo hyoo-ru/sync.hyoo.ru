@@ -1,14 +1,22 @@
-# $hyoo_sync
+# $hyoo_sync_server
 
-Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/crowd.hyoo.ru) conflict resolution.
+CROWD based sync server
 
-## Comparison
+## Run
 
-| Property            | $hyoo_sync | [Logux](https://logux.io/)
-|---------------------|------------|---------------------------
-| Tab synchronization | Auto       | Optional
-| Conflict resolution | CROWD      | CRDT (text doesn't support yet) / custom
-| Crypto encryption   | Not yet    | Single user
-| Crypto signing      | Total      | No
-| Long offline        | Available  | Log compress rejects old changes
-| Persistent storage  | IndexedDB  | IndexedDB / LocalStorage / custom
+	node node.js port=9090 db=postrges://... log=/var/log/sync.log
+	
+## API
+
+### Sync
+
+Use `$hyoo_crowd_sync`. Example of server uri: `wss://sync.hyoo.ru`.
+
+### Query Data
+
+	GET /land=qwerty_qwerty[title_reg;author_ref[details_text]]
+
+## Query Logs
+
+	GET /log
+

@@ -25,6 +25,18 @@ namespace $ {
 					query: query_str,
 				})
 				
+				if( /^watch\/(?:\w+\.)+\w+/.test( query_str ) ) {
+					
+					res.writeHead( 200, {
+						'Access-Control-Allow-Origin': '*',
+					} )
+					
+					const file = $mol_file.absolute( __dirname + '/' + query_str )
+					res.end( file.text() )
+					
+					return
+				}
+				
 				const query = $hyoo_harp_from_string( query_str )
 				
 				if( query.log ) {

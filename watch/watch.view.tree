@@ -1,0 +1,6 @@
+
+$hyoo_sync_watch $mol_book2_catalog
+	menu_title \$hyoo_sync_watch
+	Placeholder null
+	spreads *
+		log <= Log $hyoo_sync_watch_log

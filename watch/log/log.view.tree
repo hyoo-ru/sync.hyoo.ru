@@ -1,0 +1,18 @@
+
+$hyoo_sync_watch_log $mol_page
+	title \Server Logs
+	tools /
+		<= Filter_type $mol_check_list
+			keys <= types /
+			option_checked*? <=> type_visible*? true
+	body /
+		<= Rows $mol_list
+			rows <= rows /
+				<= Row*0 $mol_view sub <= row_content* /
+					<= Row_type* $mol_labeler
+						title \type
+						content / <= row_type* \
+					<= Row_field* $mol_labeler
+						title <= row_field_name* \
+						Content <= Row_field_value* $mol_text_code
+							text <= row_field_value* \

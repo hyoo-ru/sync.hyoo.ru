@@ -25,13 +25,13 @@ namespace $ {
 					query: query_str,
 				})
 				
-				if( /^watch\/(?:\w+\.)+\w+/.test( query_str ) ) {
+				if( /^watch\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
 					res.writeHead( 200, {
 						'Access-Control-Allow-Origin': '*',
 					} )
 					
-					const file = $mol_file.absolute( __dirname + '/' + query_str )
+					const file = $mol_file.absolute( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) )
 					res.end( file.text() )
 					
 					return

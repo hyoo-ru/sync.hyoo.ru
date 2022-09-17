@@ -1000,13 +1000,12 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type Json = {
-        [key in string]: null | boolean | number | string | Json | (null | boolean | number | string | Json)[];
+    type $hyoo_crowd_json_data = {
+        [key in string]: null | boolean | number | string | $hyoo_crowd_json_data | (null | boolean | number | string | $hyoo_crowd_json_data)[];
     };
-    export class $hyoo_crowd_json extends $hyoo_crowd_dict {
-        json(next?: Json): Json;
+    class $hyoo_crowd_json extends $hyoo_crowd_dict {
+        json(next?: $hyoo_crowd_json_data): $hyoo_crowd_json_data;
     }
-    export {};
 }
 
 declare namespace $ {

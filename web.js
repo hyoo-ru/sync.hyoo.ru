@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "e5999c9";
+let $hyoo_sync_revision = "a220170";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4842,11 +4842,11 @@ var $;
                     message: 'HTTP Query',
                     query: query_str,
                 });
-                if (/^watch\/(?:\w+\.)+\w+/.test(query_str)) {
+                if (/^watch\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                     res.writeHead(200, {
                         'Access-Control-Allow-Origin': '*',
                     });
-                    const file = $mol_file.absolute(__dirname + '/' + query_str);
+                    const file = $mol_file.absolute(__dirname + '/' + query_str.replace(/\/$/, '/index.html'));
                     res.end(file.text());
                     return;
                 }

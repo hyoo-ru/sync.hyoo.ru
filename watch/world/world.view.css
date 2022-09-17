@@ -1,0 +1,38 @@
+
+[hyoo_sync_watch_world_menu] {
+	flex-basis: 15rem;
+}
+
+[hyoo_sync_watch_world_land_avatar] {
+	margin: var(--mol_gap_block);
+}
+
+[hyoo_sync_watch_world_land_id] {
+	font-family: monospace;
+}
+
+[hyoo_sync_watch_world_link] {
+	gap: var(--mol_gap_block);
+	font-family: monospace;
+}
+
+[hyoo_sync_watch_world_node_dump] {
+	padding: var(--mol_gap_text);
+}
+
+[hyoo_sync_watch_world_node] {
+	flex-basis: 50rem;
+	flex-grow: 1;
+}
+
+[hyoo_sync_watch_world_node_output] {
+	padding: var(--mol_gap_block);
+}
+
+[hyoo_sync_watch_world_node_json] {
+	padding: var(--mol_gap_text);
+}
+
+[hyoo_sync_watch_world_node_list] {
+	padding: var(--mol_gap_text);
+}

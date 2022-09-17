@@ -1,6 +1,8 @@
 
 $hyoo_sync_watch $mol_book2_catalog
 	menu_title \$hyoo_sync_watch
+	param \section
 	Placeholder null
 	spreads *
+		world <= World $hyoo_sync_watch_world
 		log <= Log $hyoo_sync_watch_log

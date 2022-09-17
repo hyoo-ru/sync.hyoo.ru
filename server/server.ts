@@ -26,6 +26,23 @@ namespace $ {
 				})
 				
 				const query = $hyoo_harp_from_string( query_str )
+				
+				if( query.log ) {
+					
+					res.writeHead( 200, {
+						'Content-Type': 'text/plain;charset=utf-8',
+						'Access-Control-Allow-Origin': '*',
+					} )
+					
+					const path = this.$.$mol_state_arg.value( 'log' )
+					if( !path ) return
+					
+					const file = $mol_file.relative( path )
+					res.end( file.text() )
+					
+					return
+				}
+				
 				if( !query.land ) {
 					res.writeHead( 200, {
 						'Content-Type': 'text/plain;charset=utf-8',

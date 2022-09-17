@@ -3233,6 +3233,9 @@ declare namespace $ {
         Node_close(): $$.$mol_link;
         node_list(id: any): readonly any[];
         Node_list(id: any): $$.$mol_dump_list;
+        Node_link(id: any): $$.$mol_link;
+        node_links(id: any): readonly any[];
+        Node_inks(id: any): $$.$mol_list;
         node_text(id: any): string;
         Node_text(id: any): $$.$mol_text_code;
         Node_md(id: any): $$.$mol_text;
@@ -3334,6 +3337,7 @@ declare namespace $.$$ {
             dirty: boolean;
         };
         node_list(id: $mol_int62_string): readonly unknown[];
+        node_links(id: $mol_int62_string): $mol_link[];
         node_text(id: $mol_int62_string): string;
         node_html(id: $mol_int62_string): string;
         node_json(id: $mol_int62_string): $hyoo_crowd_json_data;

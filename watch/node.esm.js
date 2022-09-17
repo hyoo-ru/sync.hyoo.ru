@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "30f37c8";
+let $hyoo_sync_revision = "77926c4";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -11182,6 +11182,27 @@ var $;
             obj.values = () => this.node_list(id);
             return obj;
         }
+        Node_link(id) {
+            const obj = new this.$.$mol_link();
+            obj.arg = () => ({
+                land: this.node_id(id)
+            });
+            obj.sub = () => [
+                this.node_id(id)
+            ];
+            return obj;
+        }
+        node_links(id) {
+            return [
+                this.Node_link("0_0")
+            ];
+        }
+        Node_inks(id) {
+            const obj = new this.$.$mol_list();
+            obj.title = () => "Links";
+            obj.rows = () => this.node_links(id);
+            return obj;
+        }
         node_text(id) {
             return "";
         }
@@ -11228,6 +11249,7 @@ var $;
             const obj = new this.$.$mol_deck();
             obj.items = () => [
                 this.Node_list(id),
+                this.Node_inks(id),
                 this.Node_text(id),
                 this.Node_md(id),
                 this.Node_html(id),
@@ -11276,6 +11298,12 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_list", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_world.prototype, "Node_link", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_world.prototype, "Node_inks", null);
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_text", null);
@@ -11868,6 +11896,9 @@ var $;
             }
             node_list(id) {
                 return this.land().node(id, $hyoo_crowd_list).list();
+            }
+            node_links(id) {
+                return this.land().node(id, $hyoo_crowd_list).list().map(id => this.Node_link(id));
             }
             node_text(id) {
                 return this.land().node(id, $hyoo_crowd_text).text();

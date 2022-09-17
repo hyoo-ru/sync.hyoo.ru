@@ -25,7 +25,7 @@
 	flex-grow: 1;
 }
 
-[hyoo_sync_watch_world_node_output] {
+[hyoo_sync_watch_world_node_body] {
 	padding: var(--mol_gap_block);
 }
 

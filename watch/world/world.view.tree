@@ -25,35 +25,40 @@ $hyoo_sync_watch_world $mol_book2_catalog
 	spreads *
 	Node* $mol_page
 		title <= node_id* \
-		tools /
+		head /
+			<= Node_output_switch*
 			<= Node_close $mol_link
 				arg * head null
 				sub /
 					<= Node_close_icon $mol_icon_cross
 		body /
-			<= Node_output* $mol_deck items /
-				<= Node_list* $mol_dump_list
-					title \List
-					values <= node_list* /
-				<= Node_inks* $mol_list
-					title \Links
-					rows <= node_links* /
-						<= Node_link*0_0 $mol_link
-							arg * land <= node_id*
-							sub /
-								<= node_id*
-				<= Node_text* $mol_text_code
-					title \Text
-					text <= node_text* \
-				<= Node_md* $mol_text
-					title \MD
-					text <= node_text* \
-				<= Node_html* $mol_text_code
-					title \HTML
-					text <= node_html* \
-				<= Node_json* $mol_dump_value
-					title \JSON
-					value <= node_json* null
-				<= Node_units* $mol_grid
-					title \Units
-					records <= node_units* /
+			<= Node_output_content*
+	Node_output* $mol_deck
+		Switch => Node_output_switch*
+		Content => Node_output_content*
+		items /
+			<= Node_list* $mol_dump_list
+				title \List
+				values <= node_list* /
+			<= Node_inks* $mol_list
+				title \Links
+				rows <= node_links* /
+					<= Node_link*0_0 $mol_link
+						arg * land <= node_id*
+						sub /
+							<= node_id*
+			<= Node_text* $mol_text_code
+				title \Text
+				text <= node_text* \
+			<= Node_md* $mol_text
+				title \MD
+				text <= node_text* \
+			<= Node_html* $mol_text_code
+				title \HTML
+				text <= node_html* \
+			<= Node_json* $mol_dump_value
+				title \JSON
+				value <= node_json* null
+			<= Node_units* $mol_grid
+				title \Units
+				records <= node_units* /

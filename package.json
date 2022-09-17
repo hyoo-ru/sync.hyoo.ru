@@ -92,10 +92,6 @@
     "$mol_wire_solid",
     "$hyoo_sync_masters",
     "$mol_wire_async",
-    "$mol_file",
-    "$mol_mem_cached",
-    "$mol_wire_probe",
-    "$mol_compare_array",
     "$hyoo_harp_from_string",
     "$hyoo_harp_from",
     "$hyoo_harp",
@@ -127,7 +123,6 @@
   ],
   "dependencies": {
     "jsdom": "*",
-    "chokidar": "*",
     "ws": "*",
     "pg": "*"
   },

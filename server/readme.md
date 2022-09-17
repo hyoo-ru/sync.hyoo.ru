@@ -10,7 +10,7 @@ CROWD based sync server
 
 ### Sync
 
-Use `$hyoo_crowd_sync`. Example of server uri: `wss://sync.hyoo.ru`.
+Use `$hyoo_sync_client`. Example of server uri: `wss://sync.hyoo.ru`.
 
 ### Query Data
 

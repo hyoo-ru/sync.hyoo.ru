@@ -31,8 +31,7 @@ namespace $ {
 						'Access-Control-Allow-Origin': '*',
 					} )
 					
-					const file = $mol_file.absolute( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) )
-					res.end( file.text() )
+					res.end( $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) ).toString() )
 					
 					return
 				}
@@ -49,8 +48,7 @@ namespace $ {
 					const path = this.$.$mol_state_arg.value( 'log' )
 					if( !path ) return res.end( '\\Use `log` parameter to provide path to server logs in tree format\n' )
 					
-					const file = $mol_file.relative( path )
-					res.end( file.text() )
+					res.end( $node.fs.readFileSync( path ).toString() )
 					
 					return
 				}

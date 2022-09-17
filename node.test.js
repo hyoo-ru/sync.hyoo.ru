@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "137dbee";
+let $hyoo_sync_revision = "0cee50f";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5254,7 +5254,7 @@ var $;
                     });
                     const path = this.$.$mol_state_arg.value('log');
                     if (!path)
-                        return res.end('\\Use `log` parameter to provide path to server logs in tree format');
+                        return res.end('\\Use `log` parameter to provide path to server logs in tree format\n');
                     const file = $mol_file.relative(path);
                     res.end(file.text());
                     return;

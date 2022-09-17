@@ -118,6 +118,78 @@ $mol_book2_catalog $mol_book2
 		sub /
 			<= Spread_close_icon $mol_icon_cross
 
+$mol_speck $mol_view
+	attr *
+		^
+		mol_theme \$mol_theme_accent
+	style *
+		^
+		minHeight \1em
+	sub /
+		<= value null
+
+$mol_button $mol_view
+	enabled true
+	click?event null
+	event_click?event null
+	event *
+		^
+		click?event <=> event_activate?event null
+		dblclick?event <=> clicks?event null
+		keydown?event <=> event_key_press?event null 
+	attr *
+		^
+		disabled <= disabled false
+		role \button
+		tabindex <= tab_index 0
+		title <= hint_safe <= hint \
+	sub /$mol_view_content
+		<= title
+	Speck $mol_speck
+		value <= error \
+
+$mol_button_typed $mol_button
+	minimal_height 40
+	minimal_width 40
+
+$mol_button_minor $mol_button_typed
+
+$mol_check $mol_button_minor
+	attr *
+		^
+		mol_check_checked <= checked?val false
+		aria-checked <= checked?val false
+		role \checkbox
+	sub /$mol_view_content
+		<= Icon null
+		<= label /
+			<= Title $mol_view
+				sub /
+					<= title \
+
+$mol_check_list $mol_view
+	Option* $mol_check
+		checked?val <=> option_checked*?val false
+		label <= option_label* /
+			<= option_title* \
+		enabled <= option_enabled* <= enabled true
+		hint <= option_hint* \
+		minimal_height 24
+	options *
+	keys /string
+	sub <= items /$mol_check
+
+$mol_switch $mol_check_list
+	value?val \
+
+$mol_deck $mol_list
+	items /$mol_view
+	rows /$mol_view
+		<= Switch $mol_switch
+			value?val <=> current?val \0
+			options <= switch_options *
+		<= Content $mol_view
+
 $mol_avatar $mol_icon
 	view_box \0 0 24 24
 	id \
@@ -229,42 +301,6 @@ $mol_text_code_row $mol_paragraph
 
 $mol_stack $mol_view
 
-$mol_speck $mol_view
-	attr *
-		^
-		mol_theme \$mol_theme_accent
-	style *
-		^
-		minHeight \1em
-	sub /
-		<= value null
-
-$mol_button $mol_view
-	enabled true
-	click?event null
-	event_click?event null
-	event *
-		^
-		click?event <=> event_activate?event null
-		dblclick?event <=> clicks?event null
-		keydown?event <=> event_key_press?event null 
-	attr *
-		^
-		disabled <= disabled false
-		role \button
-		tabindex <= tab_index 0
-		title <= hint_safe <= hint \
-	sub /$mol_view_content
-		<= title
-	Speck $mol_speck
-		value <= error \
-
-$mol_button_typed $mol_button
-	minimal_height 40
-	minimal_width 40
-
-$mol_button_minor $mol_button_typed
-
 $mol_icon_content_copy $mol_icon path \M19,21H8V7H19M19,5H8C6.9,5 6,5.9 6,7V21C6,22.1 6.9,23 8,23H19C20.1,23 21,22.1 21,21V7C21,5.9 20.1,5 19,5M16,1H4C2.9,1 2,1.9 2,3V17H4V3H16V1Z
 
 $mol_button_copy $mol_button_minor
@@ -291,19 +327,6 @@ $mol_text_code $mol_stack
 		<= Copy $mol_button_copy
 			hint @ \Copy whole code
 			text <= text
-
-$mol_check $mol_button_minor
-	attr *
-		^
-		mol_check_checked <= checked?val false
-		aria-checked <= checked?val false
-		role \checkbox
-	sub /$mol_view_content
-		<= Icon null
-		<= label /
-			<= Title $mol_view
-				sub /
-					<= title \
 
 $mol_icon_chevron $mol_icon path \M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z
 
@@ -567,29 +590,6 @@ $mol_text_span $mol_paragraph
 		^
 		mol_text_type <= type \
 
-$mol_check_list $mol_view
-	Option* $mol_check
-		checked?val <=> option_checked*?val false
-		label <= option_label* /
-			<= option_title* \
-		enabled <= option_enabled* <= enabled true
-		hint <= option_hint* \
-		minimal_height 24
-	options *
-	keys /string
-	sub <= items /$mol_check
-
-$mol_switch $mol_check_list
-	value?val \
-
-$mol_deck $mol_list
-	items /$mol_view
-	rows /$mol_view
-		<= Switch $mol_switch
-			value?val <=> current?val \0
-			options <= switch_options *
-		<= Content $mol_view
-
 
 $hyoo_sync_watch_world $mol_book2_catalog
 	yard $hyoo_sync_client
@@ -617,38 +617,43 @@ $hyoo_sync_watch_world $mol_book2_catalog
 	spreads *
 	Node* $mol_page
 		title <= node_id* \
-		tools /
+		head /
+			<= Node_output_switch*
 			<= Node_close $mol_link
 				arg * head null
 				sub /
 					<= Node_close_icon $mol_icon_cross
 		body /
-			<= Node_output* $mol_deck items /
-				<= Node_list* $mol_dump_list
-					title \List
-					values <= node_list* /
-				<= Node_inks* $mol_list
-					title \Links
-					rows <= node_links* /
-						<= Node_link*0_0 $mol_link
-							arg * land <= node_id*
-							sub /
-								<= node_id*
-				<= Node_text* $mol_text_code
-					title \Text
-					text <= node_text* \
-				<= Node_md* $mol_text
-					title \MD
-					text <= node_text* \
-				<= Node_html* $mol_text_code
-					title \HTML
-					text <= node_html* \
-				<= Node_json* $mol_dump_value
-					title \JSON
-					value <= node_json* null
-				<= Node_units* $mol_grid
-					title \Units
-					records <= node_units* /
+			<= Node_output_content*
+	Node_output* $mol_deck
+		Switch => Node_output_switch*
+		Content => Node_output_content*
+		items /
+			<= Node_list* $mol_dump_list
+				title \List
+				values <= node_list* /
+			<= Node_inks* $mol_list
+				title \Links
+				rows <= node_links* /
+					<= Node_link*0_0 $mol_link
+						arg * land <= node_id*
+						sub /
+							<= node_id*
+			<= Node_text* $mol_text_code
+				title \Text
+				text <= node_text* \
+			<= Node_md* $mol_text
+				title \MD
+				text <= node_text* \
+			<= Node_html* $mol_text_code
+				title \HTML
+				text <= node_html* \
+			<= Node_json* $mol_dump_value
+				title \JSON
+				value <= node_json* null
+			<= Node_units* $mol_grid
+				title \Units
+				records <= node_units* /
 
 $mol_labeler $mol_list
 	rows /

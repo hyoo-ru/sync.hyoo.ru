@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "926c565";
+let $hyoo_sync_revision = "83b82ac";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4888,7 +4888,7 @@ var $;
                 this.$.$mol_log3_rise({
                     place: this,
                     message: 'HTTP Query',
-                    query: query_str,
+                    query: req.url,
                 });
                 if (/^watch\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                     res.writeHead(200, {

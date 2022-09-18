@@ -3319,6 +3319,373 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_pop extends $mol_view {
+        showed(val?: any): boolean;
+        align_vert(): string;
+        align_hor(): string;
+        sub(): readonly any[];
+        sub_visible(): readonly any[];
+        Anchor(): any;
+        align(): string;
+        bubble_content(): readonly $mol_view_content[];
+        height_max(): number;
+        Bubble(): $mol_pop_bubble;
+    }
+    class $mol_pop_bubble extends $mol_scroll {
+        sub(): readonly $mol_view_content[];
+        style(): {
+            maxHeight: number;
+        };
+        attr(): {
+            mol_pop_align: string;
+            tabindex: number;
+        };
+        content(): readonly $mol_view_content[];
+        height_max(): number;
+        align(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_pop extends $.$mol_pop {
+        showed(next?: boolean): boolean;
+        sub_visible(): any[];
+        height_max(): number;
+        align(): string;
+        align_vert(): "suspense" | "top" | "bottom";
+        align_hor(): "suspense" | "left" | "right";
+        View_port(): $mol_view;
+        view_port(): {
+            width: number;
+            height: number;
+            left: number;
+            right: number;
+            top: number;
+            bottom: number;
+        } | {
+            left: number;
+            top: number;
+            width: number;
+            height: number;
+        };
+    }
+}
+
+declare namespace $ {
+    class $mol_pick extends $mol_pop {
+        event(): {
+            keydown: (event?: any) => any;
+        };
+        Anchor(): $$.$mol_check;
+        keydown(event?: any): any;
+        trigger_enabled(): boolean;
+        trigger_content(): readonly $mol_view_content[];
+        hint(): string;
+        Trigger(): $$.$mol_check;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_pick extends $.$mol_pick {
+        keydown(event: KeyboardEvent): void;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_calendar extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_time_base {
+        static patterns: Record<string, (arg: any) => string>;
+        static formatter(pattern: string): (arg: any) => string;
+        toString(pattern: string): string;
+    }
+}
+
+declare namespace $ {
+    type $mol_time_duration_config = number | string | {
+        year?: number;
+        month?: number;
+        day?: number;
+        hour?: number;
+        minute?: number;
+        second?: number;
+    };
+    class $mol_time_duration extends $mol_time_base {
+        constructor(config?: $mol_time_duration_config);
+        readonly year: number;
+        readonly month: number;
+        readonly day: number;
+        readonly hour: number;
+        readonly minute: number;
+        readonly second: number;
+        summ(config: $mol_time_duration_config): $mol_time_duration;
+        mult(numb: number): $mol_time_duration;
+        count(config: $mol_time_duration_config): number;
+        valueOf(): number;
+        toJSON(): string;
+        toString(pattern?: string): string;
+        [Symbol.toPrimitive](mode: 'default' | 'number' | 'string'): string | number;
+        static patterns: {
+            '#Y': (duration: $mol_time_duration) => string;
+            '#M': (duration: $mol_time_duration) => string;
+            '#D': (duration: $mol_time_duration) => string;
+            '#h': (duration: $mol_time_duration) => string;
+            '#m': (duration: $mol_time_duration) => string;
+            '#s': (duration: $mol_time_duration) => string;
+        };
+    }
+}
+
+declare namespace $ {
+    enum $mol_time_moment_weekdays {
+        monday = 0,
+        tuesday = 1,
+        wednesday = 2,
+        thursday = 3,
+        friday = 4,
+        saturday = 5,
+        sunday = 6
+    }
+    type $mol_time_moment_config = number | Date | string | {
+        year?: number;
+        month?: number;
+        day?: number;
+        hour?: number;
+        minute?: number;
+        second?: number;
+        offset?: $mol_time_duration_config;
+    };
+    class $mol_time_moment extends $mol_time_base {
+        constructor(config?: $mol_time_moment_config);
+        readonly year: number | undefined;
+        readonly month: number | undefined;
+        readonly day: number | undefined;
+        readonly hour: number | undefined;
+        readonly minute: number | undefined;
+        readonly second: number | undefined;
+        readonly offset: $mol_time_duration | undefined;
+        get weekday(): number;
+        _native: Date | undefined;
+        get native(): Date;
+        _normal: $mol_time_moment | undefined;
+        get normal(): $mol_time_moment;
+        merge(config: $mol_time_moment_config): $mol_time_moment;
+        shift(config: $mol_time_duration_config): $mol_time_moment;
+        mask(config: $mol_time_moment_config): $mol_time_moment;
+        toOffset(config?: $mol_time_duration): $mol_time_moment;
+        valueOf(): number;
+        toJSON(): string;
+        toString(pattern?: string): string;
+        [Symbol.toPrimitive](mode: 'default' | 'number' | 'string'): string | number;
+        static patterns: {
+            YYYY: (moment: $mol_time_moment) => string;
+            AD: (moment: $mol_time_moment) => string;
+            YY: (moment: $mol_time_moment) => string;
+            Month: (moment: $mol_time_moment) => string;
+            'DD Month': (moment: $mol_time_moment) => string;
+            'D Month': (moment: $mol_time_moment) => string;
+            Mon: (moment: $mol_time_moment) => string;
+            'DD Mon': (moment: $mol_time_moment) => string;
+            'D Mon': (moment: $mol_time_moment) => string;
+            '-MM': (moment: $mol_time_moment) => string;
+            MM: (moment: $mol_time_moment) => string;
+            M: (moment: $mol_time_moment) => string;
+            WeekDay: (moment: $mol_time_moment) => string;
+            WD: (moment: $mol_time_moment) => string;
+            '-DD': (moment: $mol_time_moment) => string;
+            DD: (moment: $mol_time_moment) => string;
+            D: (moment: $mol_time_moment) => string;
+            Thh: (moment: $mol_time_moment) => string;
+            hh: (moment: $mol_time_moment) => string;
+            h: (moment: $mol_time_moment) => string;
+            ':mm': (moment: $mol_time_moment) => string;
+            mm: (moment: $mol_time_moment) => string;
+            m: (moment: $mol_time_moment) => string;
+            ':ss': (moment: $mol_time_moment) => string;
+            ss: (moment: $mol_time_moment) => string;
+            s: (moment: $mol_time_moment) => string;
+            '.sss': (moment: $mol_time_moment) => string;
+            sss: (moment: $mol_time_moment) => string;
+            Z: (moment: $mol_time_moment) => string;
+        };
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_chevron_left extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_chevron_right extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_hor extends $mol_view {
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_hor extends $.$mol_hor {
+        minimal_width(): number;
+    }
+}
+
+declare namespace $ {
+    class $mol_calendar extends $mol_list {
+        sub(): readonly any[];
+        weeks(): readonly $mol_view[];
+        Weekday(id: any): $mol_calendar_day;
+        Week(id: any): $$.$mol_hor;
+        Day(id: any): $mol_calendar_day;
+        month_string(): string;
+        month_moment(): $mol_time_moment;
+        title(): string;
+        Title(): $mol_view;
+        head(): readonly any[];
+        Head(): $mol_view;
+        weekdays(): readonly $mol_view[];
+        Weekdays(): $$.$mol_hor;
+        weekend(id: any): boolean;
+        weekday(id: any): string;
+        week_days(id: any): readonly $mol_view[];
+        day_ghost(id: any): boolean;
+        day_holiday(id: any): boolean;
+        day_selected(id: any): boolean;
+        day_theme(id: any): string;
+        day_text(id: any): string;
+        day_content(id: any): readonly any[];
+    }
+    class $mol_calendar_day extends $mol_view {
+        minimal_height(): number;
+        minimal_width(): number;
+        attr(): {
+            mol_calendar_holiday: boolean;
+            mol_calendar_ghost: boolean;
+            mol_calendar_selected: boolean;
+            mol_theme: string;
+        };
+        holiday(): boolean;
+        ghost(): boolean;
+        selected(): boolean;
+        theme(): string;
+    }
+}
+
+declare namespace $ {
+    type $mol_time_interval_config = string | {
+        start?: $mol_time_moment_config;
+        end?: $mol_time_moment_config;
+        duration?: $mol_time_duration_config;
+    };
+    class $mol_time_interval extends $mol_time_base {
+        constructor(config: $mol_time_interval_config);
+        private _start;
+        get start(): $mol_time_moment;
+        private _end;
+        get end(): $mol_time_moment;
+        private _duration;
+        get duration(): $mol_time_duration;
+        toJSON(): string;
+        toString(): string;
+        [Symbol.toPrimitive](mode: 'default' | 'number' | 'string'): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_calendar extends $.$mol_calendar {
+        month_moment(): $mol_time_moment;
+        title(): string;
+        day_first(): $mol_time_moment;
+        day_last(): $mol_time_moment;
+        day_draw_from(): $mol_time_moment;
+        weekdays(): $mol_view[];
+        weekday(index: number): string;
+        weekend(index: number): boolean;
+        weeks_count(): number;
+        sub(): any[];
+        weeks(): $mol_view[];
+        week_days(index: number): $mol_view[];
+        day_text(day: string): string;
+        day_holiday(day: string): boolean;
+        day_ghost(day: string): boolean;
+        day_selected(day: string): boolean;
+        day_theme(day: string): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_date extends $mol_pick {
+        Icon(): $mol_icon_calendar;
+        bubble_content(): readonly any[];
+        value_number(val?: any): number;
+        value_moment(val?: any): $mol_time_moment;
+        value(val?: any): string;
+        input_hint(): string;
+        enabled(): boolean;
+        Input(): $$.$mol_string;
+        month_moment(): $mol_time_moment;
+        day_selected(id: any): boolean;
+        day_click(id: any, event?: any): any;
+        prev_hint(): string;
+        prev(event?: any): any;
+        Prev_icon(): $mol_icon_chevron_left;
+        Prev(): $mol_button_minor;
+        next_hint(): string;
+        next(event?: any): any;
+        Next_icon(): $mol_icon_chevron_right;
+        Next(): $mol_button_minor;
+        Calendar_tools(): $mol_view;
+        Calendar_title(): $mol_view;
+        Calendar(): $mol_date_calendar;
+    }
+    class $mol_date_calendar extends $mol_calendar {
+        day_content(id: any): readonly any[];
+        day_click(id: any, event?: any): any;
+        Day_button(id: any): $mol_button_minor;
+    }
+}
+
+declare namespace $ {
+    function $mol_try<Result>(handler2: () => Result): Result | Error;
+}
+
+declare namespace $ {
+}
+
+declare namespace $.$$ {
+    class $mol_date extends $.$mol_date {
+        trigger_content(): string[];
+        value(val?: string): string;
+        value_moment(val?: $mol_time_moment): $mol_time_moment;
+        month_moment(next?: $mol_time_moment): $mol_time_moment;
+        day_selected(day: string): boolean;
+        day_click(day: string): void;
+        prev(): void;
+        next(): void;
+    }
+}
+
+declare namespace $ {
     class $mol_labeler extends $mol_list {
         rows(): readonly any[];
         label(): readonly $mol_view_content[];
@@ -3332,23 +3699,37 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_row extends $mol_view {
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $hyoo_sync_watch_log extends $mol_page {
         title(): string;
         tools(): readonly any[];
         body(): readonly any[];
+        Row_field_moment(id: any): $$.$mol_date;
+        Row_field_text(id: any): $$.$mol_text_code;
+        Row_field_land(id: any): $$.$mol_link;
         types(): readonly any[];
+        type_label(id: any): string;
         type_visible(id: any, next?: any): boolean;
         Filter_type(): $$.$mol_check_list;
         row_type(id: any): string;
         Row_type(id: any): $mol_labeler;
         row_field_name(id: any): string;
-        row_field_value(id: any): string;
-        Row_field_value(id: any): $$.$mol_text_code;
+        Row_field_value(id: any): $mol_view;
         Row_field(id: any): $mol_labeler;
         row_content(id: any): readonly any[];
-        Row(id: any): $mol_view;
+        Row(id: any): $mol_row;
         rows(): readonly any[];
         Rows(): $$.$mol_list;
+        row_field_moment(id: any): $mol_time_moment;
+        row_field_text(id: any): string;
+        Row_field_ava(id: any): $$.$mol_avatar;
     }
 }
 
@@ -3436,13 +3817,18 @@ declare namespace $.$$ {
     class $hyoo_sync_watch_log extends $.$hyoo_sync_watch_log {
         source(): $mol_tree2;
         types(): string[];
+        type_label(type: string): string;
         items(): $mol_tree2[];
         fields(): string[];
-        rows(): $mol_view[];
+        rows(): $mol_row[];
+        row_fields(row: number): string[];
         row_content(row: number): $mol_labeler[];
+        Row_field_value([row, field]: [number, string]): $mol_link | $mol_text_code | $mol_date;
         row_type(index: number): string;
         row_field_name([row, field]: [number, string]): string;
-        row_field_value([row, field]: [number, string]): string;
+        row_field_tree([row, field]: [number, string]): $mol_tree2;
+        row_field_moment([row, field]: [number, string]): $mol_time_moment;
+        row_field_text([row, field]: [number, string]): string;
     }
 }
 

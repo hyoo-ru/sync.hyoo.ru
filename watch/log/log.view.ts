@@ -21,7 +21,7 @@ namespace $.$$ {
 		
 		@ $mol_mem
 		items() {
-			return this.source().kids.filter( kid => this.type_visible( kid.type ) )
+			return this.source().kids.filter( kid => this.type_visible( kid.type ) ).reverse()
 		}
 		
 		@ $mol_mem

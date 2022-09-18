@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "42da01b";
+let $hyoo_sync_revision = "7fb9eed";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14256,9 +14256,10 @@ var $;
         title() {
             return "Server Logs";
         }
-        tools() {
+        head() {
             return [
-                this.Filter_type()
+                this.Filter_type(),
+                this.Tools()
             ];
         }
         body() {

@@ -3911,7 +3911,7 @@ declare namespace $ {
 declare namespace $ {
     class $hyoo_sync_watch_log extends $mol_page {
         title(): string;
-        tools(): readonly any[];
+        head(): readonly any[];
         body(): readonly any[];
         Row_field_moment(id: any): $$.$mol_date;
         Row_field_text(id: any): $$.$mol_text_code;

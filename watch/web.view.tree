@@ -865,11 +865,12 @@ $mol_row $mol_view
 
 $hyoo_sync_watch_log $mol_page
 	title \Server Logs
-	tools /
+	head /
 		<= Filter_type $mol_check_list
 			keys <= types /
 			option_title* <= type_label* \
 			option_checked*? <=> type_visible*? true
+		<= Tools
 	body /
 		<= Rows $mol_list
 			rows <= rows /

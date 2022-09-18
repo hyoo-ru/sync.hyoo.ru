@@ -13,6 +13,7 @@ $hyoo_sync_watch $mol_book2_catalog
 			yard <= yard $hyoo_sync_client
 	spreads *
 		world <= World $hyoo_sync_watch_world
+			yard <= yard
 			menu_tools /
 				<= Spread_close
 		log <= Log $hyoo_sync_watch_log

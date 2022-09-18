@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2cc8a9d";
+let $hyoo_sync_revision = "926c565";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -12123,7 +12123,7 @@ var $;
                 return [...types];
             }
             items() {
-                return this.source().kids.filter(kid => this.type_visible(kid.type));
+                return this.source().kids.filter(kid => this.type_visible(kid.type)).reverse();
             }
             fields() {
                 const fields = new Set();

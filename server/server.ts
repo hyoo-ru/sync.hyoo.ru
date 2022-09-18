@@ -22,7 +22,7 @@ namespace $ {
 				this.$.$mol_log3_rise({
 					place: this,
 					message: 'HTTP Query',
-					query: query_str,
+					query: req.url,
 				})
 				
 				if( /^watch\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {

@@ -4,15 +4,28 @@ $hyoo_sync_watch_log $mol_page
 	tools /
 		<= Filter_type $mol_check_list
 			keys <= types /
+			option_title* <= type_label* \
 			option_checked*? <=> type_visible*? true
 	body /
 		<= Rows $mol_list
 			rows <= rows /
-				<= Row*0 $mol_view sub <= row_content* /
-					<= Row_type* $mol_labeler
-						title \type
-						content / <= row_type* \
-					<= Row_field* $mol_labeler
-						title <= row_field_name* \
-						Content <= Row_field_value* $mol_text_code
-							text <= row_field_value* \
+				<= Row*0 $mol_row
+					sub <= row_content* /
+						<= Row_type* $mol_labeler
+							title \type
+							content / <= row_type* \
+						<= Row_field* $mol_labeler
+							title <= row_field_name* \
+							Content <= Row_field_value* $mol_view
+	Row_field_moment* $mol_date
+		value_moment <= row_field_moment* $mol_time_moment
+	Row_field_text* $mol_text_code
+		text <= row_field_text* \
+	Row_field_land* $mol_link
+		arg *
+			section \world
+			land <= row_field_text*
+		sub /
+			<= Row_field_ava* $mol_avatar
+				id <= row_field_text*
+			<= row_field_text*

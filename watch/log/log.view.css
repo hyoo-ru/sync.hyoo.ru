@@ -3,16 +3,14 @@
 	flex-grow: 1;
 }
 
-[hyoo_sync_watch_log_rows] {
-	padding: var(--mol_gap_block);
-	display: table;
-	align-self: flex-start;
-}
-
 [hyoo_sync_watch_log_row] {
-	display: table-row;
+	box-shadow: 0 1px 0 var(--mol_theme_line);
 }
 
-[hyoo_sync_watch_log_row] > * {
-	display: table-cell;
+[hyoo_sync_watch_log_row_type_content] {
+	font-family: monospace;
+}
+
+[hyoo_sync_watch_log_row_field_land] {
+	font-family: monospace;
 }

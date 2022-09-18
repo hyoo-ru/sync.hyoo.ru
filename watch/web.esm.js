@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "5f69f68";
+let $hyoo_sync_revision = "42da01b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -6014,7 +6014,7 @@ var $;
         spread_title(id) {
             return "";
         }
-        Spread_title(id) {
+        Menu_link_title(id) {
             const obj = new this.$.$mol_dimmer();
             obj.needle = () => this.menu_filter();
             obj.haystack = () => this.spread_title(id);
@@ -6022,7 +6022,7 @@ var $;
         }
         menu_link_content(id) {
             return [
-                this.Spread_title(id)
+                this.Menu_link_title(id)
             ];
         }
         Menu_link(id) {
@@ -6090,7 +6090,7 @@ var $;
     ], $mol_book2_catalog.prototype, "Menu_filter", null);
     __decorate([
         $mol_mem_key
-    ], $mol_book2_catalog.prototype, "Spread_title", null);
+    ], $mol_book2_catalog.prototype, "Menu_link_title", null);
     __decorate([
         $mol_mem_key
     ], $mol_book2_catalog.prototype, "Menu_link", null);
@@ -11708,7 +11708,7 @@ var $;
         menu_link_content(id) {
             return [
                 this.Node_avatar(id),
-                this.node_id(id)
+                this.Menu_link_title(id)
             ];
         }
         spreads() {

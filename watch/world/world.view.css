@@ -1,6 +1,6 @@
 
 [hyoo_sync_watch_world_menu] {
-	flex-basis: 15rem;
+	flex-basis: 20rem;
 }
 
 [hyoo_sync_watch_world_land_avatar] {
@@ -11,7 +11,7 @@
 	font-family: monospace;
 }
 
-[hyoo_sync_watch_world_link] {
+[hyoo_sync_watch_world_menu_link] {
 	gap: var(--mol_gap_block);
 	font-family: monospace;
 }

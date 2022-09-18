@@ -3,7 +3,7 @@ namespace $.$$ {
 	export class $hyoo_sync_watch_world extends $.$hyoo_sync_watch_world {
 		
 		land_id( next?: string ) {
-			return ( this.$.$mol_state_arg.value( 'land', next ) ?? '0_0' ) as $mol_int62_string
+			return ( this.$.$mol_state_arg.value( 'land', next ) ?? '' ) as $mol_int62_string
 		}
 		
 		land() {

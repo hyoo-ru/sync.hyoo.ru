@@ -14,7 +14,7 @@ $hyoo_sync_watch_world $mol_book2_catalog
 	menu_link_content* /
 		<= Node_avatar* $mol_avatar
 			id <= node_id* \
-		<= node_id* \
+		<= Menu_link_title*
 	spreads *
 	Node* $mol_page
 		title <= node_id* \

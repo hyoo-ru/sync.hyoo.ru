@@ -108,7 +108,7 @@ namespace $.$$ {
 						.kids.map( kid => new $mol_time_moment( $hyoo_crowd_time_stamp( Number( kid.type ) ) ).toOffset().toString( 'YYYY-MM-DD hh:mm:ss' ) )
 						.join( ' | ' )
 				
-				default: return tree.text() + tree.kids.filter( k => k.type ).map( k => k.toString() ).join('')
+				default: return tree.text() + tree.kids.filter( k => k.type ).map( k => k.toString() ).join('').trim()
 				
 			}
 			

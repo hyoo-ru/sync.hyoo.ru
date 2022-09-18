@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "7fb9eed";
+let $hyoo_sync_revision = "c49ba94";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14624,6 +14624,7 @@ var $;
         }
         World() {
             const obj = new this.$.$hyoo_sync_watch_world();
+            obj.yard = () => this.yard();
             obj.menu_tools = () => [
                 this.Spread_close()
             ];

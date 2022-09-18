@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "83b82ac";
+let $hyoo_sync_revision = "51ed49b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13795,7 +13795,7 @@ var $;
                             .select('/', '*', 'last_time', null)
                             .kids.map(kid => new $mol_time_moment($hyoo_crowd_time_stamp(Number(kid.type))).toOffset().toString('YYYY-MM-DD hh:mm:ss'))
                             .join(' | ');
-                    default: return tree.text() + tree.kids.filter(k => k.type).map(k => k.toString()).join('');
+                    default: return tree.text() + tree.kids.filter(k => k.type).map(k => k.toString()).join('').trim();
                 }
             }
         }

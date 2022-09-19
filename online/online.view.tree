@@ -1,4 +1,6 @@
 $hyoo_sync_online $mol_link
+	minimal_width 40
+	minimal_height 40
 	yard $hyoo_sync_yard
 	uri <= master_link \
 	sub /

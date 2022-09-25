@@ -1,6 +1,6 @@
 namespace $ {
 	
-	export class $hyoo_sync_client extends $hyoo_sync_yard< WebSocket > {
+	export class $hyoo_sync_client extends $hyoo_sync_yard< WebSocket | Window > {
 		
 		@ $mol_memo.method
 		async db() {
@@ -139,8 +139,79 @@ namespace $ {
 			
 		}
 		
-		line_send( line: WebSocket, message: Uint8Array ) {
-			line.send( message )
+		// @ $mol_mem
+		// server() {
+		// 	return new $mol_dom_listener(
+		// 		$mol_dom_context,
+		// 		'message',
+		// 		$mol_wire_async( ( event: MessageEvent<[ string, $mol_int62_string, readonly $hyoo_crowd_unit[] ]> )=> {
+					
+		// 			if( !event ) return
+		// 			if( !Array.isArray( event.data ) ) return
+					
+		// 			switch( event.data[0] ) {
+		// 				case 'hyoo_sync_units': {
+							
+		// 					const [, land_id, units ] = event.data
+							
+		// 					const line = event.source! as Window
+		// 					const land = this.land( land_id )
+							
+		// 					land.apply( units )
+							
+		// 					this.slaves([ ... new Set([ ... this.slaves(), line ]) ])
+		// 					this.line_lands( line, [ ... new Set([ ... this.line_lands( line ), land ]) ] )
+		// 					this.line_land_clocks({ line, land })
+		// 					line.postMessage([ 'hyoo_sync_units', land.id(), [] ])
+							
+		// 				}
+		// 			}
+					
+		// 		} )
+		// 	)
+		// }
+		
+		line_send_clocks(
+			line: WebSocket | Window,
+			land: $hyoo_crowd_land,
+		) {
+			
+			if( line instanceof WebSocket ) {
+				
+				const message = new Uint8Array( $hyoo_crowd_clock_bin.from( land.id(), land._clocks ).buffer )
+				line.send( message )
+				return message
+				
+			} else {
+				
+				const message = land._clocks
+				line.postMessage([ 'hyoo_sync_clocks', land.id(), message ])
+				return message
+				
+			}
+			
+		}
+		
+		async line_send_units(
+			line: WebSocket | Window,
+			land: $hyoo_crowd_land,
+			clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
+		) {
+			
+			if( line instanceof WebSocket ) {
+				
+				const message = await this.world().delta_batch( land, clocks )
+				if( message.length ) line.send( message )
+				return message
+				
+			} else {
+				
+				const message = await this.world().delta_land( land, clocks )
+				if( message.length ) line.postMessage([ 'hyoo_sync_units', land.id(), message ])
+				return message
+				
+			}
+			
 		}
 		
 	}

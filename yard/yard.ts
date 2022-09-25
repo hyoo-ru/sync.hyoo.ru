@@ -8,21 +8,19 @@ namespace $ {
 		@ $mol_mem
 		peer() {
 			
-			const path = this + '.peer()'
-			
-			let serial = this.$.$mol_state_local.value( path )
-			if( typeof serial === 'string' ) {
+			let serial = this.$.$mol_state_local.value( '$hyoo_sync_peer' ) as string | null
+			if( typeof serial !== 'string' ) {
 				
-				return $mol_wire_sync( $hyoo_crowd_peer ).restore( serial )
-
-			} else {
-			
-				const peer = $mol_wire_sync( $hyoo_crowd_peer ).generate()
-				this.$.$mol_state_local.value( path, peer.key_private_serial )
-
-				return peer
+				const path = this + '.peer()'
+				serial = this.$.$mol_state_local.value( path )
+					?? $mol_wire_sync( $hyoo_crowd_peer ).generate().key_private_serial 
+				
+				this.$.$mol_state_local.value( '$hyoo_sync_peer', serial )
+				this.$.$mol_state_local.value( path, null )
+				
 			}
 			
+			return $mol_wire_sync( $hyoo_crowd_peer ).restore( serial )
 		}
 		
 		@ $mol_mem
@@ -51,6 +49,8 @@ namespace $ {
 		
 		@ $mol_mem
 		sync() {
+			
+			this.server()
 			
 			for( const land of this.world().lands.values() ) {
 				this.db_land_sync( land )
@@ -196,6 +196,10 @@ namespace $ {
 			return null as Line | null
 		}
 		
+		server() {
+			return null as any
+		}
+		
 		
 		@ $mol_mem
 		slaves( next = [] as readonly Line[] ) {
@@ -242,21 +246,16 @@ namespace $ {
 			let clocks = this.line_land_clocks({ line, land })
 			if( !clocks ) return
 			
-			const packs = $mol_wire_sync( this.world() ).delta_batch( land, clocks )
+			const sent = $mol_wire_sync( this as $hyoo_sync_yard<any> ).line_send_units( line, land, clocks )
+			if( !sent.length ) return
 			
-			for( const pack of packs ) {
-				
-				this.line_send( line, pack )
-				
-				this.$.$mol_log3_rise({
-					place: this,
-					land: land.id(),
-					message: 'Sync Sent',
-					line: $mol_key( line ),
-					batch: pack.length,
-				})
-				
-			}
+			this.$.$mol_log3_rise({
+				place: this,
+				land: land.id(),
+				message: 'Sync Sent',
+				line: $mol_key( line ),
+				batch: sent.length,
+			})
 			
 			for( let i = 0; i < clocks?.length; ++i ) {
 				clocks[i].sync( land.clocks[i] )
@@ -275,17 +274,14 @@ namespace $ {
 			// const lands = this.line_land_clocks({ line, land })
 			// if( lands ) return
 			
-			const clocks = land._clocks
-			const bin = $hyoo_crowd_clock_bin.from( land.id(), clocks )
-			
-			this.line_send( line, new Uint8Array( bin.buffer ) )
+			this.line_send_clocks( line, land )
 			
 			this.$.$mol_log3_come({
 				place: this,
 				land: land.id(),
 				message: 'Sync Open',
 				line: $mol_key( line ),
-				clocks,
+				clocks: land._clocks,
 			})
 			
 		}
@@ -402,7 +398,18 @@ namespace $ {
 
 		} 
 		
-		line_send( line: Line, message: Uint8Array ) { }
+		line_send_clocks(
+			line: Line,
+			land: $hyoo_crowd_land,
+		) {}
+		
+		async line_send_units(
+			line: Line,
+			land: $hyoo_crowd_land,
+			units: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
+		) {
+			return [] as ArrayLike<any>
+		}
 		
 		[ $mol_dev_format_head ]() {
 			return $mol_dev_format_native( this )

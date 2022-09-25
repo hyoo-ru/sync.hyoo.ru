@@ -268,7 +268,7 @@ namespace $ {
 		}
 		
 		@ $mol_mem
-		socket() {
+		server() {
 			
 			this.world()
 
@@ -313,8 +313,22 @@ namespace $ {
 			return socket
 		}
 		
-		line_send( line: InstanceType< $node['ws'] >, message: Uint8Array ) {
-			line.send( message, { binary: true } )
+		line_send_clocks(
+			line: InstanceType< $node['ws'] >,
+			land: $hyoo_crowd_land,
+		) {
+			const bin = $hyoo_crowd_clock_bin.from( land.id(), land._clocks )
+			line.send( new Uint8Array( bin.buffer ), { binary: true } )
+		}
+		
+		async line_send_units(
+			line: InstanceType< $node['ws'] >,
+			land: $hyoo_crowd_land,
+			clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
+		) {
+			const message = await this.world().delta_batch( land, clocks )
+			if( message.length ) line.send( message, { binary: true } )
+			return message
 		}
 		
 		port() { return 0 }
@@ -329,7 +343,6 @@ namespace $ {
 		@ $mol_mem_key
 		static run( port: number ) {
 			try {
-				this.port( port ).socket()
 				this.port( port ).db()
 				this.port( port ).sync()
 			} catch( error ) {

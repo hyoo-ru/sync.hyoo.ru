@@ -393,9 +393,9 @@ namespace $ {
 			
 			this.line_land_neck(
 				{ line, land },
-				[ handle(
-					await this.line_land_neck({ line, land })[0]
-				) ],
+				[
+					handle( this.line_land_neck({ line, land })[0] )
+				],
 			)
 
 		} 

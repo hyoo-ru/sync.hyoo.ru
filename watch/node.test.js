@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "bbe3317";
+let $hyoo_sync_revision = "156014e";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8383,7 +8383,9 @@ var $;
                     units: this.log_pack(allow),
                 });
             };
-            this.line_land_neck({ line, land }, [handle(await this.line_land_neck({ line, land })[0])]);
+            this.line_land_neck({ line, land }, [
+                handle(this.line_land_neck({ line, land })[0])
+            ]);
         }
         line_send_clocks(line, land) { }
         async line_send_units(line, land, units) {

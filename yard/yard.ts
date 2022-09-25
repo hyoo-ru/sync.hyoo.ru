@@ -246,6 +246,8 @@ namespace $ {
 			let clocks = this.line_land_clocks({ line, land })
 			if( !clocks ) return
 			
+			const delta = land.delta( clocks )
+			
 			const sent = $mol_wire_sync( this as $hyoo_sync_yard<any> ).line_send_units( line, land, clocks )
 			if( !sent.length ) return
 			
@@ -257,8 +259,8 @@ namespace $ {
 				batch: sent.length,
 			})
 			
-			for( let i = 0; i < clocks?.length; ++i ) {
-				clocks[i].sync( land.clocks[i] )
+			for( const unit of delta ) {
+				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
 		}

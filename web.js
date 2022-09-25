@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "d25c98d";
+let $hyoo_sync_revision = "6d6cd53";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -1748,9 +1748,6 @@ var $;
             this.data = data;
             this.bin = bin;
         }
-        get id() {
-            return `${this.head}/${this.self}`;
-        }
         kind() {
             if (this.head === this.self && this.auth === this.self) {
                 if (this.head === this.land) {
@@ -2285,7 +2282,7 @@ var $;
             for (const next of delta) {
                 this._clocks[next.group()].see_peer(next.auth, next.time);
                 const kids = this.unit_list(next.head);
-                const next_id = next.id;
+                const next_id = `${next.head}/${next.self}`;
                 let prev = this._unit_all.get(next_id);
                 if (prev) {
                     if ($hyoo_crowd_unit_compare(prev, next) > 0)
@@ -2557,32 +2554,22 @@ var $;
             const units = await this.delta_land(land, clocks);
             let size = 0;
             const bins = [];
-            const packs = [];
-            function wrap() {
-                const batch = new Uint8Array(size);
-                let offset = 0;
-                for (const bin of bins) {
-                    batch.set(new Uint8Array(bin.buffer, bin.byteOffset, bin.byteLength), offset);
-                    offset += bin.byteLength;
-                }
-                size = 0;
-                bins.length = 0;
-                packs.push(batch);
-            }
             for (const unit of units) {
                 const bin = unit.bin;
                 bins.push(bin);
                 size += bin.byteLength;
             }
-            if (size)
-                wrap();
-            return packs;
+            const batch = new Uint8Array(size);
+            let offset = 0;
+            for (const bin of bins) {
+                batch.set(new Uint8Array(bin.buffer, bin.byteOffset, bin.byteLength), offset);
+                offset += bin.byteLength;
+            }
+            return batch;
         }
         async *delta(clocks = new Map()) {
             for (const land of this.lands.values()) {
-                for (const pack of await this.delta_batch(land, clocks.get(land.id()))) {
-                    yield pack;
-                }
+                yield await this.delta_batch(land, clocks.get(land.id()));
             }
         }
         async apply(delta) {
@@ -2871,16 +2858,15 @@ var $;
             return data;
         }
         peer() {
-            const path = this + '.peer()';
-            let serial = this.$.$mol_state_local.value(path);
-            if (typeof serial === 'string') {
-                return $mol_wire_sync($hyoo_crowd_peer).restore(serial);
+            let serial = this.$.$mol_state_local.value('$hyoo_sync_peer');
+            if (typeof serial !== 'string') {
+                const path = this + '.peer()';
+                serial = this.$.$mol_state_local.value(path)
+                    ?? $mol_wire_sync($hyoo_crowd_peer).generate().key_private_serial;
+                this.$.$mol_state_local.value('$hyoo_sync_peer', serial);
+                this.$.$mol_state_local.value(path, null);
             }
-            else {
-                const peer = $mol_wire_sync($hyoo_crowd_peer).generate();
-                this.$.$mol_state_local.value(path, peer.key_private_serial);
-                return peer;
-            }
+            return $mol_wire_sync($hyoo_crowd_peer).restore(serial);
         }
         world() {
             const world = new this.$.$hyoo_crowd_world(this.peer());
@@ -2897,6 +2883,7 @@ var $;
             return this.land(this.peer().id);
         }
         sync() {
+            this.server();
             for (const land of this.world().lands.values()) {
                 this.db_land_sync(land);
             }
@@ -2993,6 +2980,9 @@ var $;
         master() {
             return null;
         }
+        server() {
+            return null;
+        }
         slaves(next = []) {
             return next;
         }
@@ -3012,32 +3002,29 @@ var $;
             let clocks = this.line_land_clocks({ line, land });
             if (!clocks)
                 return;
-            const packs = $mol_wire_sync(this.world()).delta_batch(land, clocks);
-            for (const pack of packs) {
-                this.line_send(line, pack);
-                this.$.$mol_log3_rise({
-                    place: this,
-                    land: land.id(),
-                    message: 'Sync Sent',
-                    line: $mol_key(line),
-                    batch: pack.length,
-                });
-            }
+            const sent = $mol_wire_sync(this).line_send_units(line, land, clocks);
+            if (!sent.length)
+                return;
+            this.$.$mol_log3_rise({
+                place: this,
+                land: land.id(),
+                message: 'Sync Sent',
+                line: $mol_key(line),
+                batch: sent.length,
+            });
             for (let i = 0; i < clocks?.length; ++i) {
                 clocks[i].sync(land.clocks[i]);
             }
         }
         line_land_init({ line, land }) {
             this.db_land_init(land);
-            const clocks = land._clocks;
-            const bin = $hyoo_crowd_clock_bin.from(land.id(), clocks);
-            this.line_send(line, new Uint8Array(bin.buffer));
+            this.line_send_clocks(line, land);
             this.$.$mol_log3_come({
                 place: this,
                 land: land.id(),
                 message: 'Sync Open',
                 line: $mol_key(line),
-                clocks,
+                clocks: land._clocks,
             });
         }
         line_land_neck({ line, land }, next = []) {
@@ -3114,7 +3101,10 @@ var $;
             };
             this.line_land_neck({ line, land }, [handle(await this.line_land_neck({ line, land })[0])]);
         }
-        line_send(line, message) { }
+        line_send_clocks(line, land) { }
+        async line_send_units(line, land, units) {
+            return [];
+        }
         [$mol_dev_format_head]() {
             return $mol_dev_format_native(this);
         }
@@ -4675,7 +4665,7 @@ var $;
             });
             await Promise.all(tasks);
         }
-        socket() {
+        server() {
             this.world();
             const socket = new $node.ws.Server({
                 server: this.http(),
@@ -4707,8 +4697,15 @@ var $;
             });
             return socket;
         }
-        line_send(line, message) {
-            line.send(message, { binary: true });
+        line_send_clocks(line, land) {
+            const bin = $hyoo_crowd_clock_bin.from(land.id(), land._clocks);
+            line.send(new Uint8Array(bin.buffer), { binary: true });
+        }
+        async line_send_units(line, land, clocks) {
+            const message = await this.world().delta_batch(land, clocks);
+            if (message.length)
+                line.send(message, { binary: true });
+            return message;
         }
         port() { return 0; }
         static port(port) {
@@ -4718,7 +4715,6 @@ var $;
         }
         static run(port) {
             try {
-                this.port(port).socket();
                 this.port(port).db();
                 this.port(port).sync();
             }
@@ -4738,7 +4734,7 @@ var $;
     ], $hyoo_sync_server.prototype, "db", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_server.prototype, "socket", null);
+    ], $hyoo_sync_server.prototype, "server", null);
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_server, "port", null);

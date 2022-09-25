@@ -592,7 +592,6 @@ declare namespace $ {
         readonly data: unknown;
         bin: $hyoo_crowd_unit_bin | null;
         constructor(land: $mol_int62_string, auth: $mol_int62_string, head: $mol_int62_string, self: $mol_int62_string, next: $mol_int62_string, prev: $mol_int62_string, time: number, data: unknown, bin: $hyoo_crowd_unit_bin | null);
-        get id(): $hyoo_crowd_unit_id;
         kind(): $hyoo_crowd_unit_kind;
         group(): $hyoo_crowd_unit_group;
         level(): $hyoo_crowd_peer_level;
@@ -757,7 +756,7 @@ declare namespace $ {
         _signs: WeakMap<$hyoo_crowd_unit, Uint8Array>;
         grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): Promise<$hyoo_crowd_land>;
         delta_land(land: $hyoo_crowd_land, clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<readonly $hyoo_crowd_unit[]>;
-        delta_batch(land: $hyoo_crowd_land, clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<Uint8Array[]>;
+        delta_batch(land: $hyoo_crowd_land, clocks?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<Uint8Array>;
         delta(clocks?: Map<`${string}_${string}`, readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]>): AsyncGenerator<Uint8Array, void, unknown>;
         apply(delta: Uint8Array): Promise<{
             allow: $hyoo_crowd_unit[];
@@ -814,6 +813,7 @@ declare namespace $ {
         master_cursor(next?: number): number;
         master_link(): string;
         master(): Line | null;
+        server(): any;
         slaves(next?: readonly Line[]): readonly Line[];
         line_lands(line: Line, next?: $hyoo_crowd_land[]): $hyoo_crowd_land[];
         line_land_clocks({ line, land }: {
@@ -834,7 +834,8 @@ declare namespace $ {
             land: $hyoo_crowd_land;
         }, next?: Promise<any>[]): Promise<any>[];
         line_receive(line: Line, message: Uint8Array): Promise<void>;
-        line_send(line: Line, message: Uint8Array): void;
+        line_send_clocks(line: Line, land: $hyoo_crowd_land): void;
+        line_send_units(line: Line, land: $hyoo_crowd_land, units: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<ArrayLike<any>>;
     }
 }
 
@@ -1132,8 +1133,9 @@ declare namespace $ {
         db(): Promise<import("pg").Pool | null>;
         db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
-        socket(): import("ws").Server<import("ws").WebSocket>;
-        line_send(line: InstanceType<$node['ws']>, message: Uint8Array): void;
+        server(): import("ws").Server<import("ws").WebSocket>;
+        line_send_clocks(line: InstanceType<$node['ws']>, land: $hyoo_crowd_land): void;
+        line_send_units(line: InstanceType<$node['ws']>, land: $hyoo_crowd_land, clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): Promise<Uint8Array>;
         port(): number;
         static port(port: number): $hyoo_sync_server;
         static run(port: number): void;

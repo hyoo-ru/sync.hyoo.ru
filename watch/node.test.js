@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "32b2823";
+let $hyoo_sync_revision = "e08fc9c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -7528,6 +7528,9 @@ var $;
             return land;
         }
     }
+    __decorate([
+        $mol_action
+    ], $hyoo_crowd_reg.prototype, "yoke", null);
     $.$hyoo_crowd_reg = $hyoo_crowd_reg;
 })($ || ($ = {}));
 //hyoo/crowd/reg/reg.ts
@@ -8208,9 +8211,10 @@ var $;
             this.db_land_init(land);
             const db_clocks = this.db_land_clocks(land.id());
             land.clocks;
-            const units = $mol_wire_sync(this.world()).delta_land(land, db_clocks);
+            const units = land.delta(db_clocks);
             if (!units.length)
                 return;
+            $mol_wire_sync(this.world()).sign_units(units);
             $mol_wire_sync(this).db_land_save(land, units);
             for (const unit of units) {
                 db_clocks[unit.group()].see_peer(unit.auth, unit.time);

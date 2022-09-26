@@ -84,6 +84,7 @@
     "$hyoo_crowd_node",
     "$hyoo_crowd_struct",
     "$hyoo_crowd_reg",
+    "$mol_action",
     "$mol_const",
     "$mol_dict",
     "$mol_wire_race",

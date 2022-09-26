@@ -649,6 +649,10 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    let $mol_action: typeof $mol_wire_method;
+}
+
+declare namespace $ {
     class $hyoo_crowd_reg extends $hyoo_crowd_node {
         value(next?: unknown): {} | null;
         str(next?: string): string;

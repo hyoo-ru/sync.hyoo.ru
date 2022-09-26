@@ -323,12 +323,11 @@ namespace $ {
 		
 		async line_send_units(
 			line: InstanceType< $node['ws'] >,
-			land: $hyoo_crowd_land,
-			clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
+			units: readonly $hyoo_crowd_unit[],
 		) {
-			const message = await this.world().delta_batch( land, clocks )
-			if( message.length ) line.send( message, { binary: true } )
-			return message
+			await this.world().sign_units( units )
+			const message = new $node.buffer.Blob( units.map( unit => unit.bin! ) ) 
+			line.send( await message.arrayBuffer(), { binary: true } )
 		}
 		
 		port() { return 0 }

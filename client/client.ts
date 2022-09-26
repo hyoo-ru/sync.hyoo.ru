@@ -180,13 +180,11 @@ namespace $ {
 				
 				const message = new Uint8Array( $hyoo_crowd_clock_bin.from( land.id(), land._clocks ).buffer )
 				line.send( message )
-				return message
 				
 			} else {
 				
 				const message = land._clocks
 				line.postMessage([ 'hyoo_sync_clocks', land.id(), message ])
-				return message
 				
 			}
 			
@@ -194,21 +192,18 @@ namespace $ {
 		
 		async line_send_units(
 			line: WebSocket | Window,
-			land: $hyoo_crowd_land,
-			clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
+			units: readonly $hyoo_crowd_unit[],
 		) {
 			
 			if( line instanceof WebSocket ) {
 				
-				const message = await this.world().delta_batch( land, clocks )
-				if( message.length ) line.send( message )
-				return message
+				await this.world().sign_units( units )
+				const message = new Blob( units.map( unit => unit.bin! ) ) 
+				line.send( message )
 				
 			} else {
 				
-				const message = await this.world().delta_land( land, clocks )
-				if( message.length ) line.postMessage([ 'hyoo_sync_units', land.id(), message ])
-				return message
+				line.postMessage([ 'hyoo_sync_units', units[0].land, units ])
 				
 			}
 			

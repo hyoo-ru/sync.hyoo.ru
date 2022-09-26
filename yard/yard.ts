@@ -246,20 +246,20 @@ namespace $ {
 			let clocks = this.line_land_clocks({ line, land })
 			if( !clocks ) return
 			
-			const delta = land.delta( clocks )
+			const units = land.delta( clocks )
+			if( !units.length ) return
 			
-			const sent = $mol_wire_sync( this as $hyoo_sync_yard<any> ).line_send_units( line, land, clocks )
-			if( !sent.length ) return
+			$mol_wire_sync( this as $hyoo_sync_yard<any> ).line_send_units( line, units )
 			
 			this.$.$mol_log3_rise({
 				place: this,
 				land: land.id(),
 				message: 'Sync Sent',
 				line: $mol_key( line ),
-				batch: sent.length,
+				units: this.log_pack( units ),
 			})
 			
-			for( const unit of delta ) {
+			for( const unit of units ) {
 				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
@@ -292,7 +292,7 @@ namespace $ {
 		line_land_neck(
 			{ line, land }: {
 				line: Line,
-				land: $hyoo_crowd_land,
+				land: $mol_int62_string,
 			},
 			next = [] as Promise<any>[],
 		) {
@@ -311,56 +311,56 @@ namespace $ {
 				hi: int1 << 1 >> 1,
 			})
 			
-			const world = this.world()
-			const land = await $mol_wire_async<$hyoo_sync_yard< Line >>( this ).land( land_id )
-			
-			let clocks = this.line_land_clocks({ line, land })!
-			if( !clocks ) this.line_land_clocks(
-				{ line, land },
-				clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ],
-			)
-			
-			if( int0 << 1 >> 1 ^ int0 ) {
-				
-				const bin = new $hyoo_crowd_clock_bin( message.buffer, message.byteOffset, message.byteLength )
-				
-				for( let group = 0; group < clocks.length; ++group ) {
-					clocks[ group ].see_bin( bin, group )
-				}
-				
-				const lands = this.line_lands( line )
-				if( lands.includes( land ) ) {
-					
-					this.$.$mol_log3_warn({
-						place: this,
-						land: land.id(),
-						message: 'Already syncing',
-						hint: 'Bug at $hyoo_sync_yard',
-						line: $mol_key( line ),
-						clocks,
-					})
-					
-				} else {
-					
-					this.line_lands( line, [ ... lands, land ] )
-					
-					this.$.$mol_log3_done({
-						place: this,
-						land: land.id(),
-						message: 'Sync Pair',
-						line: $mol_key( line ),
-						clocks,
-					})
-					
-				}
-				
-				return
-			}
-		
 			const handle = async( prev?: Promise<any> )=> {
 				
 				if( prev ) await prev
 				
+				const world = this.world()
+				const land = await $mol_wire_async<$hyoo_sync_yard< Line >>( this ).land( land_id )
+				
+				let clocks = this.line_land_clocks({ line, land })!
+				if( !clocks ) this.line_land_clocks(
+					{ line, land },
+					clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ],
+				)
+				
+				if( int0 << 1 >> 1 ^ int0 ) {
+					
+					const bin = new $hyoo_crowd_clock_bin( message.buffer, message.byteOffset, message.byteLength )
+					
+					for( let group = 0; group < clocks.length; ++group ) {
+						clocks[ group ].see_bin( bin, group )
+					}
+					
+					const lands = this.line_lands( line )
+					if( lands.includes( land ) ) {
+						
+						this.$.$mol_log3_warn({
+							place: this,
+							land: land.id(),
+							message: 'Already syncing',
+							hint: 'Bug at $hyoo_sync_yard',
+							line: $mol_key( line ),
+							clocks,
+						})
+						
+					} else {
+						
+						this.line_lands( line, [ ... lands, land ] )
+						
+						this.$.$mol_log3_done({
+							place: this,
+							land: land.id(),
+							message: 'Sync Pair',
+							line: $mol_key( line ),
+							clocks,
+						})
+						
+					}
+					
+					return
+				}
+			
 				const { allow, forbid } = await world.apply( message )
 				
 				for( const [ unit, error ] of forbid ) {
@@ -392,9 +392,9 @@ namespace $ {
 			}
 			
 			this.line_land_neck(
-				{ line, land },
+				{ line, land: land_id },
 				[
-					handle( this.line_land_neck({ line, land })[0] )
+					handle( this.line_land_neck({ line, land: land_id })[0] )
 				],
 			)
 
@@ -407,11 +407,8 @@ namespace $ {
 		
 		async line_send_units(
 			line: Line,
-			land: $hyoo_crowd_land,
-			units: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock],
-		) {
-			return [] as ArrayLike<any>
-		}
+			units: readonly $hyoo_crowd_unit[],
+		) {}
 		
 		[ $mol_dev_format_head ]() {
 			return $mol_dev_format_native( this )

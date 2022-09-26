@@ -8,6 +8,8 @@ namespace $.$$ {
 			// const uri = 'http://localhost:9090/log'
 			const uri = '/log'
 			const text = this.$.$mol_fetch.text( uri )
+				.replace( /^(?!\w{4}$|\s|$)/gm, 'wild \\\n\t\\' )
+				.replace( /^(?= )/gm, '\t\\' )
 			return this.$.$mol_tree2_from_string( text, uri )
 		}
 		
@@ -28,6 +30,7 @@ namespace $.$$ {
 				'done': '✅',
 				'warn': '💢',
 				'fail': '💥',
+				'wild': '🛑',
 			}[ type ]
 			return `${icon} ${type}`
 		}

@@ -29,15 +29,25 @@ namespace $ {
 					
 					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? ''
 					
-					res.writeHead( 200, {
-						'Access-Control-Allow-Origin': '*',
-						'Content-Type': {
-							js: 'application/javascript',
-							html: 'text/html',
-						}[ ext ],
-					} )
-					
-					res.end( $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) ).toString() )
+					try {
+						
+						const content = $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) ).toString()
+						
+						res.writeHead( 200, {
+							'Access-Control-Allow-Origin': '*',
+							'Content-Type': {
+								js: 'application/javascript',
+								html: 'text/html',
+							}[ ext ] ?? '',
+						} )
+						
+						res.end( content )
+						
+					} catch( error: any ) {
+						
+						res.writeHead( 500 ).end( error.message ?? error )
+							
+					}
 					
 					return
 				}

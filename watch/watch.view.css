@@ -1,3 +1,7 @@
 [hyoo_sync_watch_menu] {
 	flex-basis: 20rem;
 }
+
+[hyoo_sync_watch_world_menu_head] {
+	flex-wrap: nowrap;
+}

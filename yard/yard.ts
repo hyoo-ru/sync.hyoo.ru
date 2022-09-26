@@ -121,9 +121,10 @@ namespace $ {
 			// const ahead = land.clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
 			// if( !ahead ) return
 			
-			const units = $mol_wire_sync( this.world() ).delta_land( land, db_clocks )
+			const units = land.delta( db_clocks )
 			if( !units.length ) return
 			
+			$mol_wire_sync( this.world() ).sign_units( units )
 			$mol_wire_sync( this ).db_land_save( land, units )
 			
 			for( const unit of units ) {

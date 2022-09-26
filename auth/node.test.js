@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "b3d85a8";
+let $hyoo_sync_revision = "cd518d1";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -1823,12 +1823,12 @@ var $;
         if (event.data[0] !== '$hyoo_sync_peer')
             return;
         if ($hyoo_sync_origins.every(domain => !event.origin.endsWith(domain))) {
-            return event.source.postMessage(event.data);
+            return event.source.postMessage(event.data, { targetOrigin: '*' });
         }
         let key = $mol_state_local.value('$hyoo_sync_peer');
         if (!key)
             $mol_state_local.value('$hyoo_sync_peer', key = event.data[1]);
-        event.source.postMessage(['$hyoo_sync_peer', key]);
+        event.source.postMessage(['$hyoo_sync_peer', key], { targetOrigin: '*' });
     });
 })($ || ($ = {}));
 //hyoo/sync/auth/auth.ts

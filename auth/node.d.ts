@@ -16,6 +16,13 @@ declare namespace $ {
 declare let $hyoo_sync_revision: string;
 
 declare namespace $ {
+    function $mol_offline(uri?: string): void;
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     var $mol_dom_context: typeof globalThis;
 }
 
@@ -178,10 +185,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-}
-
-declare namespace $ {
-    let $hyoo_sync_origins: string[];
 }
 
 declare namespace $ {
@@ -418,6 +421,97 @@ declare namespace $ {
         prefix(): string;
         value(key: string, next?: Value): Value | null;
     }
+}
+
+declare namespace $ {
+    function $mol_charset_encode(value: string): Uint8Array;
+}
+
+declare namespace $ {
+    type $mol_int62_string = `${string}_${string}`;
+    type $mol_int62_pair = {
+        readonly lo: number;
+        readonly hi: number;
+    };
+    const $mol_int62_max: number;
+    const $mol_int62_min: number;
+    const $mol_int62_range: number;
+    function $mol_int62_to_string({ lo, hi }: $mol_int62_pair): `${string}_${string}`;
+    function $mol_int62_from_string(str: string): $mol_int62_pair;
+    function $mol_int62_compare(left_lo: number, left_hi: number, right_lo: number, right_hi: number): number;
+    function $mol_int62_inc(lo: number, hi: number, max?: number): $mol_int62_pair;
+    function $mol_int62_random(): $mol_int62_pair;
+    function $mol_int62_hash_string(str: string): `${string}_${string}`;
+    function $mol_int62_hash_buffer(buf: Uint8Array, seed?: {
+        lo: number;
+        hi: number;
+    }): $mol_int62_pair;
+}
+
+/// <reference types="node" />
+declare namespace $ {
+    var $mol_crypto_native: import("crypto").webcrypto.Crypto;
+}
+
+declare namespace $ {
+    function $mol_crypto_auditor_pair(this: $): Promise<{
+        public: $mol_crypto_auditor_public;
+        private: $mol_crypto_auditor_private;
+    }>;
+    class $mol_crypto_auditor_public extends Object {
+        readonly native: CryptoKey & {
+            type: 'public';
+        };
+        static size: number;
+        constructor(native: CryptoKey & {
+            type: 'public';
+        });
+        static from(serial: string): Promise<$mol_crypto_auditor_public>;
+        serial(): Promise<string>;
+        verify(data: BufferSource, sign: BufferSource): Promise<boolean>;
+    }
+    class $mol_crypto_auditor_private extends Object {
+        readonly native: CryptoKey & {
+            type: 'private';
+        };
+        static size: number;
+        constructor(native: CryptoKey & {
+            type: 'private';
+        });
+        static from(serial: string): Promise<$mol_crypto_auditor_private>;
+        serial(): Promise<string>;
+        sign(data: BufferSource): Promise<ArrayBuffer>;
+        public(): Promise<$mol_crypto_auditor_public>;
+    }
+    const $mol_crypto_auditor_sign_size = 64;
+    function $mol_crypto_auditor_private_to_public(serial: string): string;
+}
+
+declare namespace $ {
+    enum $hyoo_crowd_peer_level {
+        get = 0,
+        add = 1,
+        mod = 2,
+        law = 3
+    }
+    class $hyoo_crowd_peer extends Object {
+        readonly key_public: $mol_crypto_auditor_public;
+        readonly key_public_serial: string;
+        readonly key_private: $mol_crypto_auditor_private;
+        readonly key_private_serial: string;
+        id: $mol_int62_string;
+        constructor(key_public: $mol_crypto_auditor_public, key_public_serial: string, key_private: $mol_crypto_auditor_private, key_private_serial: string);
+        static generate(): Promise<$hyoo_crowd_peer>;
+        static restore(serial: string): Promise<$hyoo_crowd_peer>;
+    }
+}
+
+declare namespace $ {
+    function $hyoo_sync_peer(path: string): Promise<$hyoo_crowd_peer>;
+}
+
+declare namespace $ {
+    let $hyoo_sync_origins: string[];
 }
 
 declare namespace $ {

@@ -24,8 +24,23 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "cd518d1";
+let $hyoo_sync_revision = "22126fe";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_offline(uri = 'web.js') { }
+    $.$mol_offline = $mol_offline;
+})($ || ($ = {}));
+//mol/offline/offline.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_offline();
+})($ || ($ = {}));
+//mol/offline/install/install.ts
 ;
 "use strict";
 var $;
@@ -723,15 +738,6 @@ var $;
     $.$mol_dom_context = new $node.jsdom.JSDOM('', { url: 'https://localhost/' }).window;
 })($ || ($ = {}));
 //mol/dom/context/context.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $.$hyoo_sync_origins = [
-        '.hyoo.ru'
-    ];
-})($ || ($ = {}));
-//hyoo/sync/origins/origins.ts
 ;
 "use strict";
 var $;
@@ -1813,6 +1819,226 @@ var $;
     $.$mol_state_local = $mol_state_local;
 })($ || ($ = {}));
 //mol/state/local/local.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const TextEncoder = globalThis.TextEncoder ?? $node.util.TextEncoder;
+    const encoder = new TextEncoder();
+    function $mol_charset_encode(value) {
+        return encoder.encode(value);
+    }
+    $.$mol_charset_encode = $mol_charset_encode;
+})($ || ($ = {}));
+//mol/charset/encode/encode.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_int62_max = (2 ** 30) - 1;
+    $.$mol_int62_min = -(2 ** 30);
+    $.$mol_int62_range = $.$mol_int62_max - $.$mol_int62_min + 1;
+    function $mol_int62_to_string({ lo, hi }) {
+        lo = (lo + $.$mol_int62_range) % $.$mol_int62_range;
+        hi = (hi + $.$mol_int62_range) % $.$mol_int62_range;
+        return lo.toString(36) + '_' + hi.toString(36);
+    }
+    $.$mol_int62_to_string = $mol_int62_to_string;
+    function $mol_int62_from_string(str) {
+        const [lo, hi] = str.split('_');
+        return {
+            lo: (parseInt(lo, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            hi: (parseInt(hi, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+        };
+    }
+    $.$mol_int62_from_string = $mol_int62_from_string;
+    function $mol_int62_compare(left_lo, left_hi, right_lo, right_hi) {
+        return (right_hi - left_hi) || (right_lo - left_lo);
+    }
+    $.$mol_int62_compare = $mol_int62_compare;
+    function $mol_int62_inc(lo, hi, max = $.$mol_int62_max) {
+        if (lo === max) {
+            return { lo: -max, hi: hi + 1 };
+        }
+        else {
+            return { lo: lo + 1, hi };
+        }
+    }
+    $.$mol_int62_inc = $mol_int62_inc;
+    function $mol_int62_random() {
+        return {
+            lo: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
+            hi: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
+        };
+    }
+    $.$mol_int62_random = $mol_int62_random;
+    function $mol_int62_hash_string(str) {
+        return $mol_int62_to_string($mol_int62_hash_buffer($mol_charset_encode(str)));
+    }
+    $.$mol_int62_hash_string = $mol_int62_hash_string;
+    function $mol_int62_hash_buffer(buf, seed = { lo: 0, hi: 0 }) {
+        let h1 = 0xdeadbeef ^ seed.lo;
+        let h2 = 0x41c6ce57 ^ seed.hi;
+        for (const byte of buf) {
+            h1 = Math.imul(h1 ^ byte, 2654435761);
+            h2 = Math.imul(h2 ^ byte, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return { lo: h1 << 1 >> 1, hi: h2 << 1 >> 1 };
+    }
+    $.$mol_int62_hash_buffer = $mol_int62_hash_buffer;
+})($ || ($ = {}));
+//mol/int62/int62.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_crypto_native = $node.crypto.webcrypto;
+})($ || ($ = {}));
+//mol/crypto/native/native.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const algorithm = {
+        name: 'ECDSA',
+        hash: 'SHA-256',
+        namedCurve: "P-256",
+    };
+    async function $mol_crypto_auditor_pair() {
+        const pair = await $mol_crypto_native.subtle.generateKey(algorithm, true, ['sign', 'verify']);
+        return {
+            public: new $mol_crypto_auditor_public(pair.publicKey),
+            private: new $mol_crypto_auditor_private(pair.privateKey),
+        };
+    }
+    $.$mol_crypto_auditor_pair = $mol_crypto_auditor_pair;
+    class $mol_crypto_auditor_public extends Object {
+        native;
+        static size = 86;
+        constructor(native) {
+            super();
+            this.native = native;
+        }
+        static async from(serial) {
+            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
+                crv: "P-256",
+                ext: true,
+                key_ops: ['verify'],
+                kty: "EC",
+                x: serial.slice(0, 43),
+                y: serial.slice(43, 86),
+            }, algorithm, true, ['verify']));
+        }
+        async serial() {
+            const { x, y } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
+            return x + y;
+        }
+        async verify(data, sign) {
+            return await $mol_crypto_native.subtle.verify(algorithm, this.native, sign, data);
+        }
+    }
+    $.$mol_crypto_auditor_public = $mol_crypto_auditor_public;
+    class $mol_crypto_auditor_private extends Object {
+        native;
+        static size = 129;
+        constructor(native) {
+            super();
+            this.native = native;
+        }
+        static async from(serial) {
+            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
+                crv: "P-256",
+                ext: true,
+                key_ops: ['sign'],
+                kty: "EC",
+                x: serial.slice(0, 43),
+                y: serial.slice(43, 86),
+                d: serial.slice(86, 129),
+            }, algorithm, true, ['sign']));
+        }
+        async serial() {
+            const { x, y, d } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
+            return x + y + d;
+        }
+        async sign(data) {
+            return await $mol_crypto_native.subtle.sign(algorithm, this.native, data);
+        }
+        async public() {
+            return await $mol_crypto_auditor_public.from($mol_crypto_auditor_private_to_public(await this.serial()));
+        }
+    }
+    $.$mol_crypto_auditor_private = $mol_crypto_auditor_private;
+    $.$mol_crypto_auditor_sign_size = 64;
+    function $mol_crypto_auditor_private_to_public(serial) {
+        return serial.slice(0, 86);
+    }
+    $.$mol_crypto_auditor_private_to_public = $mol_crypto_auditor_private_to_public;
+})($ || ($ = {}));
+//mol/crypto/auditor/auditor.ts
+;
+"use strict";
+var $;
+(function ($) {
+    let $hyoo_crowd_peer_level;
+    (function ($hyoo_crowd_peer_level) {
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["get"] = 0] = "get";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["add"] = 1] = "add";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["mod"] = 2] = "mod";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["law"] = 3] = "law";
+    })($hyoo_crowd_peer_level = $.$hyoo_crowd_peer_level || ($.$hyoo_crowd_peer_level = {}));
+    class $hyoo_crowd_peer extends Object {
+        key_public;
+        key_public_serial;
+        key_private;
+        key_private_serial;
+        id;
+        constructor(key_public, key_public_serial, key_private, key_private_serial) {
+            super();
+            this.key_public = key_public;
+            this.key_public_serial = key_public_serial;
+            this.key_private = key_private;
+            this.key_private_serial = key_private_serial;
+            this.id = $mol_int62_hash_string(this.key_public_serial);
+        }
+        static async generate() {
+            const pair = await $$.$mol_crypto_auditor_pair();
+            const serial = await pair.private.serial();
+            return new this(pair.public, $mol_crypto_auditor_private_to_public(serial), pair.private, serial);
+        }
+        static async restore(serial) {
+            return new this(await $$.$mol_crypto_auditor_public.from(serial), $mol_crypto_auditor_private_to_public(serial), await $$.$mol_crypto_auditor_private.from(serial), serial);
+        }
+    }
+    $.$hyoo_crowd_peer = $hyoo_crowd_peer;
+})($ || ($ = {}));
+//hyoo/crowd/peer/peer.ts
+;
+"use strict";
+var $;
+(function ($) {
+    async function $hyoo_sync_peer(path) {
+        let serial = $mol_state_local.value('$hyoo_sync_peer');
+        if (typeof serial === 'string') {
+            return await $hyoo_crowd_peer.restore(serial);
+        }
+        const peer = await $hyoo_crowd_peer.generate();
+        $mol_state_local.value('$hyoo_sync_peer', peer.key_private_serial);
+        return peer;
+    }
+    $.$hyoo_sync_peer = $hyoo_sync_peer;
+})($ || ($ = {}));
+//hyoo/sync/peer/peer.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_sync_origins = [
+        '.hyoo.ru'
+    ];
+})($ || ($ = {}));
+//hyoo/sync/origins/origins.ts
 ;
 "use strict";
 var $;
@@ -3676,6 +3902,19 @@ var $;
     });
 })($ || ($ = {}));
 //mol/state/local/local.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'encode utf8 string'() {
+            const str = 'Hello, ΧΨΩЫ';
+            const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
+            $mol_assert_like($mol_charset_encode(str), encoded);
+        },
+    });
+})($ || ($ = {}));
+//mol/charset/encode/encode.test.ts
 ;
 "use strict";
 var $;

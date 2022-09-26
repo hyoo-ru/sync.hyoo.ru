@@ -99,388 +99,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_dom_render_children(el, childNodes) {
-        const node_set = new Set(childNodes);
-        let nextNode = el.firstChild;
-        for (let view of childNodes) {
-            if (view == null)
-                continue;
-            if (view instanceof $mol_dom_context.Node) {
-                while (true) {
-                    if (!nextNode) {
-                        el.appendChild(view);
-                        break;
-                    }
-                    if (nextNode == view) {
-                        nextNode = nextNode.nextSibling;
-                        break;
-                    }
-                    else {
-                        if (node_set.has(nextNode)) {
-                            el.insertBefore(view, nextNode);
-                            break;
-                        }
-                        else {
-                            const nn = nextNode.nextSibling;
-                            el.removeChild(nextNode);
-                            nextNode = nn;
-                        }
-                    }
-                }
-            }
-            else {
-                if (nextNode && nextNode.nodeName === '#text') {
-                    const str = String(view);
-                    if (nextNode.nodeValue !== str)
-                        nextNode.nodeValue = str;
-                    nextNode = nextNode.nextSibling;
-                }
-                else {
-                    const textNode = $mol_dom_context.document.createTextNode(String(view));
-                    el.insertBefore(textNode, nextNode);
-                }
-            }
-        }
-        while (nextNode) {
-            const currNode = nextNode;
-            nextNode = currNode.nextSibling;
-            el.removeChild(currNode);
-        }
-    }
-    $.$mol_dom_render_children = $mol_dom_render_children;
-})($ || ($ = {}));
-//mol/dom/render/children/children.ts
-;
-"use strict";
-//mol/type/error/error.ts
-;
-"use strict";
-//mol/type/assert/assert.test.ts
-;
-"use strict";
-//mol/type/assert/assert.ts
-;
-"use strict";
-//mol/type/equals/equals.test.ts
-;
-"use strict";
-//mol/type/equals/equals.ts
-;
-"use strict";
-//mol/type/partial/deep/deep.test.ts
-;
-"use strict";
-//mol/type/partial/deep/deep.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Make empty div'() {
-            $mol_assert_equal(($mol_jsx("div", null)).outerHTML, '<div></div>');
-        },
-        'Define native field'() {
-            const dom = $mol_jsx("input", { value: '123' });
-            $mol_assert_equal(dom.outerHTML, '<input value="123">');
-            $mol_assert_equal(dom.value, '123');
-        },
-        'Define classes'() {
-            const dom = $mol_jsx("div", { class: 'foo bar' });
-            $mol_assert_equal(dom.outerHTML, '<div class="foo bar"></div>');
-        },
-        'Define styles'() {
-            const dom = $mol_jsx("div", { style: { color: 'red' } });
-            $mol_assert_equal(dom.outerHTML, '<div style="color: red;"></div>');
-        },
-        'Define dataset'() {
-            const dom = $mol_jsx("div", { dataset: { foo: 'bar' } });
-            $mol_assert_equal(dom.outerHTML, '<div data-foo="bar"></div>');
-        },
-        'Define attributes'() {
-            const dom = $mol_jsx("div", { lang: "ru", hidden: true });
-            $mol_assert_equal(dom.outerHTML, '<div lang="ru" hidden=""></div>');
-        },
-        'Define child nodes'() {
-            const dom = $mol_jsx("div", null,
-                "hello",
-                $mol_jsx("strong", null, "world"),
-                "!");
-            $mol_assert_equal(dom.outerHTML, '<div>hello<strong>world</strong>!</div>');
-        },
-        'Function as component'() {
-            const Button = (props, target) => {
-                return $mol_jsx("button", { title: props.hint }, target());
-            };
-            const dom = $mol_jsx(Button, { id: "foo", hint: "click me" }, () => 'hey!');
-            $mol_assert_equal(dom.outerHTML, '<button id="foo" title="click me" class="Button">hey!</button>');
-        },
-        'Nested guid generation'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx(Bar, { id: "bar" },
-                        $mol_jsx("img", { id: "icon" })));
-            };
-            const Bar = (props, icon) => {
-                return $mol_jsx("span", null,
-                    icon,
-                    $mol_jsx("i", { id: "label" }));
-            };
-            const dom = $mol_jsx(Foo, { id: "foo" });
-            $mol_assert_equal(dom.outerHTML, '<div id="foo" class="Foo"><span id="foo/bar" class="Foo_bar Bar"><img id="foo/icon" class="Foo_icon"><i id="foo/bar/label" class="Foo_bar_label Bar_label"></i></span></div>');
-        },
-        'Fail on non unique ids'() {
-            const App = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx("span", { id: "bar" }),
-                    $mol_jsx("span", { id: "bar" }));
-            };
-            $mol_assert_fail(() => $mol_jsx(App, { id: "foo" }), 'JSX already has tag with id "foo/bar"');
-        },
-        'Owner based guid generationn'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx(Bar, { id: "middle", icon: () => $mol_jsx("img", { id: "icon" }) }));
-            };
-            const Bar = (props) => {
-                return $mol_jsx("span", null, props.icon());
-            };
-            const dom = $mol_jsx(Foo, { id: "app" });
-            $mol_assert_equal(dom.outerHTML, '<div id="app" class="Foo"><span id="app/middle" class="Foo_middle Bar"><img id="app/icon" class="Foo_icon"></span></div>');
-        },
-        'Fail on same ids from different caller'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx("img", { id: "icon" }),
-                    $mol_jsx(Bar, { id: "bar", icon: () => $mol_jsx("img", { id: "icon" }) }));
-            };
-            const Bar = (props) => {
-                return $mol_jsx("span", null, props.icon());
-            };
-            $mol_assert_fail(() => $mol_jsx(Foo, { id: "foo" }), 'JSX already has tag with id "foo/icon"');
-        },
-    });
-})($ || ($ = {}));
-//mol/jsx/jsx.test.tsx
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_jsx_prefix = '';
-    $.$mol_jsx_crumbs = '';
-    $.$mol_jsx_booked = null;
-    $.$mol_jsx_document = {
-        getElementById: () => null,
-        createElementNS: (space, name) => $mol_dom_context.document.createElementNS(space, name),
-        createDocumentFragment: () => $mol_dom_context.document.createDocumentFragment(),
-    };
-    $.$mol_jsx_frag = '';
-    function $mol_jsx(Elem, props, ...childNodes) {
-        const id = props && props.id || '';
-        const guid = id ? $.$mol_jsx_prefix ? $.$mol_jsx_prefix + '/' + id : id : $.$mol_jsx_prefix;
-        const crumbs_self = id ? $.$mol_jsx_crumbs.replace(/(\S+)/g, `$1_${id.replace(/\/.*/i, '')}`) : $.$mol_jsx_crumbs;
-        if (Elem && $.$mol_jsx_booked) {
-            if ($.$mol_jsx_booked.has(id)) {
-                $mol_fail(new Error(`JSX already has tag with id ${JSON.stringify(guid)}`));
-            }
-            else {
-                $.$mol_jsx_booked.add(id);
-            }
-        }
-        let node = guid ? $.$mol_jsx_document.getElementById(guid) : null;
-        if ($.$mol_jsx_prefix) {
-            const prefix_ext = $.$mol_jsx_prefix;
-            const booked_ext = $.$mol_jsx_booked;
-            const crumbs_ext = $.$mol_jsx_crumbs;
-            for (const field in props) {
-                const func = props[field];
-                if (typeof func !== 'function')
-                    continue;
-                const wrapper = function (...args) {
-                    const prefix = $.$mol_jsx_prefix;
-                    const booked = $.$mol_jsx_booked;
-                    const crumbs = $.$mol_jsx_crumbs;
-                    try {
-                        $.$mol_jsx_prefix = prefix_ext;
-                        $.$mol_jsx_booked = booked_ext;
-                        $.$mol_jsx_crumbs = crumbs_ext;
-                        return func.call(this, ...args);
-                    }
-                    finally {
-                        $.$mol_jsx_prefix = prefix;
-                        $.$mol_jsx_booked = booked;
-                        $.$mol_jsx_crumbs = crumbs;
-                    }
-                };
-                $mol_func_name_from(wrapper, func);
-                props[field] = wrapper;
-            }
-        }
-        if (typeof Elem !== 'string') {
-            if ('prototype' in Elem) {
-                const view = node && node[Elem] || new Elem;
-                Object.assign(view, props);
-                view[Symbol.toStringTag] = guid;
-                view.childNodes = childNodes;
-                if (!view.ownerDocument)
-                    view.ownerDocument = $.$mol_jsx_document;
-                view.className = (crumbs_self ? crumbs_self + ' ' : '') + (Elem['name'] || Elem);
-                node = view.valueOf();
-                node[Elem] = view;
-                return node;
-            }
-            else {
-                const prefix = $.$mol_jsx_prefix;
-                const booked = $.$mol_jsx_booked;
-                const crumbs = $.$mol_jsx_crumbs;
-                try {
-                    $.$mol_jsx_prefix = guid;
-                    $.$mol_jsx_booked = new Set;
-                    $.$mol_jsx_crumbs = (crumbs_self ? crumbs_self + ' ' : '') + (Elem['name'] || Elem);
-                    return Elem(props, ...childNodes);
-                }
-                finally {
-                    $.$mol_jsx_prefix = prefix;
-                    $.$mol_jsx_booked = booked;
-                    $.$mol_jsx_crumbs = crumbs;
-                }
-            }
-        }
-        if (!node) {
-            node = Elem
-                ? $.$mol_jsx_document.createElementNS(props?.xmlns ?? 'http://www.w3.org/1999/xhtml', Elem)
-                : $.$mol_jsx_document.createDocumentFragment();
-        }
-        $mol_dom_render_children(node, [].concat(...childNodes));
-        if (!Elem)
-            return node;
-        if (guid)
-            node.id = guid;
-        for (const key in props) {
-            if (key === 'id')
-                continue;
-            if (typeof props[key] === 'string') {
-                ;
-                node.setAttribute(key, props[key]);
-            }
-            else if (props[key] &&
-                typeof props[key] === 'object' &&
-                Reflect.getPrototypeOf(props[key]) === Reflect.getPrototypeOf({})) {
-                if (typeof node[key] === 'object') {
-                    Object.assign(node[key], props[key]);
-                    continue;
-                }
-            }
-            else {
-                node[key] = props[key];
-            }
-        }
-        if ($.$mol_jsx_crumbs)
-            node.className = (props?.['class'] ? props['class'] + ' ' : '') + crumbs_self;
-        return node;
-    }
-    $.$mol_jsx = $mol_jsx;
-})($ || ($ = {}));
-//mol/jsx/jsx.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'nulls & undefineds'() {
-            $mol_assert_ok($mol_compare_deep(null, null));
-            $mol_assert_ok($mol_compare_deep(undefined, undefined));
-            $mol_assert_not($mol_compare_deep(undefined, null));
-            $mol_assert_not($mol_compare_deep({}, null));
-        },
-        'number'() {
-            $mol_assert_ok($mol_compare_deep(1, 1));
-            $mol_assert_ok($mol_compare_deep(Number.NaN, Number.NaN));
-            $mol_assert_not($mol_compare_deep(1, 2));
-            $mol_assert_ok($mol_compare_deep(Object(1), Object(1)));
-            $mol_assert_not($mol_compare_deep(Object(1), Object(2)));
-        },
-        'POJO'() {
-            $mol_assert_ok($mol_compare_deep({}, {}));
-            $mol_assert_not($mol_compare_deep({ a: 1 }, { b: 2 }));
-            $mol_assert_not($mol_compare_deep({ a: 1 }, { a: 2 }));
-            $mol_assert_not($mol_compare_deep({}, { a: undefined }));
-            $mol_assert_ok($mol_compare_deep({ a: 1, b: 2 }, { b: 2, a: 1 }));
-            $mol_assert_ok($mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
-        },
-        'Array'() {
-            $mol_assert_ok($mol_compare_deep([], []));
-            $mol_assert_ok($mol_compare_deep([1, [2]], [1, [2]]));
-            $mol_assert_not($mol_compare_deep([1, 2], [1, 3]));
-            $mol_assert_not($mol_compare_deep([1, 2,], [1, 3, undefined]));
-        },
-        'Non POJO are different'() {
-            class Thing extends Object {
-            }
-            $mol_assert_not($mol_compare_deep(new Thing, new Thing));
-            $mol_assert_not($mol_compare_deep(() => 1, () => 1));
-            $mol_assert_not($mol_compare_deep(new RangeError('Test error'), new RangeError('Test error')));
-        },
-        'same POJOs with cyclic reference'() {
-            const a = { foo: {} };
-            a['self'] = a;
-            const b = { foo: {} };
-            b['self'] = b;
-            $mol_assert_ok($mol_compare_deep(a, b));
-        },
-        'Date'() {
-            $mol_assert_ok($mol_compare_deep(new Date(12345), new Date(12345)));
-            $mol_assert_not($mol_compare_deep(new Date(12345), new Date(12346)));
-        },
-        'RegExp'() {
-            $mol_assert_ok($mol_compare_deep(/\x22/mig, /\x22/mig));
-            $mol_assert_not($mol_compare_deep(/\x22/mig, /\x21/mig));
-            $mol_assert_not($mol_compare_deep(/\x22/mig, /\x22/mg));
-        },
-        'Error'() {
-            $mol_assert_not($mol_compare_deep(new Error('xxx'), new Error('xxx')));
-            const fail = (message) => new Error(message);
-            $mol_assert_ok($mol_compare_deep(...['xxx', 'xxx'].map(msg => new Error(msg))));
-            $mol_assert_not($mol_compare_deep(...['xxx', 'yyy'].map(msg => new Error(msg))));
-        },
-        'Map'() {
-            $mol_assert_ok($mol_compare_deep(new Map, new Map));
-            $mol_assert_ok($mol_compare_deep(new Map([[1, [2]]]), new Map([[1, [2]]])));
-            $mol_assert_ok($mol_compare_deep(new Map([[[1], 2]]), new Map([[[1], 2]])));
-            $mol_assert_not($mol_compare_deep(new Map([[1, 2]]), new Map([[1, 3]])));
-            $mol_assert_not($mol_compare_deep(new Map([[[1], 2]]), new Map([[[3], 2]])));
-        },
-        'Set'() {
-            $mol_assert_ok($mol_compare_deep(new Set, new Set));
-            $mol_assert_ok($mol_compare_deep(new Set([1, [2]]), new Set([1, [2]])));
-            $mol_assert_not($mol_compare_deep(new Set([1]), new Set([2])));
-        },
-        'Uint8Array'() {
-            $mol_assert_ok($mol_compare_deep(new Uint8Array, new Uint8Array));
-            $mol_assert_ok($mol_compare_deep(new Uint8Array([0]), new Uint8Array([0])));
-            $mol_assert_not($mol_compare_deep(new Uint8Array([0]), new Uint8Array([1])));
-        },
-        'Custom comparator'() {
-            class User {
-                name;
-                rand;
-                constructor(name, rand = Math.random()) {
-                    this.name = name;
-                    this.rand = rand;
-                }
-                [Symbol.toPrimitive](mode) {
-                    return this.name;
-                }
-            }
-            $mol_assert_ok($mol_compare_deep(new User('Jin'), new User('Jin')));
-            $mol_assert_not($mol_compare_deep(new User('Jin'), new User('John')));
-        },
-    });
-})($ || ($ = {}));
-//mol/compare/deep/deep.test.tsx
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_dom_serialize(node) {
         const serializer = new $mol_dom_context.XMLSerializer;
         return serializer.serializeToString(node);
@@ -630,32 +248,185 @@ var $;
 //mol/func/name/name.test.ts
 ;
 "use strict";
+//mol/type/error/error.ts
+;
+"use strict";
+//mol/type/assert/assert.test.ts
+;
+"use strict";
+//mol/type/assert/assert.ts
+;
+"use strict";
+//mol/type/equals/equals.test.ts
+;
+"use strict";
+//mol/type/equals/equals.ts
+;
+"use strict";
+//mol/type/partial/deep/deep.test.ts
+;
+"use strict";
 var $;
 (function ($) {
-    function $mol_func_name(func) {
-        let name = func.name;
-        if (name?.length > 1)
-            return name;
-        for (let key in this) {
-            try {
-                if (this[key] !== func)
-                    continue;
-                name = key;
-                Object.defineProperty(func, 'name', { value: name });
-                break;
-            }
-            catch { }
-        }
-        return name;
+    function $mol_log3_area_lazy(event) {
+        const self = this;
+        const stack = self.$mol_log3_stack;
+        const deep = stack.length;
+        let logged = false;
+        stack.push(() => {
+            logged = true;
+            self.$mol_log3_area.call(self, event);
+        });
+        return () => {
+            if (logged)
+                self.console.groupEnd();
+            if (stack.length > deep)
+                stack.length = deep;
+        };
     }
-    $.$mol_func_name = $mol_func_name;
-    function $mol_func_name_from(target, source) {
-        Object.defineProperty(target, 'name', { value: source.name });
-        return target;
-    }
-    $.$mol_func_name_from = $mol_func_name_from;
+    $.$mol_log3_area_lazy = $mol_log3_area_lazy;
+    $.$mol_log3_stack = [];
 })($ || ($ = {}));
-//mol/func/name/name.ts
+//mol/log3/log3.ts
+;
+"use strict";
+//mol/type/keys/extract/extract.test.ts
+;
+"use strict";
+//mol/type/keys/extract/extract.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+//mol/log3/log3.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_log3_web_make(level, color) {
+        return function $mol_log3_logger(event) {
+            const pending = this.$mol_log3_stack.pop();
+            if (pending)
+                pending();
+            let tpl = '%c';
+            const chunks = Object.values(event);
+            for (let i = 0; i < chunks.length; ++i) {
+                tpl += (typeof chunks[i] === 'string') ? ' ⦙ %s' : ' ⦙ %o';
+            }
+            const style = `color:${color};font-weight:bolder`;
+            this.console[level](tpl, style, ...chunks);
+            const self = this;
+            return () => self.console.groupEnd();
+        };
+    }
+    $.$mol_log3_web_make = $mol_log3_web_make;
+    $.$mol_log3_come = $mol_log3_web_make('info', 'royalblue');
+    $.$mol_log3_done = $mol_log3_web_make('info', 'forestgreen');
+    $.$mol_log3_fail = $mol_log3_web_make('error', 'orangered');
+    $.$mol_log3_warn = $mol_log3_web_make('warn', 'goldenrod');
+    $.$mol_log3_rise = $mol_log3_web_make('log', 'magenta');
+    $.$mol_log3_area = $mol_log3_web_make('group', 'cyan');
+})($ || ($ = {}));
+//mol/log3/log3.web.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'Make empty div'() {
+            $mol_assert_equal(($mol_jsx("div", null)).outerHTML, '<div></div>');
+        },
+        'Define native field'() {
+            const dom = $mol_jsx("input", { value: '123' });
+            $mol_assert_equal(dom.outerHTML, '<input value="123">');
+            $mol_assert_equal(dom.value, '123');
+        },
+        'Define classes'() {
+            const dom = $mol_jsx("div", { class: 'foo bar' });
+            $mol_assert_equal(dom.outerHTML, '<div class="foo bar"></div>');
+        },
+        'Define styles'() {
+            const dom = $mol_jsx("div", { style: { color: 'red' } });
+            $mol_assert_equal(dom.outerHTML, '<div style="color: red;"></div>');
+        },
+        'Define dataset'() {
+            const dom = $mol_jsx("div", { dataset: { foo: 'bar' } });
+            $mol_assert_equal(dom.outerHTML, '<div data-foo="bar"></div>');
+        },
+        'Define attributes'() {
+            const dom = $mol_jsx("div", { lang: "ru", hidden: true });
+            $mol_assert_equal(dom.outerHTML, '<div lang="ru" hidden=""></div>');
+        },
+        'Define child nodes'() {
+            const dom = $mol_jsx("div", null,
+                "hello",
+                $mol_jsx("strong", null, "world"),
+                "!");
+            $mol_assert_equal(dom.outerHTML, '<div>hello<strong>world</strong>!</div>');
+        },
+        'Function as component'() {
+            const Button = (props, target) => {
+                return $mol_jsx("button", { title: props.hint }, target());
+            };
+            const dom = $mol_jsx(Button, { id: "foo", hint: "click me" }, () => 'hey!');
+            $mol_assert_equal(dom.outerHTML, '<button id="foo" title="click me" class="Button">hey!</button>');
+        },
+        'Nested guid generation'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx(Bar, { id: "bar" },
+                        $mol_jsx("img", { id: "icon" })));
+            };
+            const Bar = (props, icon) => {
+                return $mol_jsx("span", null,
+                    icon,
+                    $mol_jsx("i", { id: "label" }));
+            };
+            const dom = $mol_jsx(Foo, { id: "foo" });
+            $mol_assert_equal(dom.outerHTML, '<div id="foo" class="Foo"><span id="foo/bar" class="Foo_bar Bar"><img id="foo/icon" class="Foo_icon"><i id="foo/bar/label" class="Foo_bar_label Bar_label"></i></span></div>');
+        },
+        'Fail on non unique ids'() {
+            const App = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx("span", { id: "bar" }),
+                    $mol_jsx("span", { id: "bar" }));
+            };
+            $mol_assert_fail(() => $mol_jsx(App, { id: "foo" }), 'JSX already has tag with id "foo/bar"');
+        },
+        'Owner based guid generationn'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx(Bar, { id: "middle", icon: () => $mol_jsx("img", { id: "icon" }) }));
+            };
+            const Bar = (props) => {
+                return $mol_jsx("span", null, props.icon());
+            };
+            const dom = $mol_jsx(Foo, { id: "app" });
+            $mol_assert_equal(dom.outerHTML, '<div id="app" class="Foo"><span id="app/middle" class="Foo_middle Bar"><img id="app/icon" class="Foo_icon"></span></div>');
+        },
+        'Fail on same ids from different caller'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx("img", { id: "icon" }),
+                    $mol_jsx(Bar, { id: "bar", icon: () => $mol_jsx("img", { id: "icon" }) }));
+            };
+            const Bar = (props) => {
+                return $mol_jsx("span", null, props.icon());
+            };
+            $mol_assert_fail(() => $mol_jsx(Foo, { id: "foo" }), 'JSX already has tag with id "foo/icon"');
+        },
+    });
+})($ || ($ = {}));
+//mol/jsx/jsx.test.tsx
 ;
 "use strict";
 var $;
@@ -909,6 +680,102 @@ var $;
     });
 })($ || ($ = {}));
 //mol/wire/fiber/fiber.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'nulls & undefineds'() {
+            $mol_assert_ok($mol_compare_deep(null, null));
+            $mol_assert_ok($mol_compare_deep(undefined, undefined));
+            $mol_assert_not($mol_compare_deep(undefined, null));
+            $mol_assert_not($mol_compare_deep({}, null));
+        },
+        'number'() {
+            $mol_assert_ok($mol_compare_deep(1, 1));
+            $mol_assert_ok($mol_compare_deep(Number.NaN, Number.NaN));
+            $mol_assert_not($mol_compare_deep(1, 2));
+            $mol_assert_ok($mol_compare_deep(Object(1), Object(1)));
+            $mol_assert_not($mol_compare_deep(Object(1), Object(2)));
+        },
+        'POJO'() {
+            $mol_assert_ok($mol_compare_deep({}, {}));
+            $mol_assert_not($mol_compare_deep({ a: 1 }, { b: 2 }));
+            $mol_assert_not($mol_compare_deep({ a: 1 }, { a: 2 }));
+            $mol_assert_not($mol_compare_deep({}, { a: undefined }));
+            $mol_assert_ok($mol_compare_deep({ a: 1, b: 2 }, { b: 2, a: 1 }));
+            $mol_assert_ok($mol_compare_deep({ a: { b: 1 } }, { a: { b: 1 } }));
+        },
+        'Array'() {
+            $mol_assert_ok($mol_compare_deep([], []));
+            $mol_assert_ok($mol_compare_deep([1, [2]], [1, [2]]));
+            $mol_assert_not($mol_compare_deep([1, 2], [1, 3]));
+            $mol_assert_not($mol_compare_deep([1, 2,], [1, 3, undefined]));
+        },
+        'Non POJO are different'() {
+            class Thing extends Object {
+            }
+            $mol_assert_not($mol_compare_deep(new Thing, new Thing));
+            $mol_assert_not($mol_compare_deep(() => 1, () => 1));
+            $mol_assert_not($mol_compare_deep(new RangeError('Test error'), new RangeError('Test error')));
+        },
+        'same POJOs with cyclic reference'() {
+            const a = { foo: {} };
+            a['self'] = a;
+            const b = { foo: {} };
+            b['self'] = b;
+            $mol_assert_ok($mol_compare_deep(a, b));
+        },
+        'Date'() {
+            $mol_assert_ok($mol_compare_deep(new Date(12345), new Date(12345)));
+            $mol_assert_not($mol_compare_deep(new Date(12345), new Date(12346)));
+        },
+        'RegExp'() {
+            $mol_assert_ok($mol_compare_deep(/\x22/mig, /\x22/mig));
+            $mol_assert_not($mol_compare_deep(/\x22/mig, /\x21/mig));
+            $mol_assert_not($mol_compare_deep(/\x22/mig, /\x22/mg));
+        },
+        'Error'() {
+            $mol_assert_not($mol_compare_deep(new Error('xxx'), new Error('xxx')));
+            const fail = (message) => new Error(message);
+            $mol_assert_ok($mol_compare_deep(...['xxx', 'xxx'].map(msg => new Error(msg))));
+            $mol_assert_not($mol_compare_deep(...['xxx', 'yyy'].map(msg => new Error(msg))));
+        },
+        'Map'() {
+            $mol_assert_ok($mol_compare_deep(new Map, new Map));
+            $mol_assert_ok($mol_compare_deep(new Map([[1, [2]]]), new Map([[1, [2]]])));
+            $mol_assert_ok($mol_compare_deep(new Map([[[1], 2]]), new Map([[[1], 2]])));
+            $mol_assert_not($mol_compare_deep(new Map([[1, 2]]), new Map([[1, 3]])));
+            $mol_assert_not($mol_compare_deep(new Map([[[1], 2]]), new Map([[[3], 2]])));
+        },
+        'Set'() {
+            $mol_assert_ok($mol_compare_deep(new Set, new Set));
+            $mol_assert_ok($mol_compare_deep(new Set([1, [2]]), new Set([1, [2]])));
+            $mol_assert_not($mol_compare_deep(new Set([1]), new Set([2])));
+        },
+        'Uint8Array'() {
+            $mol_assert_ok($mol_compare_deep(new Uint8Array, new Uint8Array));
+            $mol_assert_ok($mol_compare_deep(new Uint8Array([0]), new Uint8Array([0])));
+            $mol_assert_not($mol_compare_deep(new Uint8Array([0]), new Uint8Array([1])));
+        },
+        'Custom comparator'() {
+            class User {
+                name;
+                rand;
+                constructor(name, rand = Math.random()) {
+                    this.name = name;
+                    this.rand = rand;
+                }
+                [Symbol.toPrimitive](mode) {
+                    return this.name;
+                }
+            }
+            $mol_assert_ok($mol_compare_deep(new User('Jin'), new User('Jin')));
+            $mol_assert_not($mol_compare_deep(new User('Jin'), new User('John')));
+        },
+    });
+})($ || ($ = {}));
+//mol/compare/deep/deep.test.tsx
 ;
 "use strict";
 var $;
@@ -1703,79 +1570,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_log3_area_lazy(event) {
-        const self = this;
-        const stack = self.$mol_log3_stack;
-        const deep = stack.length;
-        let logged = false;
-        stack.push(() => {
-            logged = true;
-            self.$mol_log3_area.call(self, event);
-        });
-        return () => {
-            if (logged)
-                self.console.groupEnd();
-            if (stack.length > deep)
-                stack.length = deep;
-        };
-    }
-    $.$mol_log3_area_lazy = $mol_log3_area_lazy;
-    $.$mol_log3_stack = [];
-})($ || ($ = {}));
-//mol/log3/log3.ts
-;
-"use strict";
-//mol/type/keys/extract/extract.test.ts
-;
-"use strict";
-//mol/type/keys/extract/extract.ts
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
-//mol/log3/log3.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_log3_web_make(level, color) {
-        return function $mol_log3_logger(event) {
-            const pending = this.$mol_log3_stack.pop();
-            if (pending)
-                pending();
-            let tpl = '%c';
-            const chunks = Object.values(event);
-            for (let i = 0; i < chunks.length; ++i) {
-                tpl += (typeof chunks[i] === 'string') ? ' ⦙ %s' : ' ⦙ %o';
-            }
-            const style = `color:${color};font-weight:bolder`;
-            this.console[level](tpl, style, ...chunks);
-            const self = this;
-            return () => self.console.groupEnd();
-        };
-    }
-    $.$mol_log3_web_make = $mol_log3_web_make;
-    $.$mol_log3_come = $mol_log3_web_make('info', 'royalblue');
-    $.$mol_log3_done = $mol_log3_web_make('info', 'forestgreen');
-    $.$mol_log3_fail = $mol_log3_web_make('error', 'orangered');
-    $.$mol_log3_warn = $mol_log3_web_make('warn', 'goldenrod');
-    $.$mol_log3_rise = $mol_log3_web_make('log', 'magenta');
-    $.$mol_log3_area = $mol_log3_web_make('group', 'cyan');
-})($ || ($ = {}));
-//mol/log3/log3.web.ts
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_wire_log extends $mol_object2 {
         static watch(task) {
             return task;
@@ -1922,5 +1716,60 @@ var $;
     });
 })($ || ($ = {}));
 //mol/state/local/local.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'encode utf8 string'() {
+            const str = 'Hello, ΧΨΩЫ';
+            const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
+            $mol_assert_like($mol_charset_encode(str), encoded);
+        },
+    });
+})($ || ($ = {}));
+//mol/charset/encode/encode.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        async 'sizes'() {
+            const pair = await $$.$mol_crypto_auditor_pair();
+            const key_public = await pair.public.serial();
+            $mol_assert_equal(key_public.length, $mol_crypto_auditor_public.size);
+            const key_private = await pair.private.serial();
+            $mol_assert_equal(key_private.length, $mol_crypto_auditor_private.size);
+            const data = new Uint8Array([1, 2, 3]);
+            const sign = await pair.private.sign(data);
+            $mol_assert_equal(sign.byteLength, $mol_crypto_auditor_sign_size);
+        },
+        async 'verify self signed with auto generated key'() {
+            const auditor = await $$.$mol_crypto_auditor_pair();
+            const data = new Uint8Array([1, 2, 3]);
+            const sign = await auditor.private.sign(data);
+            $mol_assert_ok(await auditor.public.verify(data, sign));
+        },
+        async 'verify signed with exported auto generated key'() {
+            const pair = await $$.$mol_crypto_auditor_pair();
+            const data = new Uint8Array([1, 2, 3]);
+            const Alice = await $mol_crypto_auditor_private.from(await pair.private.serial());
+            const sign = await Alice.sign(data);
+            const Bob = await $mol_crypto_auditor_public.from(await pair.public.serial());
+            $mol_assert_ok(await Bob.verify(data, sign));
+        },
+        async 'take public key from private'() {
+            const pair = await $$.$mol_crypto_auditor_pair();
+            const data = new Uint8Array([1, 2, 3]);
+            const Alice = pair.private;
+            const sign = await Alice.sign(data);
+            const Bob = await pair.private.public();
+            const Carol = await $mol_crypto_auditor_public.from(await pair.private.serial());
+            $mol_assert_ok(await Bob.verify(data, sign));
+            $mol_assert_ok(await Carol.verify(data, sign));
+        },
+    });
+})($ || ($ = {}));
+//mol/crypto/auditor/auditor.web.test.ts
 
 //# sourceMappingURL=web.test.js.map

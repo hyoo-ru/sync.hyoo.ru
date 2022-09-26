@@ -2133,6 +2133,10 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $hyoo_sync_peer(path: string): Promise<$hyoo_crowd_peer>;
+}
+
+declare namespace $ {
     type $mol_data_value<Input = any, Output = any> = (val: Input) => Output;
 }
 

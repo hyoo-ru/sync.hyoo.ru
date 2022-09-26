@@ -16,6 +16,21 @@ declare namespace $ {
 declare let $hyoo_sync_revision: string;
 
 declare namespace $ {
+    function $mol_fail(error: any): never;
+}
+
+declare namespace $ {
+    function $mol_fail_hidden(error: any): never;
+}
+
+declare namespace $ {
+    function $mol_offline(uri?: string): void;
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     var $mol_dom_context: typeof globalThis;
 }
 
@@ -23,7 +38,53 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    let $hyoo_sync_origins: string[];
+    function $mol_func_name(this: $, func: Function): string;
+    function $mol_func_name_from<Target extends Function>(target: Target, source: Function): Target;
+}
+
+declare namespace $ {
+    function $mol_dom_render_children(el: Element | DocumentFragment, childNodes: NodeList | Array<Node | string | null>): void;
+}
+
+declare namespace $ {
+    type $mol_type_partial_deep<Val> = {
+        [field in keyof Val]?: $mol_type_partial_deep<Val[field]>;
+    };
+}
+
+declare namespace $ {
+    let $mol_jsx_prefix: string;
+    let $mol_jsx_crumbs: string;
+    let $mol_jsx_booked: Set<string> | null;
+    let $mol_jsx_document: $mol_jsx.JSX.ElementClass['ownerDocument'];
+    const $mol_jsx_frag = "";
+    function $mol_jsx<Props extends $mol_jsx.JSX.IntrinsicAttributes, Children extends Array<Node | string>>(Elem: string | ((props: Props, ...children: Children) => Element), props: Props, ...childNodes: Children): Element | DocumentFragment;
+    namespace $mol_jsx.JSX {
+        interface Element extends HTMLElement {
+            class?: string;
+        }
+        interface ElementClass {
+            attributes: {};
+            ownerDocument: Pick<Document, 'getElementById' | 'createElementNS' | 'createDocumentFragment'>;
+            childNodes: Array<Node | string>;
+            valueOf(): Element;
+        }
+        type OrString<Dict> = {
+            [key in keyof Dict]: Dict[key] | string;
+        };
+        type IntrinsicElements = {
+            [key in keyof ElementTagNameMap]?: $.$mol_type_partial_deep<OrString<Element & IntrinsicAttributes & ElementTagNameMap[key]>>;
+        };
+        interface IntrinsicAttributes {
+            id?: string;
+            xmlns?: string;
+        }
+        interface ElementAttributesProperty {
+            attributes: {};
+        }
+        interface ElementChildrenAttribute {
+        }
+    }
 }
 
 declare namespace $ {
@@ -48,14 +109,6 @@ declare namespace $ {
         destructor(): void;
     };
     function $mol_owning_catch<Owner, Having>(owner: Owner, having: Having): boolean;
-}
-
-declare namespace $ {
-    function $mol_fail(error: any): never;
-}
-
-declare namespace $ {
-    function $mol_fail_hidden(error: any): never;
 }
 
 declare namespace $ {
@@ -311,6 +364,98 @@ declare namespace $ {
 }
 
 declare namespace $ {
+}
+
+declare var $node: any;
+
+declare namespace $ {
+    function $mol_charset_encode(value: string): Uint8Array;
+}
+
+declare namespace $ {
+    type $mol_int62_string = `${string}_${string}`;
+    type $mol_int62_pair = {
+        readonly lo: number;
+        readonly hi: number;
+    };
+    const $mol_int62_max: number;
+    const $mol_int62_min: number;
+    const $mol_int62_range: number;
+    function $mol_int62_to_string({ lo, hi }: $mol_int62_pair): `${string}_${string}`;
+    function $mol_int62_from_string(str: string): $mol_int62_pair;
+    function $mol_int62_compare(left_lo: number, left_hi: number, right_lo: number, right_hi: number): number;
+    function $mol_int62_inc(lo: number, hi: number, max?: number): $mol_int62_pair;
+    function $mol_int62_random(): $mol_int62_pair;
+    function $mol_int62_hash_string(str: string): `${string}_${string}`;
+    function $mol_int62_hash_buffer(buf: Uint8Array, seed?: {
+        lo: number;
+        hi: number;
+    }): $mol_int62_pair;
+}
+
+declare namespace $ {
+    var $mol_crypto_native: Crypto;
+}
+
+declare namespace $ {
+    function $mol_crypto_auditor_pair(this: $): Promise<{
+        public: $mol_crypto_auditor_public;
+        private: $mol_crypto_auditor_private;
+    }>;
+    class $mol_crypto_auditor_public extends Object {
+        readonly native: CryptoKey & {
+            type: 'public';
+        };
+        static size: number;
+        constructor(native: CryptoKey & {
+            type: 'public';
+        });
+        static from(serial: string): Promise<$mol_crypto_auditor_public>;
+        serial(): Promise<string>;
+        verify(data: BufferSource, sign: BufferSource): Promise<boolean>;
+    }
+    class $mol_crypto_auditor_private extends Object {
+        readonly native: CryptoKey & {
+            type: 'private';
+        };
+        static size: number;
+        constructor(native: CryptoKey & {
+            type: 'private';
+        });
+        static from(serial: string): Promise<$mol_crypto_auditor_private>;
+        serial(): Promise<string>;
+        sign(data: BufferSource): Promise<ArrayBuffer>;
+        public(): Promise<$mol_crypto_auditor_public>;
+    }
+    const $mol_crypto_auditor_sign_size = 64;
+    function $mol_crypto_auditor_private_to_public(serial: string): string;
+}
+
+declare namespace $ {
+    enum $hyoo_crowd_peer_level {
+        get = 0,
+        add = 1,
+        mod = 2,
+        law = 3
+    }
+    class $hyoo_crowd_peer extends Object {
+        readonly key_public: $mol_crypto_auditor_public;
+        readonly key_public_serial: string;
+        readonly key_private: $mol_crypto_auditor_private;
+        readonly key_private_serial: string;
+        id: $mol_int62_string;
+        constructor(key_public: $mol_crypto_auditor_public, key_public_serial: string, key_private: $mol_crypto_auditor_private, key_private_serial: string);
+        static generate(): Promise<$hyoo_crowd_peer>;
+        static restore(serial: string): Promise<$hyoo_crowd_peer>;
+    }
+}
+
+declare namespace $ {
+    function $hyoo_sync_peer(path: string): Promise<$hyoo_crowd_peer>;
+}
+
+declare namespace $ {
+    let $hyoo_sync_origins: string[];
 }
 
 declare namespace $ {

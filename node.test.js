@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "cd518d1";
+let $hyoo_sync_revision = "22126fe";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -1203,6 +1203,32 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    function $mol_wire_sync(obj) {
+        return new Proxy(obj, {
+            get(obj, field) {
+                const val = obj[field];
+                if (typeof val !== 'function')
+                    return val;
+                const temp = $mol_wire_task.getter(val);
+                return function $mol_wire_sync(...args) {
+                    const fiber = temp(obj, args);
+                    return fiber.sync();
+                };
+            },
+            apply(obj, self, args) {
+                const temp = $mol_wire_task.getter(obj);
+                const fiber = temp(self, args);
+                return fiber.sync();
+            },
+        });
+    }
+    $.$mol_wire_sync = $mol_wire_sync;
+})($ || ($ = {}));
+//mol/wire/sync/sync.ts
+;
+"use strict";
+var $;
 (function ($_1) {
     let $$;
     (function ($$) {
@@ -1808,32 +1834,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_wire_sync(obj) {
-        return new Proxy(obj, {
-            get(obj, field) {
-                const val = obj[field];
-                if (typeof val !== 'function')
-                    return val;
-                const temp = $mol_wire_task.getter(val);
-                return function $mol_wire_sync(...args) {
-                    const fiber = temp(obj, args);
-                    return fiber.sync();
-                };
-            },
-            apply(obj, self, args) {
-                const temp = $mol_wire_task.getter(obj);
-                const fiber = temp(self, args);
-                return fiber.sync();
-            },
-        });
-    }
-    $.$mol_wire_sync = $mol_wire_sync;
-})($ || ($ = {}));
-//mol/wire/sync/sync.ts
-;
-"use strict";
-var $;
-(function ($) {
     const TextEncoder = globalThis.TextEncoder ?? $node.util.TextEncoder;
     const encoder = new TextEncoder();
     function $mol_charset_encode(value) {
@@ -2025,6 +2025,22 @@ var $;
     $.$hyoo_crowd_peer = $hyoo_crowd_peer;
 })($ || ($ = {}));
 //hyoo/crowd/peer/peer.ts
+;
+"use strict";
+var $;
+(function ($) {
+    async function $hyoo_sync_peer(path) {
+        let serial = $mol_state_local.value('$hyoo_sync_peer');
+        if (typeof serial === 'string') {
+            return await $hyoo_crowd_peer.restore(serial);
+        }
+        const peer = await $hyoo_crowd_peer.generate();
+        $mol_state_local.value('$hyoo_sync_peer', peer.key_private_serial);
+        return peer;
+    }
+    $.$hyoo_sync_peer = $hyoo_sync_peer;
+})($ || ($ = {}));
+//hyoo/sync/peer/peer.node.ts
 ;
 "use strict";
 var $;
@@ -3298,15 +3314,7 @@ var $;
             return data;
         }
         peer() {
-            let serial = this.$.$mol_state_local.value('$hyoo_sync_peer');
-            if (typeof serial !== 'string') {
-                const path = this + '.peer()';
-                serial = this.$.$mol_state_local.value(path)
-                    ?? $mol_wire_sync($hyoo_crowd_peer).generate().key_private_serial;
-                this.$.$mol_state_local.value('$hyoo_sync_peer', serial);
-                this.$.$mol_state_local.value(path, null);
-            }
-            return $mol_wire_sync($hyoo_crowd_peer).restore(serial);
+            return $mol_wire_sync($hyoo_sync_peer)(this + '.peer()');
         }
         world() {
             const world = new this.$.$hyoo_crowd_world(this.peer());

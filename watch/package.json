@@ -153,6 +153,7 @@
     "$mol_icon_github",
     "$hyoo_sync_client",
     "$hyoo_sync_yard",
+    "$hyoo_sync_peer",
     "$hyoo_crowd_peer",
     "$hyoo_crowd",
     "$mol_int62",

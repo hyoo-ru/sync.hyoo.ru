@@ -18,9 +18,10 @@ jobs:
       with:
         token: ${{ secrets.GH_PAT }}
         package: 'hyoo/sync'
-        modules: 'server watch'
+        modules: 'server watch auth'
     
     - run: 'cp -r hyoo/sync/watch/- hyoo/sync/server/-/watch'
+    - run: 'cp -r hyoo/sync/auth/- hyoo/sync/server/-/auth'
     
     - uses: alex-page/blazing-fast-gh-pages-deploy@v1.1.0
       if: github.ref == 'refs/heads/master'

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "af6a04c";
+let $hyoo_sync_revision = "787dddb";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4902,14 +4902,20 @@ var $;
                 });
                 if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                     const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
-                    res.writeHead(200, {
-                        'Access-Control-Allow-Origin': '*',
-                        'Content-Type': {
-                            js: 'application/javascript',
-                            html: 'text/html',
-                        }[ext],
-                    });
-                    res.end($node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString());
+                    try {
+                        const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString();
+                        res.writeHead(200, {
+                            'Access-Control-Allow-Origin': '*',
+                            'Content-Type': {
+                                js: 'application/javascript',
+                                html: 'text/html',
+                            }[ext] ?? '',
+                        });
+                        res.end(content);
+                    }
+                    catch (error) {
+                        res.writeHead(500).end(error.message ?? error);
+                    }
                     return;
                 }
                 const query = $hyoo_harp_from_string(query_str);

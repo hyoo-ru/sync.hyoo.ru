@@ -27,8 +27,14 @@ namespace $ {
 				
 				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
+					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? ''
+					
 					res.writeHead( 200, {
 						'Access-Control-Allow-Origin': '*',
+						'Content-Type': {
+							js: 'application/javascript',
+							html: 'text/html',
+						}[ ext ],
 					} )
 					
 					res.end( $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) ).toString() )

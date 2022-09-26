@@ -1,6 +1,6 @@
 namespace $ {
 	
-	window.addEventListener( 'message', event => {
+	$mol_dom_context.addEventListener( 'message', event => {
 		
 		if( !Array.isArray( event.data ) ) return
 		if( event.data[0] !== '$hyoo_sync_peer' ) return

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "313037c";
+let $hyoo_sync_revision = "b3d85a8";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4892,7 +4892,7 @@ var $;
                     message: 'HTTP Query',
                     query: req.url,
                 });
-                if (/^watch\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
+                if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                     res.writeHead(200, {
                         'Access-Control-Allow-Origin': '*',
                     });

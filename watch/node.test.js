@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "787dddb";
+let $hyoo_sync_revision = "2d1a185";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14966,7 +14966,9 @@ var $;
         class $hyoo_sync_watch_log extends $.$hyoo_sync_watch_log {
             source() {
                 const uri = '/log';
-                const text = this.$.$mol_fetch.text(uri);
+                const text = this.$.$mol_fetch.text(uri)
+                    .replace(/^(?!\w{4}$|\s|$)/gm, 'wild \\\n\t\\')
+                    .replace(/^(?= )/gm, '\t\\');
                 return this.$.$mol_tree2_from_string(text, uri);
             }
             types() {
@@ -14983,6 +14985,7 @@ var $;
                     'done': '✅',
                     'warn': '💢',
                     'fail': '💥',
+                    'wild': '🛑',
                 }[type];
                 return `${icon} ${type}`;
             }

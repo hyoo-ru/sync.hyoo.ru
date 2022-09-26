@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "e08fc9c";
+let $hyoo_sync_revision = "313037c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14696,7 +14696,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_menu] {\n\tflex-basis: 20rem;\n}\n");
+    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_menu_head] {\n\tflex-wrap: nowrap;\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/-css/watch.view.css.ts
 ;

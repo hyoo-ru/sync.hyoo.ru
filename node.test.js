@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "22126fe";
+let $hyoo_sync_revision = "af6a04c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4901,8 +4901,13 @@ var $;
                     query: req.url,
                 });
                 if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
+                    const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
                     res.writeHead(200, {
                         'Access-Control-Allow-Origin': '*',
+                        'Content-Type': {
+                            js: 'application/javascript',
+                            html: 'text/html',
+                        }[ext],
                     });
                     res.end($node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString());
                     return;

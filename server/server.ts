@@ -25,7 +25,7 @@ namespace $ {
 					query: req.url,
 				})
 				
-				if( /^watch\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
+				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
 					res.writeHead( 200, {
 						'Access-Control-Allow-Origin': '*',

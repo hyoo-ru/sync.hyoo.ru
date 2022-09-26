@@ -7,20 +7,7 @@ namespace $ {
 		
 		@ $mol_mem
 		peer() {
-			
-			let serial = this.$.$mol_state_local.value( '$hyoo_sync_peer' ) as string | null
-			if( typeof serial !== 'string' ) {
-				
-				const path = this + '.peer()'
-				serial = this.$.$mol_state_local.value( path )
-					?? $mol_wire_sync( $hyoo_crowd_peer ).generate().key_private_serial 
-				
-				this.$.$mol_state_local.value( '$hyoo_sync_peer', serial )
-				this.$.$mol_state_local.value( path, null )
-				
-			}
-			
-			return $mol_wire_sync( $hyoo_crowd_peer ).restore( serial )
+			return $mol_wire_sync( $hyoo_sync_peer )( this + '.peer()' )
 		}
 		
 		@ $mol_mem

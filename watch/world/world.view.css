@@ -3,6 +3,14 @@
 	flex-basis: 20rem;
 }
 
+[hyoo_sync_watch_world_land_config] {
+	flex-shrink: 1;
+}
+
+[hyoo_sync_watch_world_menu_tools] {
+	flex-shrink: 0;
+}
+
 [hyoo_sync_watch_world_land_avatar] {
 	margin: var(--mol_gap_block);
 }

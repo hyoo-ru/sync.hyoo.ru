@@ -787,12 +787,14 @@ declare namespace $ {
         land(id: $mol_int62_string): $hyoo_crowd_land;
         land_grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): $hyoo_crowd_land;
         home(): $hyoo_crowd_land;
+        land_search(query: string): $hyoo_crowd_land[];
         sync(): void;
         land_sync(land: $hyoo_crowd_land): void;
         db_land_clocks(land: $mol_int62_string, next?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock] | undefined;
         db_land_sync(land: $hyoo_crowd_land): void;
         db_land_init(land: $hyoo_crowd_land): void;
         db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
+        db_land_search(from: string | number, to?: string | number): Promise<Set<`${string}_${string}`>>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         master_cursor(next?: number): number;
         master_link(): string;

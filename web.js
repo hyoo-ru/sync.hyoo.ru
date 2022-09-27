@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2d1a185";
+let $hyoo_sync_revision = "bddcc5e";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3135,6 +3135,32 @@ var $;
         home() {
             return this.land(this.peer().id);
         }
+        land_search(query) {
+            const stat = new Map();
+            for (const prefix of query.match(/\p{Letter}{2,}/gu) ?? []) {
+                const lands = new Set();
+                const caps = prefix.slice(0, 1).toUpperCase() + prefix.slice(1);
+                if (caps !== prefix) {
+                    const found = $mol_wire_sync(this).db_land_search(caps);
+                    for (const land of found)
+                        lands.add(land);
+                }
+                exact: {
+                    const found = $mol_wire_sync(this).db_land_search(prefix);
+                    for (const land of found)
+                        lands.add(land);
+                }
+                spaced: {
+                    const found = $mol_wire_sync(this).db_land_search(' ' + prefix);
+                    for (const land of found)
+                        lands.add(land);
+                }
+                for (const land of lands) {
+                    stat.set(land, (stat.get(land) ?? 0) + 1);
+                }
+            }
+            return [...stat].sort((left, right) => right[1] - left[1]).map(pair => this.land(pair[0]));
+        }
         sync() {
             this.server();
             for (const land of this.world().lands.values()) {
@@ -3223,6 +3249,9 @@ var $;
         }
         async db_land_load(land) {
             return [];
+        }
+        async db_land_search(from, to = from) {
+            return new Set();
         }
         async db_land_save(land, units) { }
         master_cursor(next = 0) {
@@ -3373,6 +3402,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_yard.prototype, "land", null);
+    __decorate([
+        $mol_action
+    ], $hyoo_sync_yard.prototype, "land_search", null);
     __decorate([
         $mol_mem
     ], $hyoo_sync_yard.prototype, "sync", null);

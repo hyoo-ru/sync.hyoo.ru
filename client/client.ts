@@ -13,6 +13,7 @@ namespace $ {
 					Indexes: {
 						//      land
 						Land: [ $mol_int62_string ]
+						Data: [ $mol_int62_string ]
 					}
 				}
 			}
@@ -23,6 +24,7 @@ namespace $ {
 			return await this.$.$mol_db< Scheme >( '$hyoo_sync_client_db2',
 				mig => mig.store_make( 'Unit' ),
 				mig => mig.stores.Unit.index_make( 'Land', [ 'land' ] ),
+				mig => mig.stores.Unit.index_make( 'Data', [ 'data' ] ),
 			)
 			
 		}
@@ -52,6 +54,22 @@ namespace $ {
 			return units
 		}
 		
+		async db_land_search( from: string, to = from + '\xFFFF' ) {
+			
+			try {
+				var db = await this.db()
+			} catch( error ) {
+				$mol_fail_log( error )
+				return new Set< $mol_int62_string >()
+			}
+			
+			const Unit = db.read( 'Unit' ).Unit
+			const query = IDBKeyRange.bound( [ from ], [ to ] )
+			const recs = await Unit.indexes.Data.select( query )
+
+			return new Set< $mol_int62_string >( recs.map( rec => rec.land ) )
+		}
+		
 		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) {
 			
 			try {
@@ -69,7 +87,6 @@ namespace $ {
 			}
 			
 			await trans.commit()
-			
 		}
 		
 		

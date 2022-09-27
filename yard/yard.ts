@@ -33,6 +33,41 @@ namespace $ {
 			return this.land( this.peer().id )
 		}
 		
+		@ $mol_action
+		land_search( query: string ) {
+			
+			const stat = new Map< $mol_int62_string, number >()
+			
+			for( const prefix of query.match( /\p{Letter}{2,}/gu ) ?? [] ) {
+				
+				const lands = new Set< $mol_int62_string >()
+				
+				const caps = prefix.slice( 0, 1 ).toUpperCase() + prefix.slice( 1 )
+				if( caps !== prefix ) {
+					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( caps )
+					for( const land of found ) lands.add( land )
+				}
+				
+				exact: {
+					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( prefix )
+					for( const land of found ) lands.add( land )
+				}
+				
+				spaced: {
+					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( ' ' + prefix )
+					for( const land of found ) lands.add( land )
+				}
+				
+				for( const land of lands ) {
+					stat.set( land, ( stat.get( land ) ?? 0 ) + 1 )
+				}
+				
+			}
+
+			return [ ... stat ].sort( ( left, right )=> right[1] - left[1] ).map( pair => this.land( pair[0] ) )
+			
+		}
+		
 		
 		@ $mol_mem
 		sync() {
@@ -167,6 +202,9 @@ namespace $ {
 		
 		async db_land_load( land: $hyoo_crowd_land ) {
 			return [] as $hyoo_crowd_unit[]
+		}
+		async db_land_search( from: string | number, to = from ) {
+			return new Set< $mol_int62_string >()
 		}
 		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) { }
 		

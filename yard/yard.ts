@@ -64,7 +64,7 @@ namespace $ {
 				
 			}
 
-			return [ ... stat ].sort( ( left, right )=> right[1] - left[1] ).map( pair => this.land( pair[0] ) )
+			return [ ... stat ].sort( ( left, right )=> right[1] - left[1] ).map( pair => pair[0] )
 			
 		}
 		

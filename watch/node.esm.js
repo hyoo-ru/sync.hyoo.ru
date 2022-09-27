@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "bddcc5e";
+let $hyoo_sync_revision = "3e987ed";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8208,7 +8208,7 @@ var $;
                     stat.set(land, (stat.get(land) ?? 0) + 1);
                 }
             }
-            return [...stat].sort((left, right) => right[1] - left[1]).map(pair => this.land(pair[0]));
+            return [...stat].sort((left, right) => right[1] - left[1]).map(pair => pair[0]);
         }
         sync() {
             this.server();

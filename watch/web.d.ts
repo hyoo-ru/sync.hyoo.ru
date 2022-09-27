@@ -2409,7 +2409,7 @@ declare namespace $ {
         land(id: $mol_int62_string): $hyoo_crowd_land;
         land_grab(king_level?: $hyoo_crowd_peer_level, base_level?: $hyoo_crowd_peer_level): $hyoo_crowd_land;
         home(): $hyoo_crowd_land;
-        land_search(query: string): $hyoo_crowd_land[];
+        land_search(query: string): `${string}_${string}`[];
         sync(): void;
         land_sync(land: $hyoo_crowd_land): void;
         db_land_clocks(land: $mol_int62_string, next?: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock]): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock] | undefined;

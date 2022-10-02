@@ -23,10 +23,11 @@ namespace $ {
 		}
 		
 		land_grab(
-			king_level = $hyoo_crowd_peer_level.law,
-			base_level = $hyoo_crowd_peer_level.get,
+			law = [''] as readonly ( $mol_int62_string | '' )[],
+			mod = [] as readonly ( $mol_int62_string | '' )[],
+			add = [] as readonly ( $mol_int62_string | '' )[],
 		) {
-			return $mol_wire_sync( this.world() ).grab( king_level, base_level )
+			return $mol_wire_sync( this.world() ).grab( law, mod, add )
 		}
 		
 		home() {

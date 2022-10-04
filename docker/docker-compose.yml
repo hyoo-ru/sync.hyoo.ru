@@ -3,11 +3,9 @@ services:
   server:
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./Dockerfile
     ports:
-      - "3000:9090"
-    stdin_open: true # docker run -i
-    tty: true        # docker run -t
+      - "3000:3000"
     depends_on:
        - db
     networks:

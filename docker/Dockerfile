@@ -19,4 +19,4 @@ RUN cp -r hyoo/sync/watch/- hyoo/sync/server/-/watch
 RUN cp -r hyoo/sync/auth/- hyoo/sync/server/-/auth
 
 WORKDIR ./hyoo/sync/server/-
-ENTRYPOINT node node.js port=9090 db=postgres://docker:password@172.28.1.2:5432/sync?sslmode=disable log=/var/log/sync.log >> /var/log/sync.log
+ENTRYPOINT node node.js port=3000 db=postgres://docker:password@:5432/sync?sslmode=disable log=/var/log/sync.log &>> /var/log/sync.log

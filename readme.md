@@ -15,7 +15,12 @@ Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/c
 
 ### How to raise your server?
 
-Simple: `docker-compose -f docker/docker-compose.yml up -d`
+Simple: 
+```sh
+cd ./docker
+docker-compose build --no-cache
+docker-compose up -d
+```
 
 The server will start on port 3000 [(by default)](https://github.com/hyoo-ru/sync.hyoo.ru/blob/master/docker-compose.yml#L8)
 

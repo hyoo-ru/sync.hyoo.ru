@@ -55,7 +55,7 @@ namespace $ {
 			return units
 		}
 		
-		async db_land_search( from: string, to = from + '\xFFFF' ) {
+		async db_land_search( from: string, to = from + '\uFFFF' ) {
 			
 			try {
 				var db = await this.db()

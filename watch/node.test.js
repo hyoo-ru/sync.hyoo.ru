@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "979075f";
+let $hyoo_sync_revision = "864e895";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8753,7 +8753,7 @@ var $;
             const units = recs.map(rec => new $hyoo_crowd_unit(rec.land, rec.auth, rec.head, rec.self, rec.next, rec.prev, rec.time, rec.data, new $hyoo_crowd_unit_bin(rec.bin.buffer)));
             return units;
         }
-        async db_land_search(from, to = from + '\xFFFF') {
+        async db_land_search(from, to = from + '\uFFFF') {
             try {
                 var db = await this.db();
             }
@@ -14599,7 +14599,7 @@ var $;
             return this.response(input, init).json();
         }
         static buffer(input, init) {
-            this.response(input, init).buffer();
+            return this.response(input, init).buffer();
         }
         static xml(input, init) {
             return this.response(input, init).xml();

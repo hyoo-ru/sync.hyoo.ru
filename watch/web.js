@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "06d7b4b";
+let $hyoo_sync_revision = "1560a1c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8014,13 +8014,13 @@ var $;
             for (const prefix of query.match(/\p{Letter}{2,}/gu) ?? []) {
                 const caps = prefix.slice(0, 1).toUpperCase() + prefix.slice(1);
                 const prefs = new Set([
-                    prefix, ' ' + prefix,
                     caps, ' ' + caps,
+                    prefix, ' ' + prefix,
                 ]);
                 const lands = new Set();
                 const founds = $mol_wire_race(...[...prefs].map(pref => () => $mol_wire_sync(this).db_land_search(pref)));
                 for (const found of founds) {
-                    for (const land of found)
+                    for (const land of [...found].reverse())
                         lands.add(land);
                 }
                 for (const land of lands) {

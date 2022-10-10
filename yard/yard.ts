@@ -41,21 +41,19 @@ namespace $ {
 			
 			for( const prefix of query.match( /\p{Letter}{2,}/gu ) ?? [] ) {
 				
+				const caps = prefix.slice( 0, 1 ).toUpperCase() + prefix.slice( 1 )
+				const prefs = new Set< string >([
+					prefix, ' ' + prefix,
+					caps, ' ' + caps,
+				])
+				
 				const lands = new Set< $mol_int62_string >()
 				
-				const caps = prefix.slice( 0, 1 ).toUpperCase() + prefix.slice( 1 )
-				if( caps !== prefix ) {
-					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( caps )
-					for( const land of found ) lands.add( land )
-				}
+				const founds = $mol_wire_race(
+					... [ ... prefs ].map( pref => ()=> $mol_wire_sync( this as $hyoo_sync_yard< Line > ).db_land_search( pref ) )
+				)
 				
-				exact: {
-					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( prefix )
-					for( const land of found ) lands.add( land )
-				}
-				
-				spaced: {
-					const found = $mol_wire_sync( this as $hyoo_sync_yard<Line> ).db_land_search( ' ' + prefix )
+				for( const found of founds ) {
 					for( const land of found ) lands.add( land )
 				}
 				

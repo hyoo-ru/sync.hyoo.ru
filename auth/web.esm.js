@@ -1601,6 +1601,12 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_int62_string_ensure(str) {
+        if (typeof str !== 'string')
+            return null;
+        return $mol_int62_from_string(str) && str;
+    }
+    $.$mol_int62_string_ensure = $mol_int62_string_ensure;
     $.$mol_int62_max = (2 ** 30) - 1;
     $.$mol_int62_min = -(2 ** 30);
     $.$mol_int62_range = $.$mol_int62_max - $.$mol_int62_min + 1;
@@ -1611,10 +1617,15 @@ var $;
     }
     $.$mol_int62_to_string = $mol_int62_to_string;
     function $mol_int62_from_string(str) {
-        const [lo, hi] = str.split('_');
+        const [str_lo, str_hi] = str.split('_');
+        const int_lo = parseInt(str_lo, 36);
+        const int_hi = parseInt(str_hi, 36);
+        if (int_lo.toString(36) !== str_lo || int_hi.toString(36) !== str_hi) {
+            return null;
+        }
         return {
-            lo: (parseInt(lo, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
-            hi: (parseInt(hi, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            lo: (int_lo - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            hi: (int_hi - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
         };
     }
     $.$mol_int62_from_string = $mol_int62_from_string;

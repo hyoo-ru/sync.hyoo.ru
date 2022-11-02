@@ -371,6 +371,7 @@ declare namespace $ {
 
 declare namespace $ {
     type $mol_int62_string = `${string}_${string}`;
+    function $mol_int62_string_ensure(str: unknown): `${string}_${string}` | null;
     type $mol_int62_pair = {
         readonly lo: number;
         readonly hi: number;
@@ -379,7 +380,7 @@ declare namespace $ {
     const $mol_int62_min: number;
     const $mol_int62_range: number;
     function $mol_int62_to_string({ lo, hi }: $mol_int62_pair): `${string}_${string}`;
-    function $mol_int62_from_string(str: string): $mol_int62_pair;
+    function $mol_int62_from_string(str: string): null | $mol_int62_pair;
     function $mol_int62_compare(left_lo: number, left_hi: number, right_lo: number, right_hi: number): number;
     function $mol_int62_inc(lo: number, hi: number, max?: number): $mol_int62_pair;
     function $mol_int62_random(): $mol_int62_pair;
@@ -584,7 +585,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_node {
+    class $hyoo_crowd_node extends Object {
         readonly land: $hyoo_crowd_land;
         readonly head: $mol_int62_string;
         constructor(land: $hyoo_crowd_land, head: $mol_int62_string);
@@ -593,6 +594,7 @@ declare namespace $ {
         as<Node extends typeof $hyoo_crowd_node>(Node: Node): InstanceType<Node>;
         units(): readonly $hyoo_crowd_unit[];
         nodes<Node extends typeof $hyoo_crowd_node>(Node: Node): InstanceType<Node>[];
+        [Symbol.toPrimitive](): string;
     }
 }
 
@@ -658,6 +660,8 @@ declare namespace $ {
         level(peer: $mol_int62_string, next?: $hyoo_crowd_peer_level): $hyoo_crowd_peer_level;
         lords(): readonly `${string}_${string}`[];
         authors(): Set<`${string}_${string}`>;
+        first_stamp(): number | null;
+        last_stamp(): number;
         selection(peer: $mol_int62_string): $hyoo_crowd_reg;
         put(head: $mol_int62_string, self: $mol_int62_string, prev: $mol_int62_string, data: unknown): $hyoo_crowd_unit;
         wipe(unit: $hyoo_crowd_unit): $hyoo_crowd_unit;

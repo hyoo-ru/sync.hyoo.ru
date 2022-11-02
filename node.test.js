@@ -1846,6 +1846,12 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_int62_string_ensure(str) {
+        if (typeof str !== 'string')
+            return null;
+        return $mol_int62_from_string(str) && str;
+    }
+    $.$mol_int62_string_ensure = $mol_int62_string_ensure;
     $.$mol_int62_max = (2 ** 30) - 1;
     $.$mol_int62_min = -(2 ** 30);
     $.$mol_int62_range = $.$mol_int62_max - $.$mol_int62_min + 1;
@@ -1856,10 +1862,15 @@ var $;
     }
     $.$mol_int62_to_string = $mol_int62_to_string;
     function $mol_int62_from_string(str) {
-        const [lo, hi] = str.split('_');
+        const [str_lo, str_hi] = str.split('_');
+        const int_lo = parseInt(str_lo, 36);
+        const int_hi = parseInt(str_hi, 36);
+        if (int_lo.toString(36) !== str_lo || int_hi.toString(36) !== str_hi) {
+            return null;
+        }
         return {
-            lo: (parseInt(lo, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
-            hi: (parseInt(hi, 36) - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            lo: (int_lo - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            hi: (int_hi - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
         };
     }
     $.$mol_int62_from_string = $mol_int62_from_string;
@@ -2553,10 +2564,11 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $hyoo_crowd_node {
+    class $hyoo_crowd_node extends Object {
         land;
         head;
         constructor(land, head) {
+            super();
             this.land = land;
             this.head = head;
         }
@@ -2575,6 +2587,9 @@ var $;
         nodes(Node) {
             return this.units().map(unit => new Node(this.land, unit.self));
         }
+        [Symbol.toPrimitive]() {
+            return `${this.constructor.name}("${this.land.id()}","${this.head}")`;
+        }
         [$mol_dev_format_head]() {
             return $mol_dev_format_span({}, $mol_dev_format_native(this), $mol_dev_format_shade('/'), $mol_dev_format_auto(this.units().map(unit => unit.data)), $mol_dev_format_shade('/'), $mol_dev_format_auto(this.nodes($hyoo_crowd_node)));
         }
@@ -2591,7 +2606,7 @@ var $;
             const unit = this.units()[0];
             if (next === undefined)
                 return unit?.data ?? null;
-            if (unit?.data === next)
+            if ($mol_compare_deep(unit?.data, next))
                 return next;
             this.land.put(this.head, unit?.self ?? this.land.id_new(), '0_0', next);
             return next;
@@ -2607,8 +2622,8 @@ var $;
         }
         yoke(law = [''], mod = [], add = []) {
             const world = this.world();
-            let land_id = (this.value() ?? '0_0');
-            if (land_id !== '0_0')
+            let land_id = $mol_int62_string_ensure(this.value());
+            if (land_id)
                 return world.land_sync(land_id);
             if (this.land.level(this.land.peer().id) < $hyoo_crowd_peer_level.add)
                 return null;
@@ -2862,6 +2877,13 @@ var $;
                 authors.add(unit.auth);
             }
             return authors;
+        }
+        first_stamp() {
+            const grab_unit = this._unit_all.get(`${this.id()}/${this.id()}`);
+            return (grab_unit && $hyoo_crowd_time_stamp(grab_unit.time)) ?? null;
+        }
+        last_stamp() {
+            return this.clock_data.last_stamp();
         }
         selection(peer) {
             return this.world().land_sync(peer).chief.sub('$hyoo_crowd_land..selection', $hyoo_crowd_reg);
@@ -4574,6 +4596,7 @@ var $;
                 return next;
             }
             else {
+                this.units();
                 return reg.value()
                     ?.map(point => this.offset_by_point(point)[1]) ?? [0, 0];
             }
@@ -4869,8 +4892,8 @@ var $;
                     insert: (next, lead) => {
                         return this.land.put(this.head, typeof next === 'string'
                             ? this.land.id_new()
-                            : $mol_int62_to_string($mol_int62_from_string(next.id))
-                                || this.land.id_new(), lead?.self ?? '0_0', val(next));
+                            : $mol_int62_string_ensure(next.id)
+                                ?? this.land.id_new(), lead?.self ?? '0_0', val(next));
                     },
                     update: (next, prev, lead) => this.land.put(prev.head, prev.self, lead?.self ?? '0_0', val(next)),
                 });

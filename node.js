@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "5fb5cf0";
+let $hyoo_sync_revision = "026ce2d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5086,8 +5086,10 @@ var $;
                         $mol_fail(new Error('head is required'));
                     const land = world.land(land_id);
                     const node = land.node(head_id, $hyoo_crowd_blob);
+                    const type = node.type();
                     res.writeHead(200, {
-                        'Content-Type': node.type(),
+                        'Content-Type': type,
+                        'Content-Disposition': /^(image|video)\//.test(type) ? undefined : 'attachment',
                         'Cache-Control': 'public, proxy-revalidate, max-age=1000',
                         'Access-Control-Allow-Origin': '*',
                     });

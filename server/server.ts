@@ -90,7 +90,7 @@ namespace $ {
 						'Access-Control-Allow-Origin': '*',
 					} )
 					
-					res.end( node.blob() )
+					res.end( node.buffer() )
 					
 					return
 				}

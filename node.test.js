@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "0bd0495";
+let $hyoo_sync_revision = "6d7e62a";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5082,7 +5082,7 @@ var $;
                         'Content-Type': node.type(),
                         'Access-Control-Allow-Origin': '*',
                     });
-                    res.end(node.blob());
+                    res.end(node.buffer());
                     return;
                 }
                 if (!query.land) {

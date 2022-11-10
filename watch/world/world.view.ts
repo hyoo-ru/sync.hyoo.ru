@@ -57,6 +57,10 @@ namespace $.$$ {
 			return this.land()!.node( id, $hyoo_crowd_json ).json()
 		}
 		
+		node_blob( id: $mol_int62_string ) {
+			return this.land()!.node( id, $hyoo_crowd_blob ).uri()
+		}
+		
 	}
 	
 }

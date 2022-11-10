@@ -52,7 +52,12 @@ namespace $ {
 					return
 				}
 				
-				const query = $hyoo_harp_from_string( query_str )
+				const query = $hyoo_harp_from_string( query_str ) as $hyoo_harp_query<string> & {
+					blob: {
+						land: $hyoo_harp_query<string>,
+						head: $hyoo_harp_query<string>,
+					},
+				}
 				
 				if( query.log ) {
 					
@@ -65,6 +70,27 @@ namespace $ {
 					if( !path ) return res.end( '\\Use `log` parameter to provide path to server logs in tree format\n' )
 					
 					res.end( $node.fs.readFileSync( path ).toString() )
+					
+					return
+				}
+				
+				if( query.blob ) {
+					
+					const land_id = query.blob.land["="]![0][0]
+					if( !land_id ) $mol_fail( new Error( 'land is required' ) )
+					
+					const head_id = query.blob.head["="]![0][0]
+					if( !head_id ) $mol_fail( new Error( 'head is required' ) )
+					
+					const land = world.land( land_id )
+					const node = land.node( head_id, $hyoo_crowd_blob )
+					
+					res.writeHead( 200, {
+						'Content-Type': node.type(),
+						'Access-Control-Allow-Origin': '*',
+					} )
+					
+					res.end( node.blob() )
 					
 					return
 				}

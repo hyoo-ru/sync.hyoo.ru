@@ -42,7 +42,10 @@ namespace $.$$ {
 		}
 		
 		node_links( id: $mol_int62_string ) {
-			return this.land()!.node( id, $hyoo_crowd_list ).list().map( id => this.Node_link( id ) )
+			return this.land()!
+				.node( id, $hyoo_crowd_list ).list()
+				.filter( id => typeof id === 'string' )
+				.map( id => this.Node_link( id ) )
 		}
 		
 		node_text( id: $mol_int62_string ) {

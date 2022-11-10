@@ -87,6 +87,7 @@ namespace $ {
 					
 					res.writeHead( 200, {
 						'Content-Type': node.type(),
+						'Cache-Control': 'public, proxy-revalidate, max-age=1000', // 15min
 						'Access-Control-Allow-Origin': '*',
 					} )
 					

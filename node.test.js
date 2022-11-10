@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6d7e62a";
+let $hyoo_sync_revision = "5fb5cf0";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5080,6 +5080,7 @@ var $;
                     const node = land.node(head_id, $hyoo_crowd_blob);
                     res.writeHead(200, {
                         'Content-Type': node.type(),
+                        'Cache-Control': 'public, proxy-revalidate, max-age=1000',
                         'Access-Control-Allow-Origin': '*',
                     });
                     res.end(node.buffer());

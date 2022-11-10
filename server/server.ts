@@ -88,7 +88,7 @@ namespace $ {
 					
 					res.writeHead( 200, {
 						'Content-Type': type,
-						'Content-Disposition': /^(image|video)\//.test( type ) ? undefined : 'attachment',
+						'Content-Disposition': /^(image|video)\//.test( type ) ? '' : 'attachment',
 						'Cache-Control': 'public, proxy-revalidate, max-age=1000', // 15min
 						'Access-Control-Allow-Origin': '*',
 					} )

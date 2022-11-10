@@ -753,7 +753,7 @@ $hyoo_sync_watch_world $mol_book2_catalog
 			<= Node_json* $mol_dump_value
 				title \JSON
 				value <= node_json* null
-			<= Node_blob* $mol_image
+			<= Node_blob* $mol_embed_native
 				title \BLOB
 				uri <= node_blob* null
 			<= Node_units* $mol_grid

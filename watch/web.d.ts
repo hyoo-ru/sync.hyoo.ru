@@ -3473,7 +3473,7 @@ declare namespace $ {
         node_json(id: any): any;
         Node_json(id: any): $$.$mol_dump_value;
         node_blob(id: any): any;
-        Node_blob(id: any): $mol_image;
+        Node_blob(id: any): $$.$mol_embed_native;
         node_units(id: any): readonly any[];
         Node_units(id: any): $$.$mol_grid;
     }

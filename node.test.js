@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "026ce2d";
+let $hyoo_sync_revision = "2cb9575";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5081,7 +5081,7 @@ var $;
                     const type = node.type();
                     res.writeHead(200, {
                         'Content-Type': type,
-                        'Content-Disposition': /^(image|video)\//.test(type) ? undefined : 'attachment',
+                        'Content-Disposition': /^(image|video)\//.test(type) ? '' : 'attachment',
                         'Cache-Control': 'public, proxy-revalidate, max-age=1000',
                         'Access-Control-Allow-Origin': '*',
                     });

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6d5634f";
+let $hyoo_sync_revision = "ead0cb6";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13031,7 +13031,10 @@ var $;
                 return this.land().node(id, $hyoo_crowd_list).list();
             }
             node_links(id) {
-                return this.land().node(id, $hyoo_crowd_list).list().map(id => this.Node_link(id));
+                return this.land()
+                    .node(id, $hyoo_crowd_list).list()
+                    .filter(id => typeof id === 'string')
+                    .map(id => this.Node_link(id));
             }
             node_text(id) {
                 return this.land().node(id, $hyoo_crowd_text).text();

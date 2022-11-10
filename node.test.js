@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "ead0cb6";
+let $hyoo_sync_revision = "0bd0495";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4040,6 +4040,62 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$mol_blob = ($node.buffer?.Blob ?? $mol_dom_context.Blob);
+})($ || ($ = {}));
+//mol/blob/blob.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $hyoo_crowd_blob extends $hyoo_crowd_list {
+        uri() {
+            return URL.createObjectURL(this.blob());
+        }
+        type(next) {
+            return this.as($hyoo_crowd_struct).sub('type', $hyoo_crowd_reg).str(next);
+        }
+        blob(next) {
+            if (next) {
+                this.buffer(new Uint8Array($mol_wire_sync(next).arrayBuffer()));
+                this.type(next.type);
+                return next;
+            }
+            return new $mol_blob(this.list(), {
+                type: this.type(),
+            });
+        }
+        buffer(next) {
+            if (next) {
+                const chunks = [];
+                let offset = 0;
+                while (offset < next.byteLength) {
+                    const cut = offset + 2 ** 15;
+                    chunks.push(next.slice(offset, cut));
+                    offset = cut;
+                }
+                this.list(chunks);
+                return next;
+            }
+            else {
+                const chunks = this.list();
+                const size = chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+                const res = new Uint8Array(size);
+                let offset = 0;
+                for (const chunk of chunks) {
+                    res.set(chunk, offset);
+                    offset += chunk.byteLength;
+                }
+                return res;
+            }
+        }
+    }
+    $.$hyoo_crowd_blob = $hyoo_crowd_blob;
+})($ || ($ = {}));
+//hyoo/crowd/blob/blob.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $hyoo_crowd_dict extends $hyoo_crowd_node {
         keys(next) {
             const prev = this.units();
@@ -5011,6 +5067,22 @@ var $;
                     if (!path)
                         return res.end('\\Use `log` parameter to provide path to server logs in tree format\n');
                     res.end($node.fs.readFileSync(path).toString());
+                    return;
+                }
+                if (query.blob) {
+                    const land_id = query.blob.land["="][0][0];
+                    if (!land_id)
+                        $mol_fail(new Error('land is required'));
+                    const head_id = query.blob.head["="][0][0];
+                    if (!head_id)
+                        $mol_fail(new Error('head is required'));
+                    const land = world.land(land_id);
+                    const node = land.node(head_id, $hyoo_crowd_blob);
+                    res.writeHead(200, {
+                        'Content-Type': node.type(),
+                        'Access-Control-Allow-Origin': '*',
+                    });
+                    res.end(node.blob());
                     return;
                 }
                 if (!query.land) {
@@ -8535,6 +8607,38 @@ var $;
     $mol_wire_log.active();
 })($ || ($ = {}));
 //mol/wire/atom/atom.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    async function make_land(id = '1_1') {
+        return $hyoo_crowd_land.make({
+            id: $mol_const(id),
+            peer: $mol_const(await $hyoo_crowd_peer.generate()),
+        });
+    }
+    $mol_test({
+        async 'save and load buffers'() {
+            const land = await make_land();
+            const node = land.chief.as($hyoo_crowd_blob);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15 + 1] = 255;
+            node.buffer(source);
+            $mol_assert_like(node.list().length, 2);
+            $mol_assert_like(node.buffer(), source);
+        },
+        async 'save and load blobs'() {
+            const land = await make_land();
+            const node = land.chief.as($hyoo_crowd_blob);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15 + 1] = 255;
+            await $mol_wire_async(node).blob(new $mol_blob([source], { type: 'test/test' }));
+            $mol_assert_like('test/test', node.blob().type);
+            $mol_assert_like(source, new Uint8Array(await node.blob().arrayBuffer()));
+        },
+    });
+})($ || ($ = {}));
+//hyoo/crowd/blob/blob.test.ts
 ;
 "use strict";
 var $;

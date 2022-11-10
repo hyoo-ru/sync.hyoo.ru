@@ -941,6 +941,23 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_blob = Blob;
+    let $mol_blob: {
+        new (blobParts?: BlobPart[] | undefined, options?: BlobPropertyBag | undefined): Blob;
+        prototype: Blob;
+    };
+}
+
+declare namespace $ {
+    class $hyoo_crowd_blob extends $hyoo_crowd_list {
+        uri(): string;
+        type(next?: string): string;
+        blob(next?: $mol_blob): Blob;
+        buffer(next?: Uint8Array): Uint8Array;
+    }
+}
+
+declare namespace $ {
     class $hyoo_crowd_dict extends $hyoo_crowd_node {
         keys(next?: string[]): string[];
         sub<Node extends typeof $hyoo_crowd_node>(key: string, Node: Node): InstanceType<Node>;

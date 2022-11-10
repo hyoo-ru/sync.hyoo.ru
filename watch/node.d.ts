@@ -3487,6 +3487,7 @@ declare namespace $ {
         Land_config(): $mol_bar;
         node_id(id: any): string;
         Node_avatar(id: any): $$.$mol_avatar;
+        node_output(next?: any): string;
         node_list(id: any): readonly any[];
         Node_list(id: any): $$.$mol_dump_list;
         Node_link(id: any): $$.$mol_link;

@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "1c4797f";
+let $hyoo_sync_revision = "afeeb1d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -12207,6 +12207,7 @@ var $;
         }
         Node_output(id) {
             const obj = new this.$.$mol_deck();
+            obj.current = (next) => this.node_output(next);
             obj.items = () => [
                 this.Node_list(id),
                 this.Node_inks(id),
@@ -12250,6 +12251,11 @@ var $;
             const obj = new this.$.$mol_avatar();
             obj.id = () => this.node_id(id);
             return obj;
+        }
+        node_output(next) {
+            if (next !== undefined)
+                return next;
+            return "0";
         }
         node_list(id) {
             return [];
@@ -12357,6 +12363,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_avatar", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_world.prototype, "node_output", null);
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_list", null);

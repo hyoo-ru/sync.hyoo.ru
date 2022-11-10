@@ -729,6 +729,7 @@ $hyoo_sync_watch_world $mol_book2_catalog
 	Node_output* $mol_deck
 		Switch => Node_output_switch*
 		Content => Node_output_content*
+		current? <=> node_output? \0
 		items /
 			<= Node_list* $mol_dump_list
 				title \List

@@ -242,6 +242,8 @@
     "$mol_dom_parse",
     "$hyoo_crowd_json",
     "$hyoo_crowd_dict",
+    "$hyoo_crowd_blob",
+    "$mol_blob",
     "$hyoo_sync_watch_log",
     "$mol_date",
     "$mol_pick",

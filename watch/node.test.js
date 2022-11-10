@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "1560a1c";
+let $hyoo_sync_revision = "1c4797f";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -12214,6 +12214,7 @@ var $;
                 this.Node_md(id),
                 this.Node_html(id),
                 this.Node_json(id),
+                this.Node_blob(id),
                 this.Node_units(id)
             ];
             return obj;
@@ -12313,6 +12314,15 @@ var $;
             obj.value = () => this.node_json(id);
             return obj;
         }
+        node_blob(id) {
+            return null;
+        }
+        Node_blob(id) {
+            const obj = new this.$.$mol_image();
+            obj.title = () => "BLOB";
+            obj.uri = () => this.node_blob(id);
+            return obj;
+        }
         node_units(id) {
             return [];
         }
@@ -12368,6 +12378,9 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_json", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_world.prototype, "Node_blob", null);
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_units", null);
@@ -12914,6 +12927,62 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$mol_blob = ($node.buffer?.Blob ?? $mol_dom_context.Blob);
+})($ || ($ = {}));
+//mol/blob/blob.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $hyoo_crowd_blob extends $hyoo_crowd_list {
+        uri() {
+            return URL.createObjectURL(this.blob());
+        }
+        type(next) {
+            return this.as($hyoo_crowd_struct).sub('type', $hyoo_crowd_reg).str(next);
+        }
+        blob(next) {
+            if (next) {
+                this.buffer(new Uint8Array($mol_wire_sync(next).arrayBuffer()));
+                this.type(next.type);
+                return next;
+            }
+            return new $mol_blob(this.list(), {
+                type: this.type(),
+            });
+        }
+        buffer(next) {
+            if (next) {
+                const chunks = [];
+                let offset = 0;
+                while (offset < next.byteLength) {
+                    const cut = offset + 2 ** 15;
+                    chunks.push(next.slice(offset, cut));
+                    offset = cut;
+                }
+                this.list(chunks);
+                return next;
+            }
+            else {
+                const chunks = this.list();
+                const size = chunks.reduce((sum, chunk) => sum + chunk.byteLength, 0);
+                const res = new Uint8Array(size);
+                let offset = 0;
+                for (const chunk of chunks) {
+                    res.set(chunk, offset);
+                    offset += chunk.byteLength;
+                }
+                return res;
+            }
+        }
+    }
+    $.$hyoo_crowd_blob = $hyoo_crowd_blob;
+})($ || ($ = {}));
+//hyoo/crowd/blob/blob.ts
+;
+"use strict";
+var $;
+(function ($) {
     $mol_style_attach("hyoo/sync/watch/world/world.view.css", "\n[hyoo_sync_watch_world_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_land_config] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_menu_tools] {\n\tflex-shrink: 0;\n}\n\n[hyoo_sync_watch_world_land_avatar] {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_land_id] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_menu_link] {\n\tgap: var(--mol_gap_block);\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_node_dump] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_world_node_body] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_node_json] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node_list] {\n\tpadding: var(--mol_gap_text);\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/world/-css/world.view.css.ts
@@ -12963,6 +13032,9 @@ var $;
             }
             node_json(id) {
                 return this.land().node(id, $hyoo_crowd_json).json();
+            }
+            node_blob(id) {
+                return this.land().node(id, $hyoo_crowd_blob).uri();
             }
         }
         __decorate([
@@ -19739,6 +19811,38 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/json/json.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    async function make_land(id = '1_1') {
+        return $hyoo_crowd_land.make({
+            id: $mol_const(id),
+            peer: $mol_const(await $hyoo_crowd_peer.generate()),
+        });
+    }
+    $mol_test({
+        async 'save and load buffers'() {
+            const land = await make_land();
+            const node = land.chief.as($hyoo_crowd_blob);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15 + 1] = 255;
+            node.buffer(source);
+            $mol_assert_like(node.list().length, 2);
+            $mol_assert_like(node.buffer(), source);
+        },
+        async 'save and load blobs'() {
+            const land = await make_land();
+            const node = land.chief.as($hyoo_crowd_blob);
+            const source = new Uint8Array(2 ** 15 + 1);
+            source[2 ** 15 + 1] = 255;
+            await $mol_wire_async(node).blob(new $mol_blob([source], { type: 'test/test' }));
+            $mol_assert_like('test/test', node.blob().type);
+            $mol_assert_like(source, new Uint8Array(await node.blob().arrayBuffer()));
+        },
+    });
+})($ || ($ = {}));
+//hyoo/crowd/blob/blob.test.ts
 ;
 "use strict";
 var $;

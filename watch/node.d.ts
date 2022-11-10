@@ -3499,6 +3499,8 @@ declare namespace $ {
         Node_html(id: any): $$.$mol_text_code;
         node_json(id: any): any;
         Node_json(id: any): $$.$mol_dump_value;
+        node_blob(id: any): any;
+        Node_blob(id: any): $mol_image;
         node_units(id: any): readonly any[];
         Node_units(id: any): $$.$mol_grid;
     }
@@ -3581,6 +3583,23 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_blob = Blob;
+    let $mol_blob: {
+        new (blobParts?: BlobPart[] | undefined, options?: BlobPropertyBag | undefined): Blob;
+        prototype: Blob;
+    };
+}
+
+declare namespace $ {
+    class $hyoo_crowd_blob extends $hyoo_crowd_list {
+        uri(): string;
+        type(next?: string): string;
+        blob(next?: $mol_blob): Blob;
+        buffer(next?: Uint8Array): Uint8Array;
+    }
+}
+
+declare namespace $ {
 }
 
 declare namespace $.$$ {
@@ -3597,6 +3616,7 @@ declare namespace $.$$ {
         node_text(id: $mol_int62_string): string;
         node_html(id: $mol_int62_string): string;
         node_json(id: $mol_int62_string): $hyoo_crowd_json_data;
+        node_blob(id: $mol_int62_string): string;
     }
 }
 

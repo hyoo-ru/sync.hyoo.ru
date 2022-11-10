@@ -84,9 +84,11 @@ namespace $ {
 					
 					const land = world.land( land_id )
 					const node = land.node( head_id, $hyoo_crowd_blob )
+					const type = node.type()
 					
 					res.writeHead( 200, {
-						'Content-Type': node.type(),
+						'Content-Type': type,
+						'Content-Disposition': /^(image|video)\//.test( type ) ? undefined : 'attachment',
 						'Cache-Control': 'public, proxy-revalidate, max-age=1000', // 15min
 						'Access-Control-Allow-Origin': '*',
 					} )

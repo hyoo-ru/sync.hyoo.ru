@@ -24,6 +24,10 @@
 	font-family: monospace;
 }
 
+[hyoo_sync_watch_world_node_output_switch] {
+	flex-shrink: 1;
+}
+
 [hyoo_sync_watch_world_node_dump] {
 	padding: var(--mol_gap_text);
 }

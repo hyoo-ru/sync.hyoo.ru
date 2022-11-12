@@ -2138,6 +2138,22 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_wire_solid() {
+        const current = $mol_wire_auto();
+        if (current.reap !== nothing) {
+            current?.sub_on(sub, sub.data.length);
+        }
+        current.reap = nothing;
+    }
+    $.$mol_wire_solid = $mol_wire_solid;
+    const nothing = () => { };
+    const sub = new $mol_wire_pub_sub;
+})($ || ($ = {}));
+//mol/wire/solid/solid.ts
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_const(value) {
         var getter = (() => value);
         getter['()'] = value;
@@ -2458,6 +2474,7 @@ var $;
             return this.toString();
         }
         dom_node(next) {
+            $mol_wire_solid();
             const node = next || $mol_dom_context.document.createElementNS(this.dom_name_space(), this.dom_name());
             const id = this.dom_id();
             node.setAttribute('id', id);
@@ -7535,6 +7552,9 @@ var $;
         nodes(Node) {
             return this.units().map(unit => new Node(this.land, unit.self));
         }
+        virgin() {
+            return this.land.unit_list(this.head).length === 0;
+        }
         [Symbol.toPrimitive]() {
             return `${this.constructor.name}("${this.land.id()}","${this.head}")`;
         }
@@ -8197,22 +8217,6 @@ var $;
     $.$mol_wire_race = $mol_wire_race;
 })($ || ($ = {}));
 //mol/wire/race/race.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_wire_solid() {
-        const current = $mol_wire_auto();
-        if (current.reap !== nothing) {
-            current?.sub_on(sub, sub.data.length);
-        }
-        current.reap = nothing;
-    }
-    $.$mol_wire_solid = $mol_wire_solid;
-    const nothing = () => { };
-    const sub = new $mol_wire_pub_sub;
-})($ || ($ = {}));
-//mol/wire/solid/solid.ts
 ;
 "use strict";
 var $;
@@ -13713,6 +13717,89 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_format extends $mol_string {
+        allow() {
+            return "0123456789";
+        }
+        hint() {
+            return this.mask("0");
+        }
+        keyboard() {
+            return "numeric";
+        }
+        mask(id) {
+            return "";
+        }
+    }
+    $.$mol_format = $mol_format;
+})($ || ($ = {}));
+//mol/format/-view.tree/format.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/format/format.view.css", "[mol_format] {\n\tfont-family: monospace;\n}\n");
+})($ || ($ = {}));
+//mol/format/-css/format.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_format extends $.$mol_format {
+            selection([from, to] = [0, 0]) {
+                const prev = $mol_wire_probe(() => this.selection());
+                if (!prev)
+                    return [0, 100];
+                if (from === to) {
+                    const allow = this.allow();
+                    const mask = this.mask([...this.value_changed()].filter(letter => allow.includes(letter)).join(''));
+                    if ((prev?.[0] ?? 0) < from) {
+                        while (from && mask[from] && mask[from] !== '_') {
+                            ++from;
+                            ++to;
+                        }
+                    }
+                }
+                return [from, to];
+            }
+            value_changed(next) {
+                const allow = this.allow();
+                const normalize = (val) => {
+                    val = [...val].filter(letter => allow.includes(letter)).join('');
+                    const letters = [...val].reverse();
+                    return this.mask(val).replace(/_/gu, () => letters.pop() ?? '_') + letters.reverse().join('');
+                };
+                if (next !== undefined) {
+                    next = normalize(next);
+                    if (next.includes('_'))
+                        return next;
+                }
+                return normalize(this.value(next));
+            }
+            event_change(next) {
+                if (!next)
+                    return;
+                if (next.data && !this.allow().includes(next.data))
+                    return;
+                super.event_change(next);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_format.prototype, "selection", null);
+        __decorate([
+            $mol_mem
+        ], $mol_format.prototype, "value_changed", null);
+        $$.$mol_format = $mol_format;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/format/format.view.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_icon_chevron_left extends $mol_icon {
         path() {
             return "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z";
@@ -14173,16 +14260,16 @@ var $;
                 return val;
             return "";
         }
-        input_hint() {
-            return "YYYY-MM-DD hh:mm";
+        input_mask(id) {
+            return "";
         }
         enabled() {
             return true;
         }
         Input() {
-            const obj = new this.$.$mol_string();
+            const obj = new this.$.$mol_format();
             obj.value = (val) => this.value(val);
-            obj.hint = () => this.input_hint();
+            obj.mask = (id) => this.input_mask(id);
             obj.enabled = () => this.enabled();
             return obj;
         }
@@ -14364,6 +14451,9 @@ var $;
         class $mol_date extends $.$mol_date {
             trigger_content() {
                 return [this.value_moment()?.toString('YYYY-MM-DD hh:mm') ?? this.Icon()];
+            }
+            input_mask(val) {
+                return val.length > 8 ? '____-__-__ __:__' : '____-__-__ ';
             }
             value(val) {
                 const moment = this.value_moment();

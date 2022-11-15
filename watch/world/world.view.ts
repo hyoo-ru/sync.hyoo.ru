@@ -12,6 +12,27 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
+		menu_head() {
+			return [
+				this.Land_config(),
+				... this.land_id() ? [] : [ this.Menu_tools() ],
+			]
+		}
+		
+		grab_submit() {
+			
+			type Rule = $mol_int62_string | ''
+			const rules = [ [], [], [] ] as Rule[][]
+
+			rules[ this.def_level() ]?.push( '0_0' )
+			rules[ this.self_level() ]?.push( '' )
+			
+			const land = this.yard().land_grab( ... rules )
+			this.land_id( land.id() )
+			
+		}
+		
+		@ $mol_mem
 		spreads() {
 			
 			const land = this.land()
@@ -26,6 +47,12 @@ namespace $.$$ {
 			}
 			
 			return spreads
+		}
+		
+		@ $mol_mem
+		menu_body() {
+			if( !this.land() ) return [ this.Grab() ]
+			return super.menu_body()
 		}
 		
 		node_id( id: $mol_int62_string ) {

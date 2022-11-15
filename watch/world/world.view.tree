@@ -2,14 +2,15 @@
 $hyoo_sync_watch_world $mol_book2_catalog
 	yard $hyoo_sync_client
 	param \head
-	menu_title \Land Explore
+	menu_title \Lands
 	menu_head /
-		<= Land_config $mol_bar sub /
-			<= Land_avatar $mol_avatar
-				id <= land_id
-			<= Land_id $mol_string
-				hint \Land Id
-				value? <=> land_id? \
+		<= Land_config $mol_bar
+			sub <= land_config /
+				<= Land_avatar $mol_avatar
+					id <= land_id
+				<= Land_id $mol_search
+					hint \Land Id
+					query? <=> land_id? \
 		<= Menu_tools
 	menu_link_content* /
 		<= Node_avatar* $mol_avatar
@@ -28,10 +29,13 @@ $hyoo_sync_watch_world $mol_book2_catalog
 		Content => Node_output_content*
 		current? <=> node_output? \0
 		items /
+			<= Node_units* $mol_grid
+				title \Units
+				records <= node_units* /
 			<= Node_list* $mol_dump_list
 				title \List
 				values <= node_list* /
-			<= Node_inks* $mol_list
+			<= Node_links* $mol_list
 				title \Links
 				rows <= node_links* /
 					<= Node_link*0_0 $mol_link
@@ -53,6 +57,23 @@ $hyoo_sync_watch_world $mol_book2_catalog
 			<= Node_blob* $mol_embed_native
 				title \BLOB
 				uri <= node_blob* null
-			<= Node_units* $mol_grid
-				title \Units
-				records <= node_units* /
+	level_options /
+		\Law
+		\Mod
+		\Add
+	Grab $mol_form
+		body /
+			<= Def_labeler $mol_form_field
+				name \Common Level
+				control <= Def_level $mol_switch
+					options <= level_options
+					value? <=> def_level? 2
+			<= Self_labeler $mol_form_field
+				name \Your Level
+				control <= Self_level $mol_switch
+					options <= level_options
+					value? <=> self_level? 0
+		buttons /
+			<= Grab_submit $mol_button_major
+				title \Grab New Land
+				click? <=> grab_submit? null

@@ -3798,7 +3798,6 @@ declare namespace $.$$ {
     class $mol_format extends $.$mol_format {
         selection([from, to]?: [number, number]): number[];
         value_changed(next?: string): string;
-        event_change(next?: InputEvent): void;
     }
 }
 

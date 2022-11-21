@@ -13853,8 +13853,13 @@ var $;
                 };
                 if (next !== undefined) {
                     next = normalize(next);
-                    if (next.includes('_'))
-                        return next;
+                    if (next === this.mask(next)) {
+                        next = '';
+                    }
+                    else {
+                        if (next.includes('_'))
+                            return next;
+                    }
                 }
                 return normalize(this.value(next));
             }

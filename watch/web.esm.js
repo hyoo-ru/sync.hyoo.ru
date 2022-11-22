@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "64cd80d";
+let $hyoo_sync_revision = "084b551";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -9497,6 +9497,77 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$mol_blob = ($node.buffer?.Blob ?? $mol_dom_context.Blob);
+})($ || ($ = {}));
+//mol/blob/blob.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_icon_download extends $mol_icon {
+        path() {
+            return "M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z";
+        }
+    }
+    $.$mol_icon_download = $mol_icon_download;
+})($ || ($ = {}));
+//mol/icon/download/-view.tree/download.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_button_download extends $mol_button_minor {
+        blob() {
+            return null;
+        }
+        uri() {
+            return "";
+        }
+        file_name() {
+            return "blob.bin";
+        }
+        sub() {
+            return [
+                this.Icon()
+            ];
+        }
+        Icon() {
+            const obj = new this.$.$mol_icon_download();
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_button_download.prototype, "Icon", null);
+    $.$mol_button_download = $mol_button_download;
+})($ || ($ = {}));
+//mol/button/download/-view.tree/download.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_button_download extends $.$mol_button_download {
+            uri() {
+                return URL.createObjectURL(this.blob());
+            }
+            click() {
+                const a = $mol_jsx("a", { href: this.uri(), download: this.file_name() });
+                a.click();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_button_download.prototype, "uri", null);
+        $$.$mol_button_download = $mol_button_download;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/button/download/download.view.tsx
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_float extends $mol_view {
         style() {
             return {
@@ -12176,6 +12247,7 @@ var $;
             obj.title = () => this.node_id(id);
             obj.head = () => [
                 this.Node_output_switch(id),
+                this.Download(id),
                 this.Spread_close()
             ];
             obj.body = () => [
@@ -12255,6 +12327,19 @@ var $;
         Node_avatar(id) {
             const obj = new this.$.$mol_avatar();
             obj.id = () => this.node_id(id);
+            return obj;
+        }
+        download_blob(id) {
+            const obj = new this.$.$mol_blob();
+            return obj;
+        }
+        download_name(id) {
+            return "0_0.bin";
+        }
+        Download(id) {
+            const obj = new this.$.$mol_button_download();
+            obj.blob = () => this.download_blob(id);
+            obj.file_name = () => this.download_name(id);
             return obj;
         }
         node_output(next) {
@@ -12416,6 +12501,12 @@ var $;
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_watch_world.prototype, "Node_avatar", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_world.prototype, "download_blob", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_world.prototype, "Download", null);
     __decorate([
         $mol_mem
     ], $hyoo_sync_watch_world.prototype, "node_output", null);
@@ -12998,13 +13089,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_blob = ($node.buffer?.Blob ?? $mol_dom_context.Blob);
-})($ || ($ = {}));
-//mol/blob/blob.ts
-;
-"use strict";
-var $;
-(function ($) {
     class $hyoo_crowd_blob extends $hyoo_crowd_list {
         uri() {
             return URL.createObjectURL(this.blob());
@@ -13127,6 +13211,15 @@ var $;
             }
             node_blob(id) {
                 return this.land().node(id, $hyoo_crowd_blob).uri();
+            }
+            download_blob(head) {
+                const units = this.land().unit_alives(head);
+                const bins = units.map(unit => $hyoo_crowd_unit_bin.from_unit(unit));
+                const blob = new $mol_blob(bins);
+                return blob;
+            }
+            download_name(head) {
+                return `${head}.bin`;
             }
         }
         __decorate([

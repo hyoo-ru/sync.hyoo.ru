@@ -411,6 +411,15 @@ $mol_form $mol_list
 
 $mol_bar $mol_view
 
+$mol_icon_download $mol_icon path \M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z
+
+$mol_button_download $mol_button_minor
+	blob null
+	uri \
+	file_name \blob.bin
+	sub /
+		<= Icon $mol_icon_download
+
 $mol_float $mol_view
 	style *
 		^
@@ -762,6 +771,9 @@ $hyoo_sync_watch_world $mol_book2_catalog
 		title <= node_id* \
 		head /
 			<= Node_output_switch*
+			<= Download* $mol_button_download
+				blob <= download_blob* $mol_blob
+				file_name <= download_name* \0_0.bin
 			<= Spread_close
 		body /
 			<= Node_output_content*

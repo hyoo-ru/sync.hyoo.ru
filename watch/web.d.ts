@@ -2817,6 +2817,37 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_blob = Blob;
+    let $mol_blob: {
+        new (blobParts?: BlobPart[] | undefined, options?: BlobPropertyBag | undefined): Blob;
+        prototype: Blob;
+    };
+}
+
+declare namespace $ {
+    class $mol_icon_download extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_button_download extends $mol_button_minor {
+        blob(): any;
+        uri(): string;
+        file_name(): string;
+        sub(): readonly any[];
+        Icon(): $mol_icon_download;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_button_download extends $.$mol_button_download {
+        uri(): string;
+        click(): void;
+    }
+}
+
+declare namespace $ {
     class $mol_float extends $mol_view {
         style(): {
             minHeight: string;
@@ -3565,6 +3596,9 @@ declare namespace $ {
         Land_config(): $mol_bar;
         node_id(id: any): string;
         Node_avatar(id: any): $$.$mol_avatar;
+        download_blob(id: any): Blob;
+        download_name(id: any): string;
+        Download(id: any): $$.$mol_button_download;
         node_output(next?: any): string;
         node_units(id: any): readonly any[];
         Node_units(id: any): $$.$mol_grid;
@@ -3666,14 +3700,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type $mol_blob = Blob;
-    let $mol_blob: {
-        new (blobParts?: BlobPart[] | undefined, options?: BlobPropertyBag | undefined): Blob;
-        prototype: Blob;
-    };
-}
-
-declare namespace $ {
     class $hyoo_crowd_blob extends $hyoo_crowd_list {
         uri(): string;
         type(next?: string): string;
@@ -3703,6 +3729,8 @@ declare namespace $.$$ {
         node_html(id: $mol_int62_string): string;
         node_json(id: $mol_int62_string): $hyoo_crowd_json_data;
         node_blob(id: $mol_int62_string): string;
+        download_blob(head: $mol_int62_string): Blob;
+        download_name(head: $mol_int62_string): string;
     }
 }
 

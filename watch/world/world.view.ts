@@ -91,6 +91,17 @@ namespace $.$$ {
 			return this.land()!.node( id, $hyoo_crowd_blob ).uri()
 		}
 		
+		download_blob( head: $mol_int62_string ) {
+			const units = this.land()!.unit_alives( head )
+			const bins = units.map( unit => $hyoo_crowd_unit_bin.from_unit( unit ) )
+			const blob = new $mol_blob( bins )
+			return blob
+		}
+		
+		download_name( head: $mol_int62_string ) {
+			return `${ head }.bin`
+		}
+		
 	}
 	
 }

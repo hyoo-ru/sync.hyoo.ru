@@ -21,6 +21,9 @@ $hyoo_sync_watch_world $mol_book2_catalog
 		title <= node_id* \
 		head /
 			<= Node_output_switch*
+			<= Download* $mol_button_download
+				blob <= download_blob* $mol_blob
+				file_name <= download_name* \0_0.bin
 			<= Spread_close
 		body /
 			<= Node_output_content*

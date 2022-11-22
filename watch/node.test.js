@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "5709d73";
+let $hyoo_sync_revision = "9672925";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13536,7 +13536,7 @@ var $;
                 return this.land().node(id, $hyoo_crowd_blob).uri();
             }
             download_blob(head) {
-                const units = this.land().unit_alives(head);
+                const units = this.land().unit_list(head).slice().sort($hyoo_crowd_unit_compare);
                 const bins = units.map(unit => $hyoo_crowd_unit_bin.from_unit(unit));
                 const blob = new $mol_blob(bins);
                 return blob;

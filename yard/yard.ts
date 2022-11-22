@@ -154,12 +154,12 @@ namespace $ {
 				db_clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
-			this.$.$mol_log3_rise({
-				place: this,
-				land: land.id(),
-				message: 'Base Save',
-				units: this.log_pack( units ),
-			})
+			// this.$.$mol_log3_rise({
+			// 	place: this,
+			// 	land: land.id(),
+			// 	message: 'Base Save',
+			// 	units: this.log_pack( units ),
+			// })
 			
 		}
 		
@@ -192,12 +192,12 @@ namespace $ {
 				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
 			}
 			
-			this.$.$mol_log3_rise({
-				place: this,
-				land: land.id(),
-				message: 'Base Load',
-				units: this.log_pack( units ),
-			})
+			// this.$.$mol_log3_rise({
+			// 	place: this,
+			// 	land: land.id(),
+			// 	message: 'Base Load',
+			// 	units: this.log_pack( units ),
+			// })
 			
 		}
 		
@@ -305,13 +305,13 @@ namespace $ {
 			
 			this.line_send_clocks( line, land )
 			
-			this.$.$mol_log3_come({
-				place: this,
-				land: land.id(),
-				message: 'Sync Open',
-				line: $mol_key( line ),
-				clocks: land._clocks,
-			})
+			// this.$.$mol_log3_come({
+			// 	place: this,
+			// 	land: land.id(),
+			// 	message: 'Sync Open',
+			// 	line: $mol_key( line ),
+			// 	clocks: land._clocks,
+			// })
 			
 		}
 		
@@ -375,13 +375,13 @@ namespace $ {
 						
 						this.line_lands( line, [ ... lands, land ] )
 						
-						this.$.$mol_log3_done({
-							place: this,
-							land: land.id(),
-							message: 'Sync Pair',
-							line: $mol_key( line ),
-							clocks,
-						})
+						// this.$.$mol_log3_done({
+						// 	place: this,
+						// 	land: land.id(),
+						// 	message: 'Sync Pair',
+						// 	line: $mol_key( line ),
+						// 	clocks,
+						// })
 						
 					}
 					

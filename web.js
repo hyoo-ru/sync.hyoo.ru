@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "c9802cb";
+let $hyoo_sync_revision = "5709d73";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4676,11 +4676,6 @@ var $;
             const server = $node.http.createServer($mol_wire_async((req, res) => {
                 const world = this.world();
                 const query_str = req.url.slice(1);
-                this.$.$mol_log3_rise({
-                    place: this,
-                    message: 'HTTP Query',
-                    query: req.url,
-                });
                 if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                     const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
                     try {
@@ -4892,19 +4887,9 @@ var $;
                 server: this.http(),
             });
             socket.on('connection', line => {
-                this.$.$mol_log3_come({
-                    place: this,
-                    message: 'Peer Join',
-                    line: $mol_key(line),
-                });
                 this.slaves([...this.slaves(), line]);
                 line.on('close', () => {
                     this.slaves(this.slaves().filter(l => l !== line));
-                    this.$.$mol_log3_done({
-                        place: this,
-                        message: 'Peer Lost',
-                        line: $mol_key(line),
-                    });
                 });
                 line.on('message', async (data, isBinary) => {
                     if (typeof data === 'string')

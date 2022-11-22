@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "084b551";
+let $hyoo_sync_revision = "c9802cb";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13542,7 +13542,7 @@ var $;
                 return blob;
             }
             download_name(head) {
-                return `${head}.bin`;
+                return `${this.land().id()}+${head}.bin`;
             }
         }
         __decorate([

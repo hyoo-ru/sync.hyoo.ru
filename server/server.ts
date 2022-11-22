@@ -19,11 +19,11 @@ namespace $ {
 				
 				const query_str = req.url!.slice(1)
 				
-				this.$.$mol_log3_rise({
-					place: this,
-					message: 'HTTP Query',
-					query: req.url,
-				})
+				// this.$.$mol_log3_rise({
+				// 	place: this,
+				// 	message: 'HTTP Query',
+				// 	query: req.url,
+				// })
 				
 				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
@@ -323,11 +323,11 @@ namespace $ {
 
 			socket.on( 'connection' , line => {
 
-				this.$.$mol_log3_come({
-					place: this,
-					message: 'Peer Join',
-					line: $mol_key( line ),
-				})
+				// this.$.$mol_log3_come({
+				// 	place: this,
+				// 	message: 'Peer Join',
+				// 	line: $mol_key( line ),
+				// })
 				
 				this.slaves([ ... this.slaves(), line ])
 				
@@ -335,11 +335,11 @@ namespace $ {
 					
 					this.slaves( this.slaves().filter( l => l !== line ) )
 					
-					this.$.$mol_log3_done({
-						place: this,
-						message: 'Peer Lost',
-						line: $mol_key( line ),
-					})
+					// this.$.$mol_log3_done({
+					// 	place: this,
+					// 	message: 'Peer Lost',
+					// 	line: $mol_key( line ),
+					// })
 						
 				} )
 				

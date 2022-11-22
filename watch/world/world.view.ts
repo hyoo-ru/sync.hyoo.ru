@@ -92,7 +92,7 @@ namespace $.$$ {
 		}
 		
 		download_blob( head: $mol_int62_string ) {
-			const units = this.land()!.unit_alives( head )
+			const units = this.land()!.unit_list( head ).slice().sort( $hyoo_crowd_unit_compare )
 			const bins = units.map( unit => $hyoo_crowd_unit_bin.from_unit( unit ) )
 			const blob = new $mol_blob( bins )
 			return blob

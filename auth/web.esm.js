@@ -312,7 +312,7 @@ var $;
             if (key === 'id')
                 continue;
             if (typeof props[key] === 'string') {
-                if (key in node)
+                if (typeof node[key] === 'string')
                     node[key] = props[key];
                 node.setAttribute(key, props[key]);
             }
@@ -1334,7 +1334,8 @@ var $;
             const existen = Object.getOwnPropertyDescriptor(host ?? task, field)?.value;
             if (existen)
                 return existen;
-            const key = `${host?.[Symbol.toStringTag] ?? host}.${field}`;
+            const prefix = host?.[Symbol.toStringTag] ?? (host instanceof Function ? $$.$mol_func_name(host) : host);
+            const key = `${prefix}.${field}`;
             const fiber = new $mol_wire_atom(key, task, host, []);
             (host ?? task)[field] = fiber;
             return fiber;
@@ -1342,7 +1343,8 @@ var $;
         static plex(host, task, key) {
             const field = task.name + '()';
             let dict = Object.getOwnPropertyDescriptor(host ?? task, field)?.value;
-            const id = `${host?.[Symbol.toStringTag] ?? host}.${task.name}(${$mol_key(key)})`;
+            const prefix = host?.[Symbol.toStringTag] ?? (host instanceof Function ? $$.$mol_func_name(host) : host);
+            const id = `${prefix}.${task.name}(${$mol_key(key)})`;
             if (dict) {
                 const existen = dict.get(id);
                 if (existen)

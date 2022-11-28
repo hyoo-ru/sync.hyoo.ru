@@ -7620,6 +7620,8 @@ var $;
                 this.join();
             else
                 this.pub.promote();
+            if (!peer)
+                peer = this.peer_id();
             const level_id = `${this.id()}/${peer}`;
             const prev = this._unit_all.get(level_id)?.level()
                 ?? this._unit_all.get(`${this.id()}/0_0`)?.level()
@@ -7735,6 +7737,36 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $hyoo_crowd_fund extends $mol_object {
+        world;
+        Node;
+        constructor(world, Node) {
+            super();
+            this.world = world;
+            this.Node = Node;
+        }
+        Item(id) {
+            const [land, head = '0_0'] = id.split('!');
+            return this.world.land_sync(land).node(head, this.Node);
+        }
+        make(law = [''], mod = [], add = []) {
+            const land = $mol_wire_sync(this.world).grab(law, mod, add);
+            return this.Item(land.id());
+        }
+    }
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_crowd_fund.prototype, "Item", null);
+    __decorate([
+        $mol_action
+    ], $hyoo_crowd_fund.prototype, "make", null);
+    $.$hyoo_crowd_fund = $hyoo_crowd_fund;
+})($ || ($ = {}));
+//hyoo/crowd/fund/fund.ts
+;
+"use strict";
+var $;
+(function ($) {
     $.$mol_dict_key = $mol_key;
     class $mol_dict extends Map {
         get(key) {
@@ -7828,6 +7860,9 @@ var $;
             const land = this.land(id);
             this.land_init(land);
             return land;
+        }
+        Fund(Item) {
+            return new $hyoo_crowd_fund(this, Item);
         }
         home() {
             return this.land_sync(this.peer.id);
@@ -7997,6 +8032,9 @@ var $;
             return { allow, forbid };
         }
     }
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_crowd_world.prototype, "Fund", null);
     $.$hyoo_crowd_world = $hyoo_crowd_world;
 })($ || ($ = {}));
 //hyoo/crowd/world/world.ts
@@ -10836,9 +10874,9 @@ var $;
                 if (typeof value === 'function') {
                     const name = Reflect.getOwnPropertyDescriptor(value, 'name')?.value;
                     const source = Function.prototype.toString.call(value);
-                    const args = source.match(/^[^{]+(\([\s\S]*?\))/)?.[1] ?? '{}';
+                    const args = source.match(/^[^{=>]*?\(([\s\S]*?)\)/)?.[1] ?? source.match(/^([$\w]+)\s+=>/)?.[1] ?? '';
                     if (name)
-                        return name + args;
+                        return name + '(' + args + ')';
                 }
                 if (value instanceof RegExp)
                     return String(value);

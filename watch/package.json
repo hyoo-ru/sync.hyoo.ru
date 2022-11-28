@@ -180,6 +180,7 @@
     "$hyoo_crowd_node",
     "$hyoo_crowd_struct",
     "$hyoo_crowd_reg",
+    "$hyoo_crowd_fund",
     "$mol_dict",
     "$mol_wire_race",
     "$hyoo_sync_masters",

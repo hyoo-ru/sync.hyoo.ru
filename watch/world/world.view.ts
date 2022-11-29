@@ -99,7 +99,7 @@ namespace $.$$ {
 		}
 		
 		download_name( head: $mol_int62_string ) {
-			return `${ this.land()!.id() }+${ head }.bin`
+			return `${ this.land()!.id() }!${ head }.bin`
 		}
 		
 	}

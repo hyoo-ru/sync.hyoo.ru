@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "083d267";
+let $hyoo_sync_revision = "707ac49";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5115,12 +5115,7 @@ var $;
                 const el = next.target;
                 const from = el.selectionStart;
                 const to = el.selectionEnd;
-                try {
-                    el.value = this.value_changed(el.value);
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                }
+                el.value = this.value_changed(el.value);
                 el.selectionEnd = to;
                 el.selectionStart = from;
                 this.selection_change(next);
@@ -8291,6 +8286,7 @@ var $;
 (function ($) {
     $.$hyoo_sync_masters = [
         `wss://sync.hyoo.ru/`,
+        `wss://sync-hyoo-ru.up.railway.app/`,
         'wss://sync-hyoo-ru.herokuapp.com/',
     ];
 })($ || ($ = {}));

@@ -19,7 +19,11 @@ namespace $ {
 		
 		@ $mol_mem_key
 		land( id: $mol_int62_string ) {
-			return this.world().land_sync( id )
+			const land = this.world().land_sync( id )
+			if( !land.grabbed() ) {
+				$mol_fail_hidden( new Promise( ()=> {} ) )
+			}
+			return land
 		}
 		
 		land_grab(
@@ -343,7 +347,7 @@ namespace $ {
 				if( prev ) await prev
 				
 				const world = this.world()
-				const land = await $mol_wire_async<$hyoo_sync_yard< Line >>( this ).land( land_id )
+				const land = await $mol_wire_async( world ).land_sync( land_id )
 				
 				let clocks = this.line_land_clocks({ line, land })!
 				if( !clocks ) this.line_land_clocks(

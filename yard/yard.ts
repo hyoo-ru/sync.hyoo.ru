@@ -13,17 +13,18 @@ namespace $ {
 		@ $mol_mem
 		world() {
 			const world = new this.$.$hyoo_crowd_world( this.peer() )
-			world.land_init = land => this.db_land_init( land )
+			world.land_init = land => this.land_init( land )
 			return world
 		}
 		
 		@ $mol_mem_key
+		land_init( land: $hyoo_crowd_land ) {
+			this.db_land_init( land )
+			if( !land.grabbed() ) $mol_fail_hidden( new Promise( ()=> {} ) )
+		}
+		
 		land( id: $mol_int62_string ) {
-			const land = this.world().land_sync( id )
-			if( !land.grabbed() ) {
-				$mol_fail_hidden( new Promise( ()=> {} ) )
-			}
-			return land
+			return this.world().land_sync( id )
 		}
 		
 		land_grab(
@@ -347,7 +348,7 @@ namespace $ {
 				if( prev ) await prev
 				
 				const world = this.world()
-				const land = await $mol_wire_async( world ).land_sync( land_id )
+				const land = await $mol_wire_async( world ).land( land_id )
 				
 				let clocks = this.line_land_clocks({ line, land })!
 				if( !clocks ) this.line_land_clocks(

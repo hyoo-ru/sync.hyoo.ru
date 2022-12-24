@@ -4,7 +4,11 @@ namespace $ {
 	export async function $hyoo_sync_peer( path: string ) {
 		
 		let serial = $mol_state_local.value( '$hyoo_sync_peer' ) as string | null
-		if( typeof serial !== 'string' ) {
+		if( typeof serial === 'string' ) {
+			
+			return await $hyoo_crowd_peer.restore( serial )
+			
+		} else {
 			
 			serial = $mol_state_local.value( path )
 			

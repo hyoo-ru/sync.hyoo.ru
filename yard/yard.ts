@@ -20,7 +20,7 @@ namespace $ {
 		@ $mol_mem_key
 		land_init( land: $hyoo_crowd_land ) {
 			this.db_land_init( land )
-			if( !land.grabbed() ) $mol_fail_hidden( new Promise( ()=> {} ) )
+			if( !land.grabbed() ) this.$.$mol_wait_timeout( 10_000 )
 		}
 		
 		land( id: $mol_int62_string ) {

@@ -12,7 +12,7 @@
 }
 
 [hyoo_sync_watch_world_land_avatar] {
-	margin: var(--mol_gap_block);
+	margin: var(--mol_gap_text);
 }
 
 [hyoo_sync_watch_world_land_id] {

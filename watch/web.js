@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "181ef85";
+let $hyoo_sync_revision = "b5b9292";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13548,7 +13548,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/world/world.view.css", "\n[hyoo_sync_watch_world_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_land_config] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_menu_tools] {\n\tflex-shrink: 0;\n}\n\n[hyoo_sync_watch_world_land_avatar] {\n\tmargin: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_land_id] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_menu_link] {\n\tgap: var(--mol_gap_block);\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_node_output_switch] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_node_dump] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_world_node_body] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_node_json] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node_list] {\n\tpadding: var(--mol_gap_text);\n}\n");
+    $mol_style_attach("hyoo/sync/watch/world/world.view.css", "\n[hyoo_sync_watch_world_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_land_config] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_menu_tools] {\n\tflex-shrink: 0;\n}\n\n[hyoo_sync_watch_world_land_avatar] {\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_land_id] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_menu_link] {\n\tgap: var(--mol_gap_block);\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_node_output_switch] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_node_dump] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_world_node_body] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_node_json] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node_list] {\n\tpadding: var(--mol_gap_text);\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/world/-css/world.view.css.ts
 ;

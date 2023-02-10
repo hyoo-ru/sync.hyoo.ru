@@ -12,35 +12,7 @@ $mol_book2 $mol_scroll
 	sub <= pages /$mol_view
 	minimal_width 0
 	Placeholder $mol_view
-
-$mol_svg $mol_view
-	dom_name \svg
-	dom_name_space \http://www.w3.org/2000/svg
-	font_size 16
-	font_family \
-	style_size *
-
-$mol_svg_root $mol_svg
-	dom_name \svg
-	attr *
-		^
-		viewBox <= view_box \0 0 100 100
-		preserveAspectRatio <= aspect \xMidYMid
-
-$mol_svg_path $mol_svg
-	dom_name \path
-	attr *
-		^
-		d <= geometry \
-
-
-$mol_icon $mol_svg_root
-	view_box \0 0 24 24
-	minimal_width 16
-	minimal_height 16
-	sub /
-		<= Path $mol_svg_path
-			geometry <= path \
+	Gap* $mol_view title \
 
 $mol_link $mol_view
 	uri \
@@ -179,6 +151,35 @@ $mol_string $mol_view
 		<= Submit $mol_hotkey
 			key * enter?event <=> submit?event null
 
+$mol_svg $mol_view
+	dom_name \svg
+	dom_name_space \http://www.w3.org/2000/svg
+	font_size 16
+	font_family \
+	style_size *
+
+$mol_svg_root $mol_svg
+	dom_name \svg
+	attr *
+		^
+		viewBox <= view_box \0 0 100 100
+		preserveAspectRatio <= aspect \xMidYMid
+
+$mol_svg_path $mol_svg
+	dom_name \path
+	attr *
+		^
+		d <= geometry \
+
+
+$mol_icon $mol_svg_root
+	view_box \0 0 24 24
+	minimal_width 16
+	minimal_height 16
+	sub /
+		<= Path $mol_svg_path
+			geometry <= path \
+
 $mol_icon_cross $mol_icon path \M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z
 
 $mol_list $mol_view
@@ -196,6 +197,7 @@ $mol_paragraph $mol_view
 	line_height 24
 	letter_width 7
 	width_limit +Infinity
+	row_width 0
 	sub / <= title
 
 $mol_dimmer $mol_paragraph
@@ -397,6 +399,7 @@ $mol_form_field $mol_labeler
 $mol_row $mol_view
 
 $mol_form $mol_list
+	submit_allowed true
 	submit_blocked false
 	event *
 		^
@@ -476,14 +479,14 @@ $mol_grid $mol_view
 			haystack <= cell_value* \
 
 $mol_grid_table $mol_list
-	dom_name \table
+	- dom_name \table
 
 $mol_grid_row $mol_view
-	dom_name \tr
+	- dom_name \tr
 	sub <= cells /$mol_view
 
 $mol_grid_cell $mol_view
-	dom_name \td
+	- dom_name \td
 	minimal_height 40
 
 $mol_grid_number $mol_grid_cell
@@ -498,13 +501,15 @@ $mol_text_code_token_link $mol_text_code_token
 	type \code-link
 	attr *
 		^
-		href <= haystack \
+		href <= uri \
 		target \_blank
 
 $mol_text_code_row $mol_paragraph
 	text \
 	minimal_height 24
 	numb_showed true
+	syntax null
+	uri_resolve* \
 	Numb $mol_view
 		sub /
 			<= numb 0
@@ -515,16 +520,20 @@ $mol_text_code_row $mol_paragraph
 	Token_link* $mol_text_code_token_link
 		haystack <= token_text* \
 		needle <= highlight \
+		uri <= token_uri* \
 	find_pos* null
 
 $mol_stack $mol_view
 
-$mol_icon_content_copy $mol_icon path \M19,21H8V7H19M19,5H8C6.9,5 6,5.9 6,7V21C6,22.1 6.9,23 8,23H19C20.1,23 21,22.1 21,21V7C21,5.9 20.1,5 19,5M16,1H4C2.9,1 2,1.9 2,3V17H4V3H16V1Z
+$mol_icon_clipboard $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3
+
+$mol_icon_clipboard_outline $mol_icon path \M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5C3.9,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3M12,3C12.55,3 13,3.45 13,4C13,4.55 12.55,5 12,5C11.45,5 11,4.55 11,4C11,3.45 11.45,3 12,3M7,7H17V5H19V19H5V5H7V7Z
 
 $mol_button_copy $mol_button_minor
 	text \
 	sub /
-		<= Icon $mol_icon_content_copy
+		<= Icon $mol_icon_clipboard_outline
+
 
 $mol_text_code $mol_stack
 	attr *
@@ -533,6 +542,7 @@ $mol_text_code $mol_stack
 	text \
 	text_lines /string
 	find_pos* null
+	uri_base \
 	sub /
 		<= Rows $mol_list
 			render_visible_only <= render_visible_only false
@@ -541,6 +551,8 @@ $mol_text_code $mol_stack
 					numb_showed <= sidebar_showed
 					numb <= row_numb* 0
 					text <= row_text* \
+					syntax <= syntax null
+					uri_resolve* <= uri_resolve* \
 					highlight <= highlight \
 		<= Copy $mol_button_copy
 			hint @ \Copy whole code
@@ -574,6 +586,10 @@ $mol_dump_value $mol_view
 					<= Expand_title $mol_text_code
 						text <= expand_title \
 			content <= expand_content /
+				<= Preview $mol_view sub /
+					<= Preview_dom $mol_view
+						dom_node <= preview_dom null
+						render <= preview null
 				<= Row*0 $mol_dump_list
 					values <= row_values* /
 					prototypes <= prototypes false
@@ -632,7 +648,7 @@ $mol_frame $mol_embed_native
 		^
 		data null
 		type null
-		src <= uri?val \
+		src <= uri?val \about:config
 		srcdoc <= html null
 		allow <= allow \
 		allowfullscreen <= fullscreen true
@@ -678,24 +694,27 @@ $mol_text $mol_list
 	Paragraph* $mol_paragraph
 		sub <= block_content* /
 	Quote* $mol_text
-		uri_resolve* <= uri_resolve* null
+		uri_resolve* <= uri_resolve* \
 		text <= quote_text* \
 		highlight <= highlight \
 		auto_scroll null
-	List* $mol_text
-		uri_resolve* <= uri_resolve* null
+	List* $mol_text_list
+		uri_resolve* <= uri_resolve* \
+		type <= list_type* \-
 		text <= list_text* \
 		highlight <= highlight \
-		auto_scroll null
+	item_index* 0
 	Header* $mol_text_header
 		minimal_height 40
-		dom_name <= header_level* \h
+		level <= header_level* 1
 		content <= block_content* /
 		arg <= header_arg* *
 	Pre* $mol_text_code
 		text <= pre_text* \
 		highlight <= highlight \
+		uri_resolve* <= uri_resolve* \
 		sidebar_showed <= pre_sidebar_showed <= code_sidebar_showed true
+	Cut* $mol_view dom_name \hr
 	- \Table
 	Table* $mol_grid
 		head_cells <= table_head_cells* /
@@ -705,8 +724,18 @@ $mol_text $mol_list
 	Table_cell* $mol_text
 		auto_scroll null
 		highlight <= highlight \
-		uri_resolve* <= uri_resolve* null
+		uri_resolve* <= uri_resolve* \
 		text <= table_cell_text* \
+	- \Grid
+	Grid* $mol_grid
+		rows <= grid_rows* /
+	Grid_row* $mol_grid_row
+		cells <= grid_cells* /
+	Grid_cell* $mol_text
+		auto_scroll null
+		highlight <= highlight \
+		uri_resolve* <= uri_resolve* \
+		text <= grid_cell_text* \
 	- \Lines
 	String* $mol_dimmer
 		dom_name \span
@@ -720,6 +749,8 @@ $mol_text $mol_list
 		numb_showed false
 		highlight <= highlight \
 		text <= line_text* \
+		uri_resolve* <= uri_resolve* \
+		syntax <= code_syntax null
 	Link* $mol_link_iconed
 		uri <= link_uri* \
 		content <= line_content* /
@@ -731,6 +762,7 @@ $mol_text $mol_list
 		title <= line_text* \
 
 $mol_text_header $mol_paragraph
+	level 1
 	sub /
 		<= Link $mol_link
 			arg <= arg *
@@ -747,6 +779,20 @@ $mol_button_major $mol_button_typed
 	attr *
 		^
 		mol_theme \$mol_theme_accent
+
+$mol_text_list $mol_text
+	auto_scroll null
+	attr *
+		^
+		mol_text_list_type <= type \
+	Paragraph* $mol_text_list_item
+		index <= item_index*
+		sub <= block_content*
+
+$mol_text_list_item $mol_paragraph
+	attr *
+		^
+		mol_text_list_item_index <= index 0
 
 
 $hyoo_sync_watch_world $mol_book2_catalog
@@ -867,6 +913,7 @@ $mol_calendar $mol_list
 		<= Weekdays $mol_hor
 			sub <= weekdays /$mol_view
 	weeks /$mol_view
+	weeks_count 6
 	-
 	Weekday* $mol_calendar_day
 		holiday <= weekend* false

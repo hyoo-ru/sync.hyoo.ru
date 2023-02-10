@@ -60,10 +60,10 @@ declare namespace $ {
         get $(): $;
         set $(next: $);
         static create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
-        static [Symbol.toPrimitive](): unknown;
-        static toString(): unknown;
+        static [Symbol.toPrimitive](): string;
+        static toString(): string;
         destructor(): void;
-        toString(): any;
+        toString(): string;
         toJSON(): any;
     }
 }
@@ -491,6 +491,22 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    type $mol_type_tail<Tuple extends readonly any[]> = ((...tail: Tuple) => any) extends ((head: any, ...tail: infer Tail) => any) ? Tail : never;
+}
+
+declare namespace $ {
+    type $mol_type_foot<Tuple extends readonly any[]> = Tuple['length'] extends 0 ? never : Tuple[$mol_type_tail<Tuple>['length']];
+}
+
+declare namespace $ {
+    function $mol_fail_catch(error: unknown): boolean;
+}
+
+declare namespace $ {
+    function $mol_fail_log(error: unknown): boolean;
+}
+
+declare namespace $ {
     class $mol_wire_atom<Host, Args extends readonly unknown[], Result> extends $mol_wire_fiber<Host, Args, Result> {
         static solo<Host, Args extends readonly unknown[], Result>(host: Host, task: (this: Host, ...args: Args) => Result): $mol_wire_atom<Host, Args, Result>;
         static plex<Host, Args extends readonly unknown[], Result>(host: Host, task: (this: Host, ...args: Args) => Result, key: Args[0]): $mol_wire_atom<Host, Args, Result>;
@@ -499,13 +515,12 @@ declare namespace $ {
         watch(): void;
         resync(args: Args): Error | Result | Promise<Error | Result>;
         once(): Awaited<Result>;
+        channel(): ((next?: $mol_type_foot<Args>) => Awaited<Result>) & {
+            atom: $mol_wire_atom<Host, Args, Result>;
+        };
         destructor(): void;
         put(next: Result | Error | Promise<Result | Error>): Error | Result | Promise<Error | Result>;
     }
-}
-
-declare namespace $ {
-    type $mol_type_tail<Tuple extends readonly any[]> = ((...tail: Tuple) => any) extends ((head: any, ...tail: infer Tail) => any) ? Tail : never;
 }
 
 declare namespace $ {
@@ -528,14 +543,6 @@ declare namespace $ {
 declare namespace $ {
     let $mol_mem: typeof $mol_wire_solo;
     let $mol_mem_key: typeof $mol_wire_plex;
-}
-
-declare namespace $ {
-    function $mol_fail_catch(error: unknown): boolean;
-}
-
-declare namespace $ {
-    function $mol_fail_log(error: unknown): boolean;
 }
 
 declare namespace $ {
@@ -657,7 +664,7 @@ declare namespace $ {
             top: number;
             bottom: number;
         } | null;
-        dom_id(): any;
+        dom_id(): string;
         dom_node(next?: Element): Element;
         dom_final(): Element | undefined;
         dom_tree(next?: Element): Element;
@@ -730,7 +737,7 @@ declare namespace $ {
         gap?: Length;
         background?: 'none' | {
             color?: Color | Common;
-            image?: readonly (readonly [$mol_style_func<'url'>])[] | 'none' | Common;
+            image?: readonly (readonly [$mol_style_func<'url'> | string & {}])[] | 'none' | Common;
             repeat?: Repeat | [Repeat, Repeat] | Common;
             position?: 'left' | 'right' | 'top' | 'bottom' | 'center';
             size?: (BG_size | [BG_size, BG_size])[];
@@ -912,6 +919,7 @@ declare namespace $ {
         sub(): readonly $mol_view[];
         minimal_width(): number;
         Placeholder(): $mol_view;
+        Gap(id: any): $mol_view;
         pages(): readonly $mol_view[];
     }
 }
@@ -929,70 +937,6 @@ declare namespace $.$$ {
         sub(): readonly $mol_view[];
         bring(): void;
     }
-}
-
-declare namespace $ {
-    class $mol_svg extends $mol_view {
-        dom_name(): string;
-        dom_name_space(): string;
-        font_size(): number;
-        font_family(): string;
-        style_size(): {};
-    }
-}
-
-declare namespace $ {
-    class $mol_state_time extends $mol_object {
-        static task(precision: number, reset?: null): $mol_after_timeout | $mol_after_frame;
-        static now(precision: number): number;
-    }
-}
-
-declare namespace $.$$ {
-    class $mol_svg extends $.$mol_svg {
-        computed_style(): CSSStyleDeclaration;
-        font_size(): number;
-        font_family(): any;
-    }
-}
-
-declare namespace $ {
-    class $mol_svg_root extends $mol_svg {
-        dom_name(): string;
-        attr(): {
-            viewBox: string;
-            preserveAspectRatio: string;
-        };
-        view_box(): string;
-        aspect(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_svg_path extends $mol_svg {
-        dom_name(): string;
-        attr(): {
-            d: string;
-        };
-        geometry(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_icon extends $mol_svg_root {
-        view_box(): string;
-        minimal_width(): number;
-        minimal_height(): number;
-        sub(): readonly any[];
-        path(): string;
-        Path(): $mol_svg_path;
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -1642,6 +1586,70 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    class $mol_svg extends $mol_view {
+        dom_name(): string;
+        dom_name_space(): string;
+        font_size(): number;
+        font_family(): string;
+        style_size(): {};
+    }
+}
+
+declare namespace $ {
+    class $mol_state_time extends $mol_object {
+        static task(precision: number, reset?: null): $mol_after_timeout | $mol_after_frame;
+        static now(precision: number): number;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_svg extends $.$mol_svg {
+        computed_style(): CSSStyleDeclaration;
+        font_size(): number;
+        font_family(): any;
+    }
+}
+
+declare namespace $ {
+    class $mol_svg_root extends $mol_svg {
+        dom_name(): string;
+        attr(): {
+            viewBox: string;
+            preserveAspectRatio: string;
+        };
+        view_box(): string;
+        aspect(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_svg_path extends $mol_svg {
+        dom_name(): string;
+        attr(): {
+            d: string;
+        };
+        geometry(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon extends $mol_svg_root {
+        view_box(): string;
+        minimal_width(): number;
+        minimal_height(): number;
+        sub(): readonly any[];
+        path(): string;
+        Path(): $mol_svg_path;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_icon_cross extends $mol_icon {
         path(): string;
     }
@@ -1687,6 +1695,7 @@ declare namespace $ {
         line_height(): number;
         letter_width(): number;
         width_limit(): number;
+        row_width(): number;
         sub(): readonly any[];
     }
 }
@@ -1765,15 +1774,15 @@ declare namespace $ {
     export class $mol_regexp<Groups extends Record<string, string>> extends RegExp {
         readonly groups: (Extract<keyof Groups, string>)[];
         constructor(source: string, flags?: string, groups?: (Extract<keyof Groups, string>)[]);
-        [Symbol.matchAll](str: string): IterableIterator<$mol_type_override<RegExpExecArray, {
+        [Symbol.matchAll](str: string): IterableIterator<RegExpMatchArray & $mol_type_override<RegExpMatchArray, {
             groups?: {
                 [key in keyof Groups]: string;
             };
         }>>;
-        [Symbol.match](str: string): null | string[];
+        [Symbol.match](str: string): null | RegExpMatchArray;
         [Symbol.split](str: string): string[];
         test(str: string): boolean;
-        exec(str: string): $mol_type_override<RegExpExecArray, {
+        exec(str: string): RegExpExecArray & $mol_type_override<RegExpExecArray, {
             groups?: {
                 [key in keyof Groups]: string;
             };
@@ -1980,12 +1989,6 @@ declare namespace $ {
             mol_theme: string;
         };
         theme(): string;
-    }
-}
-
-declare namespace $ {
-    class $mol_media extends $mol_object2 {
-        static match(query: string, next?: boolean): boolean;
     }
 }
 
@@ -2203,7 +2206,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type $hyoo_crowd_unit_id = `${$mol_int62_string}/${$mol_int62_string}`;
+    type $hyoo_crowd_unit_id = `${$mol_int62_string}!${$mol_int62_string}`;
     enum $hyoo_crowd_unit_kind {
         grab = 0,
         join = 1,
@@ -2269,11 +2272,12 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_node extends Object {
+    class $hyoo_crowd_node extends $mol_object2 {
         readonly land: $hyoo_crowd_land;
         readonly head: $mol_int62_string;
-        constructor(land: $hyoo_crowd_land, head: $mol_int62_string);
+        constructor(land?: $hyoo_crowd_land, head?: $mol_int62_string);
         static for<Node extends typeof $hyoo_crowd_node>(this: Node, land: $hyoo_crowd_land, head: $mol_int62_string): InstanceType<Node>;
+        id(): `${string}_${string}`;
         world(): $hyoo_crowd_world | null;
         as<Node extends typeof $hyoo_crowd_node>(Node: Node): InstanceType<Node>;
         units(): readonly $hyoo_crowd_unit[];
@@ -2312,7 +2316,7 @@ declare namespace $ {
         get clocks(): readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
         readonly pub: $mol_wire_pub;
         readonly _clocks: readonly [$hyoo_crowd_clock, $hyoo_crowd_clock];
-        _unit_all: Map<`${string}_${string}/${string}_${string}`, $hyoo_crowd_unit>;
+        _unit_all: Map<`${string}_${string}!${string}_${string}`, $hyoo_crowd_unit>;
         unit(head: $mol_int62_string, self: $mol_int62_string): $hyoo_crowd_unit | undefined;
         _unit_lists: Map<`${string}_${string}`, ($hyoo_crowd_unit[] & {
             dirty: boolean;
@@ -2335,18 +2339,23 @@ declare namespace $ {
         _joined: boolean;
         join(): true | undefined;
         leave(): false | undefined;
+        allowed_add(peer?: `${string}_${string}`): boolean;
+        allowed_mod(peer?: `${string}_${string}`): boolean;
+        allowed_law(peer?: `${string}_${string}`): boolean;
         level_base(next?: $hyoo_crowd_peer_level): void;
         level(peer: $mol_int62_string | '', next?: $hyoo_crowd_peer_level): $hyoo_crowd_peer_level;
+        grabbed(): boolean;
         peers(): readonly `${string}_${string}`[];
         residents(): readonly `${string}_${string}`[];
         authors(): Set<`${string}_${string}`>;
+        steal_rights(donor: $hyoo_crowd_land): void;
         first_stamp(): number | null;
         last_stamp(): number;
         selection(peer: $mol_int62_string): $hyoo_crowd_reg;
         put(head: $mol_int62_string, self: $mol_int62_string, prev: $mol_int62_string, data: unknown): $hyoo_crowd_unit;
         wipe(unit: $hyoo_crowd_unit): $hyoo_crowd_unit;
-        move(unit: $hyoo_crowd_unit, head: $mol_int62_string, prev: $mol_int62_string): $hyoo_crowd_unit;
-        insert(unit: $hyoo_crowd_unit, head: $mol_int62_string, seat: number): $hyoo_crowd_unit;
+        move(unit: $hyoo_crowd_unit, head: $mol_int62_string, prev: $mol_int62_string): void;
+        insert(unit: $hyoo_crowd_unit, head: $mol_int62_string, seat: number): void;
     }
 }
 
@@ -2384,7 +2393,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_crowd_world extends $mol_object2 {
+    class $hyoo_crowd_world extends $mol_object {
         readonly peer?: $hyoo_crowd_peer | undefined;
         constructor(peer?: $hyoo_crowd_peer | undefined);
         readonly lands_pub: $mol_wire_pub;
@@ -2428,6 +2437,7 @@ declare namespace $ {
         log_pack(data: any): any;
         peer(): $hyoo_crowd_peer;
         world(): $hyoo_crowd_world;
+        land_init(land: $hyoo_crowd_land): void;
         land(id: $mol_int62_string): $hyoo_crowd_land;
         land_grab(law?: readonly ("" | `${string}_${string}`)[], mod?: readonly ("" | `${string}_${string}`)[], add?: readonly ("" | `${string}_${string}`)[]): $hyoo_crowd_land;
         home(): $hyoo_crowd_land;
@@ -2779,6 +2789,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_form extends $mol_list {
+        submit_allowed(): boolean;
         submit_blocked(): boolean;
         event(): {
             keydown: (event?: any) => any;
@@ -2965,15 +2976,12 @@ declare namespace $ {
         Cell_dimmer(id: any): $$.$mol_dimmer;
     }
     class $mol_grid_table extends $mol_list {
-        dom_name(): string;
     }
     class $mol_grid_row extends $mol_view {
-        dom_name(): string;
         sub(): readonly $mol_view[];
         cells(): readonly $mol_view[];
     }
     class $mol_grid_cell extends $mol_view {
-        dom_name(): string;
         minimal_height(): number;
     }
     class $mol_grid_number extends $mol_grid_cell {
@@ -3044,7 +3052,7 @@ declare namespace $ {
             target: string;
             mol_text_code_token_type: string;
         };
-        haystack(): string;
+        uri(): string;
     }
 }
 
@@ -3056,6 +3064,8 @@ declare namespace $ {
         text(): string;
         minimal_height(): number;
         numb_showed(): boolean;
+        syntax(): any;
+        uri_resolve(id: any): string;
         Numb(): $mol_view;
         Token(id: any): $mol_text_code_token;
         Token_link(id: any): $mol_text_code_token_link;
@@ -3064,6 +3074,7 @@ declare namespace $ {
         token_type(id: any): string;
         token_text(id: any): string;
         highlight(): string;
+        token_uri(id: any): string;
     }
 }
 
@@ -3094,14 +3105,18 @@ declare namespace $ {
         code: RegExp;
         'code-indent': RegExp;
         table: RegExp;
+        grid: RegExp;
+        cut: RegExp;
         block: RegExp;
     }>;
     var $mol_syntax2_md_line: $mol_syntax2<{
         strong: RegExp;
         emphasis: RegExp;
-        code3: RegExp;
         code: RegExp;
-        strike: RegExp;
+        insert: RegExp;
+        delete: RegExp;
+        embed: RegExp;
+        link: RegExp;
         'image-link': RegExp;
         'text-link': RegExp;
         'text-link-http': RegExp;
@@ -3119,6 +3134,7 @@ declare namespace $ {
         'code-field': RegExp;
         'code-keyword': RegExp;
         'code-global': RegExp;
+        'code-word': RegExp;
         'code-decorator': RegExp;
         'code-tag': RegExp;
         'code-punctuation': RegExp;
@@ -3131,6 +3147,24 @@ declare namespace $.$$ {
 declare namespace $.$$ {
     class $mol_text_code_row extends $.$mol_text_code_row {
         maximal_width(): number;
+        syntax(): $mol_syntax2<{
+            'code-indent': RegExp;
+            'code-docs': RegExp;
+            'code-comment-block': RegExp;
+            'code-link': RegExp;
+            'code-comment-inline': RegExp;
+            'code-string': RegExp;
+            'code-number': RegExp;
+            'code-call': RegExp;
+            'code-sexpr': RegExp;
+            'code-field': RegExp;
+            'code-keyword': RegExp;
+            'code-global': RegExp;
+            'code-word': RegExp;
+            'code-decorator': RegExp;
+            'code-tag': RegExp;
+            'code-punctuation': RegExp;
+        }>;
         tokens(path: number[]): readonly {
             name: string;
             found: string;
@@ -3142,6 +3176,7 @@ declare namespace $.$$ {
         token_type(path: number[]): string;
         token_content(path: number[]): (string | $mol_text_code_token)[];
         token_text(path: number[]): string;
+        token_uri(path: number[]): string;
         view_find(check: (path: $mol_view, text?: string) => boolean, path?: $mol_view[]): Generator<$mol_view[]>;
         find_pos(offset: number): {
             token: $mol_text_code_token;
@@ -3163,7 +3198,13 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_icon_content_copy extends $mol_icon {
+    class $mol_icon_clipboard extends $mol_icon {
+        path(): string;
+    }
+}
+
+declare namespace $ {
+    class $mol_icon_clipboard_outline extends $mol_icon {
         path(): string;
     }
 }
@@ -3172,7 +3213,7 @@ declare namespace $ {
     class $mol_button_copy extends $mol_button_minor {
         text(): string;
         sub(): readonly any[];
-        Icon(): $mol_icon_content_copy;
+        Icon(): $mol_icon_clipboard_outline;
     }
 }
 
@@ -3190,11 +3231,14 @@ declare namespace $ {
         text(): string;
         text_lines(): readonly string[];
         find_pos(id: any): any;
+        uri_base(): string;
         sub(): readonly any[];
         sidebar_showed(): boolean;
         render_visible_only(): boolean;
         row_numb(id: any): number;
         row_text(id: any): string;
+        syntax(): any;
+        uri_resolve(id: any): string;
         highlight(): string;
         Row(id: any): $$.$mol_text_code_row;
         rows(): readonly any[];
@@ -3218,6 +3262,26 @@ declare namespace $.$$ {
             offset: number;
         } | null;
         sub(): ($mol_list | $mol_button_copy)[];
+        syntax(): $mol_syntax2<{
+            'code-indent': RegExp;
+            'code-docs': RegExp;
+            'code-comment-block': RegExp;
+            'code-link': RegExp;
+            'code-comment-inline': RegExp;
+            'code-string': RegExp;
+            'code-number': RegExp;
+            'code-call': RegExp;
+            'code-sexpr': RegExp;
+            'code-field': RegExp;
+            'code-keyword': RegExp;
+            'code-global': RegExp;
+            'code-word': RegExp;
+            'code-decorator': RegExp;
+            'code-tag': RegExp;
+            'code-punctuation': RegExp;
+        }>;
+        uri_base(): string;
+        uri_resolve(uri: string): string;
     }
 }
 
@@ -3254,12 +3318,20 @@ declare namespace $ {
         expand_title(): string;
         Expand_title(): $$.$mol_text_code;
         Expand_head(): $$.$mol_check_expand;
+        preview_dom(): any;
+        preview(): any;
+        Preview_dom(): $mol_view;
+        Preview(): $mol_view;
         row_values(id: any): readonly any[];
         prototypes(): boolean;
         Row(id: any): $$.$mol_dump_list;
         expand_content(): readonly any[];
         Expand(): $$.$mol_expander;
     }
+}
+
+declare namespace $ {
+    function $mol_try<Result>(handler: () => Result): Result | Error;
 }
 
 declare namespace $ {
@@ -3271,7 +3343,8 @@ declare namespace $.$$ {
         simple(): string;
         expand_title(): any;
         rows_values(): any[][];
-        expand_content(): $mol_dump_list[];
+        preview_dom(): Element | null;
+        expand_content(): ($mol_view | $mol_dump_list)[];
         row_values(index: number): any[];
         expand_all(event?: Event, blacklist?: Set<unknown>): void;
     }
@@ -3499,12 +3572,17 @@ declare namespace $ {
         auto(): readonly any[];
         Paragraph(id: any): $$.$mol_paragraph;
         Quote(id: any): $$.$mol_text;
-        List(id: any): $$.$mol_text;
-        Header(id: any): $mol_text_header;
+        List(id: any): $mol_text_list;
+        item_index(id: any): number;
+        Header(id: any): $$.$mol_text_header;
         Pre(id: any): $$.$mol_text_code;
+        Cut(id: any): $mol_view;
         Table(id: any): $$.$mol_grid;
         Table_row(id: any): $mol_grid_row;
         Table_cell(id: any): $$.$mol_text;
+        Grid(id: any): $$.$mol_grid;
+        Grid_row(id: any): $mol_grid_row;
+        Grid_cell(id: any): $$.$mol_text;
         String(id: any): $$.$mol_dimmer;
         Span(id: any): $mol_text_span;
         Code_line(id: any): $$.$mol_text_code_row;
@@ -3513,11 +3591,12 @@ declare namespace $ {
         Embed(id: any): $$.$mol_embed_any;
         auto_scroll(): any;
         block_content(id: any): readonly any[];
-        uri_resolve(id: any): any;
+        uri_resolve(id: any): string;
         quote_text(id: any): string;
         highlight(): string;
+        list_type(id: any): string;
         list_text(id: any): string;
-        header_level(id: any): string;
+        header_level(id: any): number;
         header_arg(id: any): {};
         pre_text(id: any): string;
         code_sidebar_showed(): boolean;
@@ -3526,13 +3605,18 @@ declare namespace $ {
         table_rows(id: any): readonly any[];
         table_cells(id: any): readonly any[];
         table_cell_text(id: any): string;
+        grid_rows(id: any): readonly any[];
+        grid_cells(id: any): readonly any[];
+        grid_cell_text(id: any): string;
         line_text(id: any): string;
         line_type(id: any): string;
         line_content(id: any): readonly any[];
+        code_syntax(): any;
         link_uri(id: any): string;
         link_host(id: any): string;
     }
     class $mol_text_header extends $mol_paragraph {
+        level(): number;
         sub(): readonly any[];
         arg(): {};
         content(): readonly any[];
@@ -3558,12 +3642,14 @@ declare namespace $.$$ {
             chunks: string[];
         }[];
         block_type(index: number): string;
-        rows(): ($mol_paragraph | $mol_grid | $mol_text_code | $mol_text | $mol_text_header)[];
-        param(): any;
-        header_level(index: number): string;
+        rows(): ($mol_view | $mol_paragraph | $mol_grid | $mol_text_code | $mol_text_header)[];
+        param(): string;
+        header_level(index: number): number;
         header_arg(index: number): {
-            [x: number]: string;
+            [x: string]: string;
         };
+        list_type(index: number): string;
+        item_index(index: number): number;
         pre_text(index: number): string;
         quote_text(index: number): string;
         list_text(index: number): string;
@@ -3579,8 +3665,37 @@ declare namespace $.$$ {
             row: number;
             cell: number;
         }): string;
+        grid_content(indexBlock: number): string[][];
+        grid_rows(blockId: number): $mol_grid_row[];
+        grid_cells(id: {
+            block: number;
+            row: number;
+        }): $mol_text[];
+        grid_cell_text(id: {
+            block: number;
+            row: number;
+            cell: number;
+        }): string;
         uri_base(): string;
-        uri_resolve(uri: string): string | null;
+        uri_resolve(uri: string): string;
+        code_syntax(): $mol_syntax2<{
+            'code-indent': RegExp;
+            'code-docs': RegExp;
+            'code-comment-block': RegExp;
+            'code-link': RegExp;
+            'code-comment-inline': RegExp;
+            'code-string': RegExp;
+            'code-number': RegExp;
+            'code-call': RegExp;
+            'code-sexpr': RegExp;
+            'code-field': RegExp;
+            'code-keyword': RegExp;
+            'code-global': RegExp;
+            'code-word': RegExp;
+            'code-decorator': RegExp;
+            'code-tag': RegExp;
+            'code-punctuation': RegExp;
+        }>;
         block_text(index: number): string;
         block_content(index: number): ($mol_dimmer | $mol_text_code_row | $mol_link_iconed | $mol_embed_any | $mol_text_span)[];
         line_tokens(path: readonly number[]): readonly {
@@ -3600,6 +3715,9 @@ declare namespace $.$$ {
         link_host(path: readonly number[]): string;
         auto_scroll(): void;
     }
+    class $mol_text_header extends $.$mol_text_header {
+        dom_name(): string;
+    }
 }
 
 declare namespace $ {
@@ -3611,6 +3729,26 @@ declare namespace $ {
             tabindex: number;
             title: string;
         };
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_text_list extends $mol_text {
+        auto_scroll(): any;
+        attr(): {
+            mol_text_list_type: string;
+        };
+        Paragraph(id: any): $mol_text_list_item;
+        type(): string;
+    }
+    class $mol_text_list_item extends $mol_paragraph {
+        attr(): {
+            mol_text_list_item_index: number;
+        };
+        index(): number;
     }
 }
 
@@ -3687,7 +3825,7 @@ declare namespace $ {
         list(next?: readonly unknown[]): readonly unknown[];
         set(next?: ReadonlySet<string | number | boolean | null>): Set<unknown>;
         insert(next: readonly unknown[], from?: number, to?: number): void;
-        move(from: number, to: number): $hyoo_crowd_unit;
+        move(from: number, to: number): void;
         cut(seat: number): $hyoo_crowd_unit;
         has(val: string | number | boolean | null): boolean;
         add(val: string | number | boolean | null): void;
@@ -3750,7 +3888,9 @@ declare namespace $ {
         uri(): string;
         type(next?: string): string;
         blob(next?: $mol_blob): Blob;
-        buffer(next?: Uint8Array): Uint8Array;
+        buffer(next?: Uint8Array, type?: string): Uint8Array;
+        str(next?: string, type?: string): string;
+        json(next?: any, type?: string): any;
     }
 }
 
@@ -3976,6 +4116,7 @@ declare namespace $ {
     class $mol_calendar extends $mol_list {
         sub(): readonly any[];
         weeks(): readonly $mol_view[];
+        weeks_count(): number;
         Weekday(id: any): $mol_calendar_day;
         Week(id: any): $$.$mol_hor;
         Day(id: any): $mol_calendar_day;
@@ -4014,26 +4155,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    type $mol_time_interval_config = string | {
-        start?: $mol_time_moment_config;
-        end?: $mol_time_moment_config;
-        duration?: $mol_time_duration_config;
-    };
-    class $mol_time_interval extends $mol_time_base {
-        constructor(config: $mol_time_interval_config);
-        private _start;
-        get start(): $mol_time_moment;
-        private _end;
-        get end(): $mol_time_moment;
-        private _duration;
-        get duration(): $mol_time_duration;
-        toJSON(): string;
-        toString(): string;
-        [Symbol.toPrimitive](mode: 'default' | 'number' | 'string'): string;
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $.$$ {
@@ -4046,7 +4167,6 @@ declare namespace $.$$ {
         weekdays(): $mol_view[];
         weekday(index: number): string;
         weekend(index: number): boolean;
-        weeks_count(): number;
         sub(): any[];
         weeks(): $mol_view[];
         week_days(index: number): $mol_view[];
@@ -4088,10 +4208,6 @@ declare namespace $ {
         day_click(id: any, event?: any): any;
         Day_button(id: any): $mol_button_minor;
     }
-}
-
-declare namespace $ {
-    function $mol_try<Result>(handler: () => Result): Result | Error;
 }
 
 declare namespace $ {

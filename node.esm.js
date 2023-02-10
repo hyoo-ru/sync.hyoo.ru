@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "f0012b4";
+let $hyoo_sync_revision = "181ef85";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -407,7 +407,8 @@ var $;
             const res = [];
             const max = this.cursor >= 0 ? this.cursor : this.sub_from;
             for (let i = this.pub_from; i < max; i += 2) {
-                res.push(this.data[i]);
+                if (this.data[i])
+                    res.push(this.data[i]);
             }
             return res;
         }
@@ -1047,6 +1048,45 @@ var $;
 //mol/wire/method/method.ts
 ;
 "use strict";
+//mol/type/tail/tail.ts
+;
+"use strict";
+//mol/type/foot/foot.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const cacthed = new WeakMap();
+    function $mol_fail_catch(error) {
+        if (typeof error !== 'object')
+            return false;
+        if (error instanceof Promise)
+            $mol_fail_hidden(error);
+        if (cacthed.get(error))
+            return false;
+        cacthed.set(error, true);
+        return true;
+    }
+    $.$mol_fail_catch = $mol_fail_catch;
+})($ || ($ = {}));
+//mol/fail/catch/catch.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_fail_log(error) {
+        if (error instanceof Promise)
+            return false;
+        if (!$mol_fail_catch(error))
+            return false;
+        console.error(error);
+        return true;
+    }
+    $.$mol_fail_log = $mol_fail_log;
+})($ || ($ = {}));
+//mol/fail/log/log.ts
+;
+"use strict";
 var $;
 (function ($) {
     class $mol_wire_atom extends $mol_wire_fiber {
@@ -1100,6 +1140,20 @@ var $;
         once() {
             return this.sync();
         }
+        channel() {
+            return Object.assign((next) => {
+                if (next !== undefined)
+                    return this.resync([...this.args, next]);
+                if (!$mol_wire_fiber.warm)
+                    return this.result();
+                if ($mol_wire_auto() instanceof $mol_wire_task) {
+                    return this.once();
+                }
+                else {
+                    return this.sync();
+                }
+            }, { atom: this });
+        }
         destructor() {
             super.destructor();
             const prev = this.cache;
@@ -1117,11 +1171,17 @@ var $;
         }
         put(next) {
             const prev = this.cache;
-            if (next !== prev) {
+            update: if (next !== prev) {
+                try {
+                    if ($mol_compare_deep(prev, next))
+                        break update;
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                }
                 if ($mol_owning_check(this, prev)) {
                     prev.destructor();
                 }
-                this.cache = next;
                 if ($mol_owning_catch(this, next)) {
                     try {
                         next[Symbol.toStringTag] = this[Symbol.toStringTag];
@@ -1130,12 +1190,10 @@ var $;
                         Object.defineProperty(next, Symbol.toStringTag, { value: this[Symbol.toStringTag] });
                     }
                 }
-                if (this.sub_from < this.data.length) {
-                    if (!$mol_compare_deep(prev, next)) {
-                        this.emit();
-                    }
-                }
+                if (!this.sub_empty)
+                    this.emit();
             }
+            this.cache = next;
             this.cursor = $mol_wire_cursor.fresh;
             if (next instanceof Promise)
                 return next;
@@ -1153,9 +1211,6 @@ var $;
     $mol_wire_atom.watch();
 })($ || ($ = {}));
 //mol/wire/atom/atom.ts
-;
-"use strict";
-//mol/type/tail/tail.ts
 ;
 "use strict";
 var $;
@@ -2337,7 +2392,7 @@ var $;
                 case $hyoo_crowd_unit_kind.give:
                     return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 🏅 ', this.self, ' '), $mol_dev_format_native($hyoo_crowd_peer_level[this.data] ?? this.data));
                 case $hyoo_crowd_unit_kind.data:
-                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 📦 ', this.head, ' '), $mol_dev_format_native(this.data));
+                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 📦 ', this.head, '!', this.self, ' '), $mol_dev_format_native(this.data));
             }
         }
     }
@@ -2602,10 +2657,10 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $hyoo_crowd_node extends Object {
+    class $hyoo_crowd_node extends $mol_object2 {
         land;
         head;
-        constructor(land, head) {
+        constructor(land = new $hyoo_crowd_land, head = '0_0') {
             super();
             this.land = land;
             this.head = head;
@@ -2613,17 +2668,23 @@ var $;
         static for(land, head) {
             return new this(land, head);
         }
+        id() {
+            return this.head === '0_0'
+                ? this.land.id()
+                : `${this.land.id()}!${this.head}`;
+        }
         world() {
             return this.land.world();
         }
         as(Node) {
-            return new Node(this.land, this.head);
+            return this.world()?.Fund(Node).Item(`${this.land.id()}!${this.head}`) ?? new Node(this.land, this.head);
         }
         units() {
             return this.land.unit_alives(this.head);
         }
         nodes(Node) {
-            return this.units().map(unit => new Node(this.land, unit.self));
+            const fund = this.world()?.Fund(Node);
+            return this.units().map(unit => fund?.Item(`${this.land.id()}!${unit.self}`) ?? new Node(this.land, unit.self));
         }
         virgin() {
             return this.land.unit_list(this.head).length === 0;
@@ -2632,9 +2693,12 @@ var $;
             return `${this.constructor.name}("${this.land.id()}","${this.head}")`;
         }
         [$mol_dev_format_head]() {
-            return $mol_dev_format_span({}, $mol_dev_format_native(this), $mol_dev_format_shade('/'), $mol_dev_format_auto(this.units().map(unit => unit.data)), $mol_dev_format_shade('/'), $mol_dev_format_auto(this.nodes($hyoo_crowd_node)));
+            return $mol_dev_format_span({}, $mol_dev_format_native(this), $mol_dev_format_shade(':'), $mol_dev_format_auto(this.land.unit_list(this.head)));
         }
     }
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_crowd_node.prototype, "nodes", null);
     $.$hyoo_crowd_node = $hyoo_crowd_node;
 })($ || ($ = {}));
 //hyoo/crowd/node/node.ts
@@ -2683,7 +2747,8 @@ var $;
 (function ($) {
     class $hyoo_crowd_struct extends $hyoo_crowd_node {
         sub(key, Node) {
-            return new Node(this.land, $mol_int62_hash_string(key + '\n' + this.head));
+            const head = $mol_int62_hash_string(key + '\n' + this.head);
+            return this.world()?.Fund(Node).Item(`${this.land.id()}!${head}`) ?? new Node(this.land, head);
         }
         yoke(key, Node, law = [''], mod = [], add = []) {
             const land = this.sub(key, $hyoo_crowd_reg).yoke(law, mod, add);
@@ -2742,7 +2807,7 @@ var $;
         _clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
         _unit_all = new Map();
         unit(head, self) {
-            return this._unit_all.get(`${head}/${self}`);
+            return this._unit_all.get(`${head}!${self}`);
         }
         _unit_lists = new Map();
         _unit_alives = new Map();
@@ -2805,6 +2870,12 @@ var $;
         }
         resort(head) {
             const kids = this._unit_lists.get(head);
+            if (!kids.dirty)
+                return kids;
+            if (kids.length < 2) {
+                kids.dirty = true;
+                return kids;
+            }
             const queue = kids.splice(0).sort((left, right) => -$hyoo_crowd_unit_compare(left, right));
             const locate = (self) => {
                 for (let i = kids.length - 1; i >= 0; --i) {
@@ -2813,25 +2884,35 @@ var $;
                 }
                 return -1;
             };
-            for (let cursor = queue.length - 1; cursor >= 0; --cursor) {
-                const kid = queue[cursor];
-                let index = 0;
-                if (kid.prev !== '0_0') {
-                    index = locate(kid.prev) + 1;
-                    if (!index) {
-                        index = kids.length;
-                        if (kid.next !== '0_0') {
-                            index = locate(kid.next);
-                            if (index === -1)
-                                continue;
-                        }
+            while (queue.length) {
+                kids.push(queue.pop());
+                for (let cursor = queue.length - 1; cursor >= 0; --cursor) {
+                    const kid = queue[cursor];
+                    let index = 0;
+                    if (kid.prev !== '0_0') {
+                        index = locate(kid.prev) + 1;
+                        if (!index)
+                            continue;
                     }
+                    while (kids[index] && ($hyoo_crowd_unit_compare(kids[index], kid) > 0))
+                        ++index;
+                    const exists = locate(kid.self);
+                    if (index === exists) {
+                        if (cursor === queue.length - 1)
+                            queue.pop();
+                        continue;
+                    }
+                    if (exists >= 0) {
+                        kids.splice(exists, 1);
+                        if (exists < index)
+                            --index;
+                    }
+                    kids.splice(index, 0, kid);
+                    if (cursor === queue.length - 1)
+                        queue.pop();
+                    cursor = queue.length;
                 }
-                kids.splice(index, 0, kid);
-                queue.splice(cursor, 1);
-                cursor = queue.length;
             }
-            this._unit_lists.set(head, kids);
             kids.dirty = false;
             return kids;
         }
@@ -2839,18 +2920,19 @@ var $;
             for (const next of delta) {
                 this._clocks[next.group()].see_peer(next.auth, next.time);
                 const kids = this.unit_list(next.head);
-                const next_id = `${next.head}/${next.self}`;
+                const next_id = `${next.head}!${next.self}`;
                 let prev = this._unit_all.get(next_id);
                 if (prev) {
                     if ($hyoo_crowd_unit_compare(prev, next) > 0)
                         continue;
-                    kids.splice(kids.indexOf(prev), 1, next);
+                    kids[kids.indexOf(prev)] = next;
                 }
                 else {
                     kids.push(next);
                 }
                 this._unit_all.set(next_id, next);
-                kids.dirty = true;
+                if (kids.length > 1)
+                    kids.dirty = true;
                 this._unit_alives.set(next.head, undefined);
             }
             this.pub.emit();
@@ -2865,7 +2947,7 @@ var $;
                 return;
             if (!auth.key_public_serial)
                 return;
-            const auth_id = `${auth.id}/${auth.id}`;
+            const auth_id = `${auth.id}!${auth.id}`;
             const auth_unit = this._unit_all.get(auth_id);
             if (auth_unit?.data)
                 return this._joined = true;
@@ -2881,7 +2963,7 @@ var $;
                 return;
             if (!auth.key_public_serial)
                 return;
-            const auth_id = `${auth.id}/${auth.id}`;
+            const auth_id = `${auth.id}!${auth.id}`;
             const auth_unit = this._unit_all.get(auth_id);
             if (!auth_unit || !auth_unit.data)
                 return this._joined = false;
@@ -2890,6 +2972,15 @@ var $;
             this._unit_all.set(auth_id, join_unit);
             this._joined = false;
             this.pub.emit();
+        }
+        allowed_add(peer = this.peer().id) {
+            return this.level(peer) >= $hyoo_crowd_peer_level.add;
+        }
+        allowed_mod(peer = this.peer().id) {
+            return this.level(peer) >= $hyoo_crowd_peer_level.mod;
+        }
+        allowed_law(peer = this.peer().id) {
+            return this.level(peer) >= $hyoo_crowd_peer_level.law;
         }
         level_base(next) {
             this.level('0_0', next);
@@ -2901,9 +2992,9 @@ var $;
                 this.pub.promote();
             if (!peer)
                 peer = this.peer_id();
-            const level_id = `${this.id()}/${peer}`;
+            const level_id = `${this.id()}!${peer}`;
             const prev = this._unit_all.get(level_id)?.level()
-                ?? this._unit_all.get(`${this.id()}/0_0`)?.level()
+                ?? this._unit_all.get(`${this.id()}!0_0`)?.level()
                 ?? (this.id() === peer ? $hyoo_crowd_peer_level.law : $hyoo_crowd_peer_level.get);
             if (next === undefined)
                 return prev;
@@ -2915,6 +3006,12 @@ var $;
             this._unit_all.set(level_id, level_unit);
             this.pub.emit();
             return next;
+        }
+        grabbed() {
+            if (this.id() === this.peer_id())
+                return true;
+            this.pub.promote();
+            return this._unit_all.size > 0;
         }
         peers() {
             this.pub.promote();
@@ -2952,9 +3049,14 @@ var $;
             }
             return authors;
         }
+        steal_rights(donor) {
+            for (const peer of donor.peers()) {
+                this.level(peer, donor.level(peer));
+            }
+        }
         first_stamp() {
             this.pub.promote();
-            const grab_unit = this._unit_all.get(`${this.id()}/${this.id()}`);
+            const grab_unit = this._unit_all.get(`${this.id()}!${this.id()}`);
             return (grab_unit && $hyoo_crowd_time_stamp(grab_unit.time)) ?? null;
         }
         last_stamp() {
@@ -2966,10 +3068,10 @@ var $;
         }
         put(head, self, prev, data) {
             this.join();
-            const old_id = `${head}/${self}`;
+            const old_id = `${head}!${self}`;
             let unit_old = this._unit_all.get(old_id);
             let unit_prev = prev !== '0_0'
-                ? this._unit_all.get(`${head}/${prev}`)
+                ? this._unit_all.get(`${head}!${prev}`)
                 : null;
             const unit_list = this.unit_list(head);
             if (unit_old)
@@ -2981,6 +3083,7 @@ var $;
             const unit_new = new $hyoo_crowd_unit(this.id(), auth, head, self, next, prev, time, data, null);
             this._unit_all.set(old_id, unit_new);
             unit_list.splice(seat, 0, unit_new);
+            unit_list.dirty = true;
             this._unit_alives.set(head, undefined);
             this.pub.emit();
             return unit_new;
@@ -2994,8 +3097,13 @@ var $;
             return this.put(unit.head, unit.self, prev, null);
         }
         move(unit, head, prev) {
+            const unit_list = this.unit_list(unit.head);
+            const seat = unit_list.indexOf(unit);
+            const next = unit_list[seat + 1];
             this.wipe(unit);
-            return this.put(head, unit.self, prev, unit.data);
+            if (next)
+                this.put(next.head, next.self, unit_list[unit_list.indexOf(next) - 2]?.self ?? '0_0', next.data);
+            this.put(head, unit.self, prev, unit.data);
         }
         insert(unit, head, seat) {
             const list = this.unit_list(head);
@@ -3115,7 +3223,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $hyoo_crowd_world extends $mol_object2 {
+    class $hyoo_crowd_world extends $mol_object {
         peer;
         constructor(peer) {
             super();
@@ -3235,15 +3343,15 @@ var $;
                 return all.get(id) ?? land._unit_all.get(id);
             };
             const get_level = (head, self) => {
-                return get_unit(`${head}/${self}`)?.level()
-                    ?? get_unit(`${head}/0_0`)?.level()
+                return get_unit(`${head}!${self}`)?.level()
+                    ?? get_unit(`${head}!0_0`)?.level()
                     ?? $hyoo_crowd_peer_level.get;
             };
             const check_unit = async (unit) => {
                 const bin = unit.bin;
                 if (unit.time > deadline)
                     return 'Far future';
-                const auth_unit = get_unit(`${unit.auth}/${unit.auth}`);
+                const auth_unit = get_unit(`${unit.auth}!${unit.auth}`);
                 const kind = unit.kind();
                 switch (kind) {
                     case $hyoo_crowd_unit_kind.grab:
@@ -3259,7 +3367,7 @@ var $;
                         const valid = await key.verify(bin.sens(), sign);
                         if (!valid)
                             return 'Wrong join sign';
-                        all.set(`${unit.head}/${unit.auth}`, unit);
+                        all.set(`${unit.head}!${unit.auth}`, unit);
                         this._signs.set(unit, sign);
                         return '';
                     }
@@ -3277,7 +3385,7 @@ var $;
                         if (level >= $hyoo_crowd_peer_level.mod)
                             break;
                         if (level === $hyoo_crowd_peer_level.add) {
-                            const exists = get_unit(`${unit.head}/${unit.self}`);
+                            const exists = get_unit(`${unit.head}!${unit.self}`);
                             if (!exists)
                                 break;
                             if (exists.auth === unit.auth)
@@ -3294,7 +3402,7 @@ var $;
                 const valid = await key.verify(bin.sens(), sign);
                 if (!valid)
                     return 'Wrong auth sign';
-                all.set(`${unit.head}/${unit.self}`, unit);
+                all.set(`${unit.head}!${unit.self}`, unit);
                 this._signs.set(unit, sign);
                 return '';
             };
@@ -3348,37 +3456,6 @@ var $;
     $.$mol_wire_race = $mol_wire_race;
 })($ || ($ = {}));
 //mol/wire/race/race.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const cacthed = new WeakMap();
-    function $mol_fail_catch(error) {
-        if (typeof error !== 'object')
-            return false;
-        if (cacthed.get(error))
-            return false;
-        cacthed.set(error, true);
-        return true;
-    }
-    $.$mol_fail_catch = $mol_fail_catch;
-})($ || ($ = {}));
-//mol/fail/catch/catch.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_fail_log(error) {
-        if (error instanceof Promise)
-            return false;
-        if (!$mol_fail_catch(error))
-            return false;
-        console.error(error);
-        return true;
-    }
-    $.$mol_fail_log = $mol_fail_log;
-})($ || ($ = {}));
-//mol/fail/log/log.ts
 ;
 "use strict";
 var $;
@@ -3449,8 +3526,11 @@ var $;
         }
         world() {
             const world = new this.$.$hyoo_crowd_world(this.peer());
-            world.land_init = land => this.db_land_init(land);
+            world.land_init = land => this.land_init(land);
             return world;
+        }
+        land_init(land) {
+            this.db_land_init(land);
         }
         land(id) {
             return this.world().land_sync(id);
@@ -3629,7 +3709,7 @@ var $;
                 if (prev)
                     await prev;
                 const world = this.world();
-                const land = await $mol_wire_async(this).land(land_id);
+                const land = await $mol_wire_async(world).land(land_id);
                 let clocks = this.line_land_clocks({ line, land });
                 if (!clocks)
                     this.line_land_clocks({ line, land }, clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock]);
@@ -3695,7 +3775,7 @@ var $;
     ], $hyoo_sync_yard.prototype, "world", null);
     __decorate([
         $mol_mem_key
-    ], $hyoo_sync_yard.prototype, "land", null);
+    ], $hyoo_sync_yard.prototype, "land_init", null);
     __decorate([
         $mol_action
     ], $hyoo_sync_yard.prototype, "land_search", null);
@@ -4063,7 +4143,7 @@ var $;
         move(from, to) {
             const units = this.units();
             const lead = to ? units[to - 1] : null;
-            return this.land.move(units[from], this.head, lead?.self ?? '0_0');
+            this.land.move(units[from], this.head, lead?.self ?? '0_0');
         }
         cut(seat) {
             return this.land.wipe(this.units()[seat]);
@@ -4116,15 +4196,14 @@ var $;
         }
         blob(next) {
             if (next) {
-                this.buffer(new Uint8Array($mol_wire_sync(next).arrayBuffer()));
-                this.type(next.type);
+                this.buffer(new Uint8Array($mol_wire_sync(next).arrayBuffer()), next.type);
                 return next;
             }
             return new $mol_blob(this.list(), {
                 type: this.type(),
             });
         }
-        buffer(next) {
+        buffer(next, type = 'application/octet-stream') {
             if (next) {
                 const chunks = [];
                 let offset = 0;
@@ -4134,6 +4213,7 @@ var $;
                     offset = cut;
                 }
                 this.list(chunks);
+                this.type(type);
                 return next;
             }
             else {
@@ -4146,6 +4226,25 @@ var $;
                     offset += chunk.byteLength;
                 }
                 return res;
+            }
+        }
+        str(next, type = 'text/plain') {
+            if (next === undefined) {
+                return $mol_charset_decode(this.buffer());
+            }
+            else {
+                this.buffer($mol_charset_encode(next));
+                this.type(type);
+                return next;
+            }
+        }
+        json(next, type = 'application/json') {
+            if (next === undefined) {
+                return JSON.parse(this.str());
+            }
+            else {
+                this.str(JSON.stringify(next), type);
+                return next;
             }
         }
     }
@@ -5342,7 +5441,7 @@ var $;
     if (port)
         $hyoo_sync_server.run(port);
 })($ || ($ = {}));
-//hyoo/sync/server/server.ts
+//hyoo/sync/server/server.node.ts
 ;
 export default $
 //# sourceMappingURL=node.esm.js.map

@@ -9595,8 +9595,10 @@ var $;
                 this.Bid()
             ];
         }
-        Content() {
-            return this.control();
+        content() {
+            return [
+                this.control()
+            ];
         }
         name() {
             return "";

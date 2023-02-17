@@ -421,6 +421,7 @@ $mol_button_download $mol_button_minor
 	file_name \blob.bin
 	sub /
 		<= Icon $mol_icon_download
+		<= title \
 
 $mol_float $mol_view
 	style *
@@ -533,6 +534,7 @@ $mol_button_copy $mol_button_minor
 	text \
 	sub /
 		<= Icon $mol_icon_clipboard_outline
+		<= title \
 
 
 $mol_text_code $mol_stack

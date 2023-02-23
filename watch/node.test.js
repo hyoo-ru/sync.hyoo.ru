@@ -2777,12 +2777,6 @@ var $;
 //mol/view/view/view.ts
 ;
 "use strict";
-//mol/type/result/result.ts
-;
-"use strict";
-//mol/type/error/error.ts
-;
-"use strict";
 //mol/type/override/override.ts
 ;
 "use strict";
@@ -2793,6 +2787,9 @@ var $;
 ;
 "use strict";
 //mol/style/pseudo/element.ts
+;
+"use strict";
+//mol/type/error/error.ts
 ;
 "use strict";
 //mol/style/guard/guard.ts
@@ -18070,9 +18067,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/view/view/view.test.ts
-;
-"use strict";
-//mol/type/result/result.test.ts
 ;
 "use strict";
 var $;

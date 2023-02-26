@@ -114,7 +114,7 @@ namespace $ {
 					[ entry ]: {}
 				}
 				
-				function proceed( data: {}, node: $hyoo_crowd_struct, query: $hyoo_harp_query ) {
+				const proceed = ( data: {}, node: $hyoo_crowd_struct, query: $hyoo_harp_query )=> {
 					
 					for( let fetch in query ) {
 						
@@ -157,6 +157,10 @@ namespace $ {
 							
 							case 'text':
 								data[ fetch ] = node.sub( field, $hyoo_crowd_text ).text()
+								continue
+							
+							case 'mt':
+								data[ fetch ] = this.$.$hyoo_marked_to_html( node.sub( field, $hyoo_crowd_text ).text() )
 								continue
 							
 							case 'html':

@@ -114,6 +114,8 @@ namespace $ {
 					[ entry ]: {}
 				}
 				
+				const accept = req.headers.accept ?? 'application/json'
+				
 				const proceed = ( data: {}, node: $hyoo_crowd_struct, query: $hyoo_harp_query )=> {
 					
 					for( let fetch in query ) {
@@ -157,10 +159,7 @@ namespace $ {
 							
 							case 'text':
 								data[ fetch ] = node.sub( field, $hyoo_crowd_text ).text()
-								continue
-							
-							case 'mt':
-								data[ fetch ] = this.$.$hyoo_marked_to_html( node.sub( field, $hyoo_crowd_text ).text() )
+								if( accept === 'text/html' ) data[ fetch ] = this.$.$hyoo_marked_to_html( data[ fetch ] )
 								continue
 							
 							case 'html':
@@ -171,8 +170,12 @@ namespace $ {
 								const blob = node.sub( field, $hyoo_crowd_blob )
 								switch( blob.type() ) {
 									case 'text/plain':
+										data[ fetch ] = blob.str()
+										if( accept === 'text/html' ) data[ fetch ] = this.$.$hyoo_marked_to_html( data[ fetch ] )
+										break
 									case 'text/html':
 										data[ fetch ] = blob.str()
+										break
 									default: 
 										data[ fetch ] = blob.buffer()
 								}
@@ -194,8 +197,6 @@ namespace $ {
 					},
 					land: reply,
 				}
-				
-				const accept = req.headers.accept ?? 'application/json'
 				
 				switch( accept ) {
 					

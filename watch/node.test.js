@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "a161000";
+let $hyoo_sync_revision = "c29d500";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";

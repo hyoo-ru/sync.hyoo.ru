@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "a161000";
+let $hyoo_sync_revision = "c29d500";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5595,6 +5595,16 @@ var $;
                                 continue;
                             case 'html':
                                 data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
+                                continue;
+                            case 'blob':
+                                const blob = node.sub(field, $hyoo_crowd_blob);
+                                switch (blob.type()) {
+                                    case 'text/plain':
+                                    case 'text/html':
+                                        data[fetch] = blob.str();
+                                    default:
+                                        data[fetch] = blob.buffer();
+                                }
                                 continue;
                         }
                     }

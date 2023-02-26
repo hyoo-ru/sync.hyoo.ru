@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "0a070ff";
+let $hyoo_sync_revision = "a161000";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5620,7 +5620,7 @@ var $;
                 switch (accept) {
                     case 'text/html':
                         res.writeHead(200, {
-                            'Content-Type': 'text/html',
+                            'Content-Type': 'text/html;charset=utf-8',
                             'Access-Control-Allow-Origin': '*',
                         });
                         const html = Object.entries(reply).flatMap(([id, props]) => [
@@ -5628,7 +5628,7 @@ var $;
                             ...Object.entries(props).flatMap(([name, value]) => {
                                 const tag = name.replace(/_.*$/, '');
                                 return [
-                                    `<${tag} id="land=${id}[name]">`,
+                                    `<${tag} id="land=${id}[${name}]">`,
                                     value,
                                     `</${tag}>`,
                                 ];
@@ -5640,7 +5640,7 @@ var $;
                     default:
                     case 'application/json':
                         res.writeHead(200, {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'application/json;charset=utf-8',
                             'Access-Control-Allow-Origin': '*',
                         });
                         res.end(JSON.stringify(response, null, '\t'));

@@ -194,16 +194,19 @@ namespace $ {
 							'Content-Type': 'text/html',
 							'Access-Control-Allow-Origin': '*',
 						} )
-						Object.entries( reply ).flatMap( ([ id, props ])=> [
-							`<div id="land=${id}">`,
-								... Object.entries( props ).flatMap( ([ name, value ])=> [
-									`<div id="land=${id}[name]">`,
-									value,
-									`/<div>`,
-								] ),
-							`/<div>`,
+						const html = Object.entries( reply ).flatMap( ([ id, props ])=> [
+							`<land id="land=${id}">`,
+								... Object.entries( props ).flatMap( ([ name, value ])=> {
+									const tag = name.replace( /_.*$/, '' )
+									return [
+										`<${tag} id="land=${id}[name]">`,
+										value,
+										`/<${tag}>`,
+									]
+								} ),
+							`/<land>`,
 						] )
-						res.end( )
+						res.end( html )
 						break
 					
 					default:case 'application/json':

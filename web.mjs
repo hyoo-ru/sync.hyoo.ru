@@ -36,4 +36,4 @@ let $hyoo_sync_revision = "b5b9292";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 export default $
-//# sourceMappingURL=web.esm.js.map
+//# sourceMappingURL=web.mjs.map

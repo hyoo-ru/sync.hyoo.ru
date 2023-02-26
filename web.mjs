@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "b5b9292";
+let $hyoo_sync_revision = "58ee423";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 export default $

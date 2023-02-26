@@ -24,7 +24,7 @@ module.exports = $;
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "b5b9292";
+let $hyoo_sync_revision = "58ee423";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5033,6 +5033,335 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    $.$hyoo_marked_cut = $mol_regexp.from([
+        '--',
+        $mol_regexp.line_end,
+    ]);
+})($ || ($ = {}));
+//hyoo/marked/cut/cut.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const { optional, slash_back, char_any, char_except, repeat } = $mol_regexp;
+    $.$hyoo_marked_line_content = repeat(char_except('\r\n'), 1);
+    const uri = repeat(char_except(slash_back));
+    function with_marker(marker, content = $mol_regexp.from({
+        content: $.$hyoo_marked_line_content
+    })) {
+        return $mol_regexp.from([{ marker }, content, marker]);
+    }
+    const strong = with_marker('**');
+    const emphasis = with_marker('//');
+    const insertion = with_marker('++');
+    const deletion = with_marker('--');
+    const code = with_marker(';;');
+    const with_uri = $mol_regexp.from([
+        optional([
+            { content: $.$hyoo_marked_line_content },
+            slash_back
+        ]),
+        { uri },
+    ]);
+    const link = with_marker('\\\\', with_uri);
+    const embed = with_marker('""', with_uri);
+    const inline = $mol_regexp.from({ strong, emphasis, insertion, deletion, code, link, embed });
+    $.$hyoo_marked_line = $mol_regexp.from({ inline });
+})($ || ($ = {}));
+//hyoo/marked/line/line.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_header = $mol_regexp.from([
+        { marker: $mol_regexp.repeat_greedy('=', 1, 6) },
+        ' ',
+        { content: $hyoo_marked_line_content },
+        $mol_regexp.line_end,
+    ]);
+})($ || ($ = {}));
+//hyoo/marked/header/header.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_list_line = $mol_regexp.from([
+        { indent: $mol_regexp.repeat('  ') },
+        { marker: ['-', $mol_regexp.or, '+'] },
+        ' ',
+        { content: $hyoo_marked_line_content },
+        $mol_regexp.line_end,
+    ]);
+    $.$hyoo_marked_list_item = $mol_regexp.from([
+        $.$hyoo_marked_list_line,
+        { kids: $mol_regexp.repeat_greedy([
+                '  ',
+                $hyoo_marked_line_content,
+                $mol_regexp.line_end,
+            ]) },
+    ]);
+    $.$hyoo_marked_list = $mol_regexp.repeat_greedy($.$hyoo_marked_list_item, 1);
+})($ || ($ = {}));
+//hyoo/marked/list/list.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_quote_line = $mol_regexp.from([
+        { marker: '"' },
+        ' ',
+        { content: $hyoo_marked_line_content },
+        $mol_regexp.line_end,
+    ]);
+    $.$hyoo_marked_quote = $mol_regexp.repeat_greedy($.$hyoo_marked_quote_line, 1);
+})($ || ($ = {}));
+//hyoo/marked/quote/quote.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_table_line = $mol_regexp.from([
+        { indent: $mol_regexp.repeat('  ') },
+        { marker: '!' },
+        ' ',
+        { content: $hyoo_marked_line_content },
+        $mol_regexp.line_end,
+    ]);
+    $.$hyoo_marked_table_row = $mol_regexp.from({ content: [
+            $.$hyoo_marked_table_line,
+            $mol_regexp.repeat_greedy([
+                '  ',
+                $hyoo_marked_line_content,
+                $mol_regexp.line_end,
+            ]),
+        ] });
+    $.$hyoo_marked_table = $mol_regexp.repeat_greedy($.$hyoo_marked_table_line, 1);
+})($ || ($ = {}));
+//hyoo/marked/table/table.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const { or } = $mol_regexp;
+    $.$hyoo_marked_script_line = $mol_regexp.from([
+        '  ',
+        { marker: ['  ', or, '++', or, '--', or, '**'] },
+        { content: $hyoo_marked_line_content },
+        $mol_regexp.line_end,
+    ]);
+    $.$hyoo_marked_script = $mol_regexp.repeat_greedy($.$hyoo_marked_script_line, 1);
+})($ || ($ = {}));
+//hyoo/marked/script/script.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_paragraph = $mol_regexp.from([
+        { content: $mol_regexp.repeat($mol_regexp.char_any) },
+        $mol_regexp.line_end,
+    ]);
+})($ || ($ = {}));
+//hyoo/marked/paragraph/paragraph.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$hyoo_marked_flow = $mol_regexp.from([
+        $mol_regexp.begin,
+        {
+            cut: $hyoo_marked_cut,
+            header: $hyoo_marked_header,
+            list: $hyoo_marked_list,
+            quote: $hyoo_marked_quote,
+            table: $hyoo_marked_table,
+            script: $hyoo_marked_script,
+            paragraph: $hyoo_marked_paragraph,
+        },
+    ], { multiline: true });
+})($ || ($ = {}));
+//hyoo/marked/flow/flow.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const NL = '\n';
+    function flow(marked) {
+        return [...marked.matchAll($hyoo_marked_flow)].map(found => {
+            const token = found.groups;
+            if (!token)
+                return found[0];
+            if (token.cut) {
+                return $mol_jsx("hr", null);
+            }
+            if (token.header) {
+                const level = token.marker.length;
+                const Tag = `h${level}`;
+                return $mol_jsx(Tag, null,
+                    NL,
+                    line(token.content),
+                    NL);
+            }
+            if (token.list) {
+                const Tag = token.list[0] === '+' ? 'ol' : 'ul';
+                return $mol_jsx(Tag, null,
+                    NL,
+                    list_items(token.list),
+                    NL);
+            }
+            if (token.table) {
+                return $mol_jsx("table", null,
+                    NL,
+                    table_rows(token.table),
+                    NL);
+            }
+            if (token.script) {
+                return $mol_jsx("pre", null,
+                    NL,
+                    script_lines(token.script),
+                    NL);
+            }
+            if (token.quote) {
+                return $mol_jsx("blockquote", null,
+                    NL,
+                    flow(token.quote.replace(/^" /gm, '')),
+                    NL);
+            }
+            if (token.paragraph) {
+                if (!token.content)
+                    return '';
+                const content = line(token.content);
+                if (content.length !== 1)
+                    return $mol_jsx("p", null,
+                        NL,
+                        content,
+                        NL);
+                if (typeof content[0] === 'string')
+                    return $mol_jsx("p", null,
+                        NL,
+                        content,
+                        NL);
+                switch (content[0].localName) {
+                    case 'object': return content[0];
+                    default: return $mol_jsx("p", null,
+                        NL,
+                        content,
+                        NL);
+                }
+            }
+            return $mol_fail(new SyntaxError(`Unknown token`));
+        }).filter(Boolean);
+    }
+    function table_cells(marked) {
+        const tokens = [...marked.matchAll($hyoo_marked_table_line)];
+        const cols = [];
+        for (const token of tokens) {
+            const index = Math.ceil(token.groups.indent.length / 2);
+            const col = cols[index] || (cols[index] = []);
+            col.push(token);
+        }
+        return cols.map(col => {
+            const lines = col.map(line => line.groups.content);
+            return $mol_jsx("td", null,
+                NL,
+                flow(lines.join('\n') + '\n'),
+                NL);
+        });
+    }
+    function table_rows(marked) {
+        return [...marked.matchAll($hyoo_marked_table_row)].map(token => {
+            return $mol_jsx("tr", null,
+                NL,
+                table_cells(token.groups.content),
+                NL);
+        }).filter(Boolean);
+    }
+    function list_items(marked) {
+        return [...marked.matchAll($hyoo_marked_list_item)].map(token => {
+            const kids = token.groups.kids.replace(/^  /gm, '');
+            return $mol_jsx("li", null,
+                NL,
+                flow(token.groups.content.replace(/^  /gm, '') + '\n'),
+                flow(kids),
+                NL);
+        }).filter(Boolean);
+    }
+    function script_lines(marked) {
+        return [...marked.matchAll($hyoo_marked_script_line)].map(token => {
+            if (token.groups.marker === '++')
+                return $mol_jsx("ins", null,
+                    "$",
+                    token.groups.content,
+                    NL);
+            if (token.groups.marker === '--')
+                return $mol_jsx("del", null,
+                    "$",
+                    token.groups.content,
+                    NL);
+            if (token.groups.marker === '**')
+                return $mol_jsx("strong", null,
+                    "$",
+                    token.groups.content,
+                    NL);
+            return $mol_jsx("span", null,
+                token.groups.content,
+                NL);
+        }).filter(Boolean);
+    }
+    function line(marked) {
+        return [...marked.matchAll($hyoo_marked_line)].map(found => {
+            const token = found.groups;
+            if (!token)
+                return $mol_jsx("span", null, found[0]);
+            if (token.strong) {
+                return $mol_jsx("strong", null, line(token.content));
+            }
+            if (token.emphasis) {
+                return $mol_jsx("em", null, line(token.content));
+            }
+            if (token.insertion) {
+                return $mol_jsx("ins", null, line(token.content));
+            }
+            if (token.deletion) {
+                return $mol_jsx("del", null, line(token.content));
+            }
+            if (token.code) {
+                return $mol_jsx("code", null, token.content);
+            }
+            if (token.link) {
+                return $mol_jsx("a", { href: token.uri }, line(token.content || token.uri));
+            }
+            if (token.embed) {
+                if (/\.(png|jpg|jpeg|webp|gif)$/.test(token.uri)) {
+                    return $mol_jsx("img", { src: token.uri, alt: token.content });
+                }
+                return ($mol_jsx("object", { data: token.uri },
+                    NL,
+                    $mol_jsx("iframe", { src: token.uri }, token.uri),
+                    NL));
+            }
+            return token[0];
+        }).filter(Boolean);
+    }
+    function $hyoo_marked_to_dom(marked) {
+        return $mol_jsx("body", null, flow(marked + '\n'));
+    }
+    $.$hyoo_marked_to_dom = $hyoo_marked_to_dom;
+})($ || ($ = {}));
+//hyoo/marked/to/dom/dom.tsx
+;
+"use strict";
+var $;
+(function ($) {
+    function $hyoo_marked_to_html(marked) {
+        return this.$hyoo_marked_to_dom(marked).innerHTML;
+    }
+    $.$hyoo_marked_to_html = $hyoo_marked_to_html;
+})($ || ($ = {}));
+//hyoo/marked/to/html/html.ts
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_dom_serialize(node) {
         const serializer = new $mol_dom_context.XMLSerializer;
         return serializer.serializeToString(node);
@@ -5229,7 +5558,7 @@ var $;
                 const reply = {
                     [entry]: {}
                 };
-                function proceed(data, node, query) {
+                const proceed = (data, node, query) => {
                     for (let fetch in query) {
                         if (/^!?=$/.test(fetch))
                             continue;
@@ -5261,12 +5590,15 @@ var $;
                             case 'text':
                                 data[fetch] = node.sub(field, $hyoo_crowd_text).text();
                                 continue;
+                            case 'mt':
+                                data[fetch] = this.$.$hyoo_marked_to_html(node.sub(field, $hyoo_crowd_text).text());
+                                continue;
                             case 'html':
                                 data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
                                 continue;
                         }
                     }
-                }
+                };
                 proceed(reply[entry], land.chief, query.land);
                 const response = {
                     _query: {
@@ -8869,6 +9201,175 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/json/json.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'strong'() {
+            const res = [...'**text**'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.strong, '**text**');
+            $mol_assert_equal(res.marker, '**');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'emphasis'() {
+            const res = [...'//text//'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.emphasis, '//text//');
+            $mol_assert_equal(res.marker, '//');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'insertion'() {
+            const res = [...'++text++'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.insertion, '++text++');
+            $mol_assert_equal(res.marker, '++');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'deletion'() {
+            const res = [...'--text--'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.deletion, '--text--');
+            $mol_assert_equal(res.marker, '--');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'code'() {
+            const res = [...';;text;;'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.code, ';;text;;');
+            $mol_assert_equal(res.marker, ';;');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'nested simple'() {
+            const res = [...'**//foo//bar**'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.strong, '**//foo//bar**');
+            $mol_assert_equal(res.marker, '**');
+            $mol_assert_equal(res.content, '//foo//bar');
+        },
+        'nested simple overlap'() {
+            const res = [...'**//foo**bar//'.matchAll($hyoo_marked_line)];
+            $mol_assert_equal(res[0].groups.strong, '**//foo**');
+            $mol_assert_equal(res[0].groups.marker, '**');
+            $mol_assert_equal(res[0].groups.content, '//foo');
+            $mol_assert_equal(res[1][0], 'bar//');
+        },
+        'link'() {
+            const res = [...'\\\\text\\url\\\\'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.link, '\\\\text\\url\\\\');
+            $mol_assert_equal(res.marker, '\\\\');
+            $mol_assert_equal(res.content, 'text');
+            $mol_assert_equal(res.uri, 'url');
+        },
+        'embed'() {
+            const res = [...'""text\\url""'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.embed, '""text\\url""');
+            $mol_assert_equal(res.marker, '""');
+            $mol_assert_equal(res.content, 'text');
+            $mol_assert_equal(res.uri, 'url');
+        },
+        'link with embed'() {
+            const res = [...'\\\\""text\\url1""\\url2\\\\'.matchAll($hyoo_marked_line)][0].groups;
+            $mol_assert_equal(res.link, '\\\\""text\\url1""\\url2\\\\');
+            $mol_assert_equal(res.marker, '\\\\');
+            $mol_assert_equal(res.content, '""text\\url1""');
+            $mol_assert_equal(res.uri, 'url2');
+        },
+    });
+})($ || ($ = {}));
+//hyoo/marked/line/line.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'header level 1'() {
+            const res = [...`= text\n`.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.header, '= text\n');
+            $mol_assert_equal(res.marker, '=');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'header level 6'() {
+            const res = [...`====== text\n`.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.header, '====== text\n');
+            $mol_assert_equal(res.marker, '======');
+            $mol_assert_equal(res.content, 'text');
+        },
+        'header level too many'() {
+            const res = [...`======= text\n`.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.paragraph, '======= text\n');
+            $mol_assert_equal(res.content, '======= text');
+        },
+        'different blocks'() {
+            const text = `
+				= header
+				paragraph
+				= header
+			`.replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)];
+            $mol_assert_equal(res[0].groups.paragraph, '\n');
+            $mol_assert_equal(res[0].groups.content, '');
+            $mol_assert_equal(res[1].groups.header, '= header\n');
+            $mol_assert_equal(res[1].groups.marker, '=');
+            $mol_assert_equal(res[1].groups.content, 'header');
+            $mol_assert_equal(res[2].groups.paragraph, 'paragraph\n');
+            $mol_assert_equal(res[2].groups.content, 'paragraph');
+            $mol_assert_equal(res[3].groups.header, '= header\n');
+            $mol_assert_equal(res[3].groups.marker, '=');
+            $mol_assert_equal(res[3].groups.content, 'header');
+        },
+        'plain list'() {
+            const text = `
+				- foo
+				- bar
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.list, '- foo\n- bar\n');
+        },
+        'nested lists'() {
+            const text = `
+				- foo
+				  + bar
+				- lol
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.list, '- foo\n  + bar\n- lol\n');
+        },
+        'quote'() {
+            const text = `
+				" foo
+				" bar
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.quote, '" foo\n" bar\n');
+        },
+        'quote in list'() {
+            const text = `
+				- foo
+				  " bar
+				- lol
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.list, '- foo\n  " bar\n- lol\n');
+        },
+        'table'() {
+            const text = `
+				! foo
+				  ! bar
+				! lol
+				  ! 777
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.table, '! foo\n  ! bar\n! lol\n  ! 777\n');
+        },
+        'script'() {
+            const text = `
+			    foo
+			  ++bar
+			  --lol
+			  **777
+			`.slice(1).replace(/^\t+/gm, '');
+            const res = [...text.matchAll($hyoo_marked_flow)][0].groups;
+            $mol_assert_equal(res.script, '    foo\n  ++bar\n  --lol\n  **777\n');
+        },
+    });
+})($ || ($ = {}));
+//hyoo/marked/flow/flow.test.ts
 ;
 "use strict";
 var $;

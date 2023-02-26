@@ -191,7 +191,7 @@ namespace $ {
 					case 'text/html':
 					
 						res.writeHead( 200, {
-							'Content-Type': 'text/html',
+							'Content-Type': 'text/html;charset=utf-8',
 							'Access-Control-Allow-Origin': '*',
 						} )
 						const html = Object.entries( reply ).flatMap( ([ id, props ])=> [
@@ -199,7 +199,7 @@ namespace $ {
 								... Object.entries( props ).flatMap( ([ name, value ])=> {
 									const tag = name.replace( /_.*$/, '' )
 									return [
-										`<${tag} id="land=${id}[name]">`,
+										`<${tag} id="land=${id}[${name}]">`,
 										value,
 										`</${tag}>`,
 									]
@@ -212,7 +212,7 @@ namespace $ {
 					default:case 'application/json':
 					
 						res.writeHead( 200, {
-							'Content-Type': 'application/json',
+							'Content-Type': 'application/json;charset=utf-8',
 							'Access-Control-Allow-Origin': '*',
 						} )
 						res.end( JSON.stringify( response, null, '\t' ) )

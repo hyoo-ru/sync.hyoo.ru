@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "c29d500";
+let $hyoo_sync_revision = "9fc3103";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5566,6 +5566,7 @@ var $;
                 const reply = {
                     [entry]: {}
                 };
+                const accept = req.headers.accept ?? 'application/json';
                 const proceed = (data, node, query) => {
                     for (let fetch in query) {
                         if (/^!?=$/.test(fetch))
@@ -5597,9 +5598,8 @@ var $;
                                 continue;
                             case 'text':
                                 data[fetch] = node.sub(field, $hyoo_crowd_text).text();
-                                continue;
-                            case 'mt':
-                                data[fetch] = this.$.$hyoo_marked_to_html(node.sub(field, $hyoo_crowd_text).text());
+                                if (accept === 'text/html')
+                                    data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
                                 continue;
                             case 'html':
                                 data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
@@ -5608,8 +5608,13 @@ var $;
                                 const blob = node.sub(field, $hyoo_crowd_blob);
                                 switch (blob.type()) {
                                     case 'text/plain':
+                                        data[fetch] = blob.str();
+                                        if (accept === 'text/html')
+                                            data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
+                                        break;
                                     case 'text/html':
                                         data[fetch] = blob.str();
+                                        break;
                                     default:
                                         data[fetch] = blob.buffer();
                                 }
@@ -5626,7 +5631,6 @@ var $;
                     },
                     land: reply,
                 };
-                const accept = req.headers.accept ?? 'application/json';
                 switch (accept) {
                     case 'text/html':
                         res.writeHead(200, {

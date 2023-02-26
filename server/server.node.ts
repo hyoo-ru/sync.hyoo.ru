@@ -201,12 +201,12 @@ namespace $ {
 									return [
 										`<${tag} id="land=${id}[name]">`,
 										value,
-										`/<${tag}>`,
+										`</${tag}>`,
 									]
 								} ),
-							`/<land>`,
+							`</land>`,
 						] )
-						res.end( html )
+						res.end( html.join('') )
 						break
 					
 					default:case 'application/json':

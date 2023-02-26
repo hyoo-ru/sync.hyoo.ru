@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2c774c3";
+let $hyoo_sync_revision = "835a5f8";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5623,16 +5623,19 @@ var $;
                             'Content-Type': 'text/html',
                             'Access-Control-Allow-Origin': '*',
                         });
-                        Object.entries(reply).flatMap(([id, props]) => [
-                            `<div id="land=${id}">`,
-                            ...Object.entries(props).flatMap(([name, value]) => [
-                                `<div id="land=${id}[name]">`,
-                                value,
-                                `/<div>`,
-                            ]),
-                            `/<div>`,
+                        const html = Object.entries(reply).flatMap(([id, props]) => [
+                            `<land id="land=${id}">`,
+                            ...Object.entries(props).flatMap(([name, value]) => {
+                                const tag = name.replace(/_.*$/, '');
+                                return [
+                                    `<${tag} id="land=${id}[name]">`,
+                                    value,
+                                    `/<${tag}>`,
+                                ];
+                            }),
+                            `/<land>`,
                         ]);
-                        res.end();
+                        res.end(html);
                         break;
                     default:
                     case 'application/json':

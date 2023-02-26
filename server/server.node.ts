@@ -167,6 +167,17 @@ namespace $ {
 								data[ fetch ] = node.sub( field, $hyoo_crowd_dom ).html()
 								continue
 							
+							case 'blob':
+								const blob = node.sub( field, $hyoo_crowd_blob )
+								switch( blob.type() ) {
+									case 'text/plain':
+									case 'text/html':
+										data[ fetch ] = blob.str()
+									default: 
+										data[ fetch ] = blob.buffer()
+								}
+								continue
+							
 						}
 						
 					}

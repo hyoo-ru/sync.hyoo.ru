@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "9fc3103";
+let $hyoo_sync_revision = "44aabf8";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5606,17 +5606,15 @@ var $;
                                 continue;
                             case 'blob':
                                 const blob = node.sub(field, $hyoo_crowd_blob);
-                                switch (blob.type()) {
-                                    case 'text/plain':
-                                        data[fetch] = blob.str();
-                                        if (accept === 'text/html')
-                                            data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
-                                        break;
-                                    case 'text/html':
-                                        data[fetch] = blob.str();
-                                        break;
-                                    default:
-                                        data[fetch] = blob.buffer();
+                                const type = blob.type();
+                                if (/^text\//.test(type)) {
+                                    data[fetch] = blob.str();
+                                    if (type === 'text/plain' && accept === 'text/html') {
+                                        data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
+                                    }
+                                }
+                                else {
+                                    data[fetch] = blob.buffer();
                                 }
                                 continue;
                         }

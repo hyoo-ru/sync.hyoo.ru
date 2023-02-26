@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "58ee423";
+let $hyoo_sync_revision = "2c774c3";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5616,11 +5616,33 @@ var $;
                     },
                     land: reply,
                 };
-                res.writeHead(200, {
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*',
-                });
-                res.end(JSON.stringify(response, null, '\t'));
+                const accept = req.headers.accept ?? 'application/json';
+                switch (accept) {
+                    case 'text/html':
+                        res.writeHead(200, {
+                            'Content-Type': 'text/html',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        Object.entries(reply).flatMap(([id, props]) => [
+                            `<div id="land=${id}">`,
+                            ...Object.entries(props).flatMap(([name, value]) => [
+                                `<div id="land=${id}[name]">`,
+                                value,
+                                `/<div>`,
+                            ]),
+                            `/<div>`,
+                        ]);
+                        res.end();
+                        break;
+                    default:
+                    case 'application/json':
+                        res.writeHead(200, {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        res.end(JSON.stringify(response, null, '\t'));
+                        break;
+                }
             }));
             server.listen(this.port());
             this.$.$mol_log3_come({

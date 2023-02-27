@@ -2649,7 +2649,6 @@ declare namespace $ {
             mol_link_current: boolean;
         };
         master_link(): string;
-        watch_link(): string;
         Well(): $$.$mol_avatar;
         Fail(): $mol_icon_sync_off;
         hint(): string;
@@ -2666,7 +2665,6 @@ declare namespace $.$$ {
         sub(): $mol_icon_sync_off[];
         hint(): string;
         master_link(): string;
-        watch_link(): string;
     }
 }
 

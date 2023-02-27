@@ -5,6 +5,7 @@
 
 [hyoo_sync_watch_log_row] {
 	box-shadow: 0 1px 0 var(--mol_theme_line);
+	flex-wrap: wrap;
 }
 
 [hyoo_sync_watch_log_row_type_content] {

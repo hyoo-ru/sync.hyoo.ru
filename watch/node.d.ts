@@ -4252,7 +4252,7 @@ declare namespace $ {
         Row_field_value(id: any): $mol_view;
         Row_field(id: any): $mol_labeler;
         row_content(id: any): readonly any[];
-        Row(id: any): $mol_row;
+        Row(id: any): $mol_view;
         rows(): readonly any[];
         Rows(): $$.$mol_list;
         row_field_moment(id: any): $mol_time_moment;
@@ -4377,7 +4377,7 @@ declare namespace $.$$ {
         type_label(type: string): string;
         items(): $mol_tree2[];
         fields(): string[];
-        rows(): $mol_row[];
+        rows(): $mol_view[];
         row_fields(row: number): string[];
         row_content(row: number): $mol_labeler[];
         Row_field_value([row, field]: [number, string]): $mol_link | $mol_text_code | $mol_date;

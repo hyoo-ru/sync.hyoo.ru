@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "3b59250";
+let $hyoo_sync_revision = "3bb5d06";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -15153,7 +15153,7 @@ var $;
             ];
         }
         Row(id) {
-            const obj = new this.$.$mol_row();
+            const obj = new this.$.$mol_view();
             obj.sub = () => this.row_content(id);
             return obj;
         }
@@ -15594,7 +15594,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/log/log.view.css", "[hyoo_sync_watch_log] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_log_row] {\n\tbox-shadow: 0 1px 0 var(--mol_theme_line);\n}\n\n[hyoo_sync_watch_log_row_type_content] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_log_row_field_land] {\n\tfont-family: monospace;\n}\n");
+    $mol_style_attach("hyoo/sync/watch/log/log.view.css", "[hyoo_sync_watch_log] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_log_row] {\n\tbox-shadow: 0 1px 0 var(--mol_theme_line);\n\tflex-wrap: wrap;\n}\n\n[hyoo_sync_watch_log_row_type_content] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_log_row_field_land] {\n\tfont-family: monospace;\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/log/-css/log.view.css.ts
 ;

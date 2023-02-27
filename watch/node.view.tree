@@ -1000,7 +1000,7 @@ $hyoo_sync_watch_log $mol_page
 	body /
 		<= Rows $mol_list
 			rows <= rows /
-				<= Row*0 $mol_row
+				<= Row*0 $mol_view
 					sub <= row_content* /
 						<= Row_type* $mol_labeler
 							title \type

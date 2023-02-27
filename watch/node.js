@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "44aabf8";
+let $hyoo_sync_revision = "a0374f3";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -9190,7 +9190,7 @@ var $;
             return obj;
         }
         uri() {
-            return this.master_link();
+            return this.watch_link();
         }
         sub() {
             return [
@@ -9206,6 +9206,9 @@ var $;
         }
         master_link() {
             return "";
+        }
+        watch_link() {
+            return this.master_link();
         }
         Well() {
             const obj = new this.$.$mol_avatar();
@@ -9278,6 +9281,9 @@ var $;
             }
             master_link() {
                 return this.yard().master_link().replace(/^ws(s?):/, 'http$1:');
+            }
+            watch_link() {
+                return this.master_link() + 'watch/';
             }
         }
         __decorate([

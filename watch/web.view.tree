@@ -871,12 +871,12 @@ $hyoo_sync_watch_world $mol_book2_catalog
 		body /
 			<= Def_labeler $mol_form_field
 				name \Common Level
-				control <= Def_level $mol_switch
+				Content <= Def_level $mol_switch
 					options <= level_options
 					value? <=> def_level? 2
 			<= Self_labeler $mol_form_field
 				name \Your Level
-				control <= Self_level $mol_switch
+				Content <= Self_level $mol_switch
 					options <= level_options
 					value? <=> self_level? 0
 		buttons /

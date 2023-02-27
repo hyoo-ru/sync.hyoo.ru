@@ -32,7 +32,7 @@ $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2cdb9c9";
+let $hyoo_sync_revision = "3b59250";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -13201,7 +13201,7 @@ var $;
         Def_labeler() {
             const obj = new this.$.$mol_form_field();
             obj.name = () => "Common Level";
-            obj.control = () => this.Def_level();
+            obj.Content = () => this.Def_level();
             return obj;
         }
         self_level(next) {
@@ -13218,7 +13218,7 @@ var $;
         Self_labeler() {
             const obj = new this.$.$mol_form_field();
             obj.name = () => "Your Level";
-            obj.control = () => this.Self_level();
+            obj.Content = () => this.Self_level();
             return obj;
         }
         grab_submit(next) {

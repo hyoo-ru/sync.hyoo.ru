@@ -48,7 +48,7 @@ namespace $.$$ {
 		}
 		
 		watch_link() {
-			return this.master_link() + 'watch/'
+			return this.master_link() + '/watch/'
 		}
 		
 	}

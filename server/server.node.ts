@@ -99,8 +99,9 @@ namespace $ {
 				}
 				
 				if( !query.land ) {
-					res.writeHead( 200, {
+					res.writeHead( 301, {
 						'Content-Type': 'text/plain;charset=utf-8',
+						'Location': '/watch/',
 						'Access-Control-Allow-Origin': '*',
 					} )
 					res.end( '$hyoo_sync_server ' + $hyoo_sync_revision )

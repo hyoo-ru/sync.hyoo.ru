@@ -47,9 +47,5 @@ namespace $.$$ {
 			return this.yard().master_link().replace( /^ws(s?):/, 'http$1:' )
 		}
 		
-		watch_link() {
-			return this.master_link() + '/watch/'
-		}
-		
 	}
 }

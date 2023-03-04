@@ -1189,16 +1189,16 @@ declare namespace $ {
     let $hyoo_marked_line: $mol_regexp<{
         [x: string]: string;
         readonly inline: string;
+        readonly code: string;
         readonly embed: string;
-        readonly link: string;
         readonly strong: string;
         readonly emphasis: string;
         readonly insertion: string;
         readonly deletion: string;
-        readonly code: string;
+        readonly link: string;
+        readonly uri: string;
         content: string;
         readonly marker: string;
-        readonly uri: string;
     }>;
 }
 

@@ -90,107 +90,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_decor<Value> {
-        readonly value: Value;
-        constructor(value: Value);
-        prefix(): string;
-        valueOf(): Value;
-        postfix(): string;
-        toString(): string;
-    }
-}
-
-declare namespace $ {
-    type $mol_style_unit_length = '%' | 'px' | 'cm' | 'mm' | 'Q' | 'in' | 'pc' | 'pt' | 'cap' | 'ch' | 'em' | 'rem' | 'ex' | 'ic' | 'lh' | 'rlh' | 'vh' | 'vw' | 'vi' | 'vb' | 'vmin' | 'vmax';
-    type $mol_style_unit_angle = 'deg' | 'rad' | 'grad' | 'turn';
-    type $mol_style_unit_time = 's' | 'ms';
-    type $mol_style_unit_any = $mol_style_unit_length | $mol_style_unit_angle | $mol_style_unit_time;
-    class $mol_style_unit<Literal extends $mol_style_unit_any> extends $mol_decor<number> {
-        readonly literal: Literal;
-        constructor(value: number, literal: Literal);
-        postfix(): Literal;
-        static per(value: number): $mol_style_unit<"%">;
-        static px(value: number): $mol_style_unit<"px">;
-        static mm(value: number): $mol_style_unit<"mm">;
-        static cm(value: number): $mol_style_unit<"cm">;
-        static Q(value: number): $mol_style_unit<"Q">;
-        static in(value: number): $mol_style_unit<"in">;
-        static pc(value: number): $mol_style_unit<"pc">;
-        static pt(value: number): $mol_style_unit<"pt">;
-        static cap(value: number): $mol_style_unit<"cap">;
-        static ch(value: number): $mol_style_unit<"ch">;
-        static em(value: number): $mol_style_unit<"em">;
-        static rem(value: number): $mol_style_unit<"rem">;
-        static ex(value: number): $mol_style_unit<"ex">;
-        static ic(value: number): $mol_style_unit<"ic">;
-        static lh(value: number): $mol_style_unit<"lh">;
-        static rlh(value: number): $mol_style_unit<"rlh">;
-        static vh(value: number): $mol_style_unit<"vh">;
-        static vw(value: number): $mol_style_unit<"vw">;
-        static vi(value: number): $mol_style_unit<"vi">;
-        static vb(value: number): $mol_style_unit<"vb">;
-        static vmin(value: number): $mol_style_unit<"vmin">;
-        static vmax(value: number): $mol_style_unit<"vmax">;
-        static deg(value: number): $mol_style_unit<"deg">;
-        static rad(value: number): $mol_style_unit<"rad">;
-        static grad(value: number): $mol_style_unit<"grad">;
-        static turn(value: number): $mol_style_unit<"turn">;
-        static s(value: number): $mol_style_unit<"s">;
-        static ms(value: number): $mol_style_unit<"ms">;
-    }
-}
-
-declare namespace $ {
-    type $mol_style_func_name = 'calc' | 'hsla' | 'rgba' | 'var' | 'clamp' | 'url' | 'scale';
-    class $mol_style_func<Name extends $mol_style_func_name, Value = unknown> extends $mol_decor<Value> {
-        readonly name: Name;
-        constructor(name: Name, value: Value);
-        prefix(): string;
-        postfix(): string;
-        static calc<Value>(value: Value): $mol_style_func<"calc", Value>;
-        static vary<Name extends string>(name: Name): $mol_style_func<"var", Name>;
-        static url<Href extends string>(href: Href): $mol_style_func<"url", string>;
-        static hsla(hue: number, saturation: number, lightness: number, alpha: number): $mol_style_func<"hsla", (number | $mol_style_unit<"%">)[]>;
-        static clamp(min: $mol_style_unit<any>, mid: $mol_style_unit<any>, max: $mol_style_unit<any>): $mol_style_func<"clamp", $mol_style_unit<any>[]>;
-        static rgba(red: number, green: number, blue: number, alpha: number): $mol_style_func<"rgba", number[]>;
-        static scale(zoom: number): $mol_style_func<"scale", number[]>;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    const $mol_theme: {
-        back: $mol_style_func<"var", "--mol_theme_back">;
-        hover: $mol_style_func<"var", "--mol_theme_hover">;
-        card: $mol_style_func<"var", "--mol_theme_card">;
-        current: $mol_style_func<"var", "--mol_theme_current">;
-        special: $mol_style_func<"var", "--mol_theme_special">;
-        text: $mol_style_func<"var", "--mol_theme_text">;
-        control: $mol_style_func<"var", "--mol_theme_control">;
-        shade: $mol_style_func<"var", "--mol_theme_shade">;
-        line: $mol_style_func<"var", "--mol_theme_line">;
-        focus: $mol_style_func<"var", "--mol_theme_focus">;
-        field: $mol_style_func<"var", "--mol_theme_field">;
-        image: $mol_style_func<"var", "--mol_theme_image">;
-    };
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    let $mol_gap: {
-        readonly block: $mol_style_func<"var", "--mol_gap_block">;
-        readonly text: $mol_style_func<"var", "--mol_gap_text">;
-        readonly round: $mol_style_func<"var", "--mol_gap_round">;
-        readonly space: $mol_style_func<"var", "--mol_gap_space">;
-        readonly blur: $mol_style_func<"var", "--mol_gap_blur">;
-    };
-}
-
-declare namespace $ {
     namespace $$ { }
     const $mol_object_field: unique symbol;
     class $mol_object extends $mol_object2 {
@@ -533,6 +432,107 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    class $mol_decor<Value> {
+        readonly value: Value;
+        constructor(value: Value);
+        prefix(): string;
+        valueOf(): Value;
+        postfix(): string;
+        toString(): string;
+    }
+}
+
+declare namespace $ {
+    type $mol_style_unit_length = '%' | 'px' | 'cm' | 'mm' | 'Q' | 'in' | 'pc' | 'pt' | 'cap' | 'ch' | 'em' | 'rem' | 'ex' | 'ic' | 'lh' | 'rlh' | 'vh' | 'vw' | 'vi' | 'vb' | 'vmin' | 'vmax';
+    type $mol_style_unit_angle = 'deg' | 'rad' | 'grad' | 'turn';
+    type $mol_style_unit_time = 's' | 'ms';
+    type $mol_style_unit_any = $mol_style_unit_length | $mol_style_unit_angle | $mol_style_unit_time;
+    class $mol_style_unit<Literal extends $mol_style_unit_any> extends $mol_decor<number> {
+        readonly literal: Literal;
+        constructor(value: number, literal: Literal);
+        postfix(): Literal;
+        static per(value: number): $mol_style_unit<"%">;
+        static px(value: number): $mol_style_unit<"px">;
+        static mm(value: number): $mol_style_unit<"mm">;
+        static cm(value: number): $mol_style_unit<"cm">;
+        static Q(value: number): $mol_style_unit<"Q">;
+        static in(value: number): $mol_style_unit<"in">;
+        static pc(value: number): $mol_style_unit<"pc">;
+        static pt(value: number): $mol_style_unit<"pt">;
+        static cap(value: number): $mol_style_unit<"cap">;
+        static ch(value: number): $mol_style_unit<"ch">;
+        static em(value: number): $mol_style_unit<"em">;
+        static rem(value: number): $mol_style_unit<"rem">;
+        static ex(value: number): $mol_style_unit<"ex">;
+        static ic(value: number): $mol_style_unit<"ic">;
+        static lh(value: number): $mol_style_unit<"lh">;
+        static rlh(value: number): $mol_style_unit<"rlh">;
+        static vh(value: number): $mol_style_unit<"vh">;
+        static vw(value: number): $mol_style_unit<"vw">;
+        static vi(value: number): $mol_style_unit<"vi">;
+        static vb(value: number): $mol_style_unit<"vb">;
+        static vmin(value: number): $mol_style_unit<"vmin">;
+        static vmax(value: number): $mol_style_unit<"vmax">;
+        static deg(value: number): $mol_style_unit<"deg">;
+        static rad(value: number): $mol_style_unit<"rad">;
+        static grad(value: number): $mol_style_unit<"grad">;
+        static turn(value: number): $mol_style_unit<"turn">;
+        static s(value: number): $mol_style_unit<"s">;
+        static ms(value: number): $mol_style_unit<"ms">;
+    }
+}
+
+declare namespace $ {
+    type $mol_style_func_name = 'calc' | 'hsla' | 'rgba' | 'var' | 'clamp' | 'url' | 'scale';
+    class $mol_style_func<Name extends $mol_style_func_name, Value = unknown> extends $mol_decor<Value> {
+        readonly name: Name;
+        constructor(name: Name, value: Value);
+        prefix(): string;
+        postfix(): string;
+        static calc<Value>(value: Value): $mol_style_func<"calc", Value>;
+        static vary<Name extends string>(name: Name): $mol_style_func<"var", Name>;
+        static url<Href extends string>(href: Href): $mol_style_func<"url", string>;
+        static hsla(hue: number, saturation: number, lightness: number, alpha: number): $mol_style_func<"hsla", (number | $mol_style_unit<"%">)[]>;
+        static clamp(min: $mol_style_unit<any>, mid: $mol_style_unit<any>, max: $mol_style_unit<any>): $mol_style_func<"clamp", $mol_style_unit<any>[]>;
+        static rgba(red: number, green: number, blue: number, alpha: number): $mol_style_func<"rgba", number[]>;
+        static scale(zoom: number): $mol_style_func<"scale", number[]>;
+    }
+}
+
+declare namespace $ {
+    const $mol_theme: {
+        back: $mol_style_func<"var", "--mol_theme_back">;
+        hover: $mol_style_func<"var", "--mol_theme_hover">;
+        card: $mol_style_func<"var", "--mol_theme_card">;
+        current: $mol_style_func<"var", "--mol_theme_current">;
+        special: $mol_style_func<"var", "--mol_theme_special">;
+        text: $mol_style_func<"var", "--mol_theme_text">;
+        control: $mol_style_func<"var", "--mol_theme_control">;
+        shade: $mol_style_func<"var", "--mol_theme_shade">;
+        line: $mol_style_func<"var", "--mol_theme_line">;
+        focus: $mol_style_func<"var", "--mol_theme_focus">;
+        field: $mol_style_func<"var", "--mol_theme_field">;
+        image: $mol_style_func<"var", "--mol_theme_image">;
+    };
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    let $mol_gap: {
+        readonly block: $mol_style_func<"var", "--mol_gap_block">;
+        readonly text: $mol_style_func<"var", "--mol_gap_text">;
+        readonly round: $mol_style_func<"var", "--mol_gap_round">;
+        readonly space: $mol_style_func<"var", "--mol_gap_space">;
+        readonly blur: $mol_style_func<"var", "--mol_gap_blur">;
+    };
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
     type $mol_view_content = $mol_view | Node | string | number | boolean;
     function $mol_view_visible_width(): number;
     function $mol_view_visible_height(): number;
@@ -604,6 +604,57 @@ interface Window {
     cordova: any;
 }
 declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_plugin extends $mol_view {
+        dom_node(next?: Element): Element;
+        attr_static(): {
+            [key: string]: string | number | boolean;
+        };
+        event(): {
+            [key: string]: (event: Event) => void;
+        };
+        render(): void;
+    }
+}
+
+declare namespace $ {
+    class $mol_scroll extends $mol_view {
+        scroll_top(val?: any): number;
+        scroll_left(val?: any): number;
+        field(): {
+            tabIndex: number;
+        };
+        event(): {
+            scroll: (event?: any) => any;
+        };
+        tabindex(): number;
+        event_scroll(event?: any): any;
+    }
+}
+
+declare namespace $ {
+    class $mol_dom_listener extends $mol_object {
+        _node: any;
+        _event: string;
+        _handler: (event: any) => any;
+        _config: boolean | {
+            passive: boolean;
+        };
+        constructor(_node: any, _event: string, _handler: (event: any) => any, _config?: boolean | {
+            passive: boolean;
+        });
+        destructor(): void;
+    }
+}
+
+declare namespace $ {
+    class $mol_print extends $mol_object {
+        static before(): $mol_dom_listener;
+        static after(): $mol_dom_listener;
+        static active(next?: boolean): boolean;
+    }
 }
 
 declare namespace $ {
@@ -749,61 +800,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_plugin extends $mol_view {
-        dom_node(next?: Element): Element;
-        attr_static(): {
-            [key: string]: string | number | boolean;
-        };
-        event(): {
-            [key: string]: (event: Event) => void;
-        };
-        render(): void;
-    }
-}
-
-declare namespace $ {
     function $mol_style_define<Component extends $mol_view, Config extends $mol_style_guard<Component, Config>>(Component: new () => Component, config: Config): HTMLStyleElement | null;
-}
-
-declare namespace $ {
-    class $mol_scroll extends $mol_view {
-        scroll_top(val?: any): number;
-        scroll_left(val?: any): number;
-        field(): {
-            tabIndex: number;
-        };
-        event(): {
-            scroll: (event?: any) => any;
-        };
-        tabindex(): number;
-        event_scroll(event?: any): any;
-    }
-}
-
-declare namespace $ {
-    class $mol_dom_listener extends $mol_object {
-        _node: any;
-        _event: string;
-        _handler: (event: any) => any;
-        _config: boolean | {
-            passive: boolean;
-        };
-        constructor(_node: any, _event: string, _handler: (event: any) => any, _config?: boolean | {
-            passive: boolean;
-        });
-        destructor(): void;
-    }
-}
-
-declare namespace $ {
-    class $mol_print extends $mol_object {
-        static before(): $mol_dom_listener;
-        static after(): $mol_dom_listener;
-        static active(next?: boolean): boolean;
-    }
-}
-
-declare namespace $.$$ {
 }
 
 declare namespace $.$$ {
@@ -814,6 +811,9 @@ declare namespace $.$$ {
         minimal_height(): number;
         minimal_width(): number;
     }
+}
+
+declare namespace $.$$ {
 }
 
 declare namespace $ {
@@ -830,15 +830,15 @@ declare namespace $ {
     let $mol_mem_cached: typeof $mol_wire_probe;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_book2 extends $.$mol_book2 {
         title(): string;
         sub(): readonly $mol_view[];
         bring(): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -908,9 +908,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_link extends $.$mol_link {
         uri_toggle(): string;
@@ -924,6 +921,9 @@ declare namespace $.$$ {
         target(): '_self' | '_blank' | '_top' | '_parent' | string;
         hint_safe(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -952,9 +952,6 @@ declare namespace $ {
         height_max(): number;
         align(): string;
     }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -993,6 +990,9 @@ declare namespace $.$$ {
             height: number;
         };
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1146,9 +1146,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_button extends $.$mol_button {
         status(next?: any[]): any[];
@@ -1160,6 +1157,9 @@ declare namespace $.$$ {
         hint_safe(): string;
         sub_visible(): ($mol_view_content | $mol_speck)[];
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1524,9 +1524,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_string extends $.$mol_string {
         event_change(next?: Event): void;
@@ -1538,6 +1535,9 @@ declare namespace $.$$ {
         selection_start(): number;
         selection_end(): number;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1639,9 +1639,6 @@ declare namespace $ {
     function $mol_support_css_overflow_anchor(this: $): boolean;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_list extends $.$mol_list {
         sub(): readonly $mol_view[];
@@ -1656,6 +1653,9 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_paragraph extends $mol_view {
         line_height(): number;
         letter_width(): number;
@@ -1663,9 +1663,6 @@ declare namespace $ {
         row_width(): number;
         sub(): readonly any[];
     }
-}
-
-declare namespace $ {
 }
 
 declare namespace $.$$ {
@@ -1676,6 +1673,9 @@ declare namespace $.$$ {
         row_width(): number;
         minimal_height(): number;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1789,9 +1789,6 @@ declare namespace $ {
     export {};
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_dimmer extends $.$mol_dimmer {
         parts(): any[];
@@ -1799,6 +1796,9 @@ declare namespace $.$$ {
         string(index: number): string;
         view_find(check: (path: $mol_view, text?: string) => boolean, path?: $mol_view[]): Generator<$mol_view[]>;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1849,9 +1849,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_search extends $.$mol_search {
         anchor_content(): ($mol_string | $mol_button_minor)[];
@@ -1864,6 +1861,9 @@ declare namespace $.$$ {
         suggest_select(id: string, event?: MouseEvent): void;
         clear(event?: Event): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -1926,9 +1926,6 @@ declare namespace $ {
     function $mol_match_text<Variant>(query: string, values: (variant: Variant) => string[]): (variant: Variant) => boolean;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_book2_catalog extends $.$mol_book2_catalog {
         pages(): any[];
@@ -1944,6 +1941,9 @@ declare namespace $.$$ {
         };
         spread_title(spread: string): any;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2635,13 +2635,13 @@ declare namespace $ {
     function $mol_hash_string(str: string, seed?: number): number;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_avatar extends $.$mol_avatar {
         path(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2678,9 +2678,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $hyoo_sync_online extends $.$hyoo_sync_online {
         message(): string;
@@ -2688,6 +2685,9 @@ declare namespace $.$$ {
         hint(): string;
         master_link(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2706,9 +2706,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_check_list extends $.$mol_check_list {
         options(): {
@@ -2718,6 +2715,9 @@ declare namespace $.$$ {
         items(): $mol_check[];
         option_title(key: string): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2791,13 +2791,13 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_form_field extends $.$mol_form_field {
         bid(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2827,9 +2827,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_form extends $.$mol_form {
         form_fields(): readonly $mol_form_field[];
@@ -2837,6 +2834,9 @@ declare namespace $.$$ {
         submit_blocked(): boolean;
         keydown(next: KeyboardEvent): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2911,14 +2911,14 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_check_expand extends $.$mol_check_expand {
         level_style(): string;
         expandable(): boolean;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -2969,9 +2969,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     interface $mol_grid_node {
         id: string;
@@ -3016,6 +3013,17 @@ declare namespace $.$$ {
             row: string[];
         }, next?: boolean): boolean;
     }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_stack extends $mol_view {
+    }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3123,9 +3131,6 @@ declare namespace $ {
 }
 
 declare namespace $.$$ {
-}
-
-declare namespace $.$$ {
     class $mol_text_code_row extends $.$mol_text_code_row {
         maximal_width(): number;
         syntax(): $mol_syntax2<{
@@ -3170,12 +3175,7 @@ declare namespace $.$$ {
     }
 }
 
-declare namespace $ {
-    class $mol_stack extends $mol_view {
-    }
-}
-
-declare namespace $ {
+declare namespace $.$$ {
 }
 
 declare namespace $ {
@@ -3230,9 +3230,6 @@ declare namespace $ {
 }
 
 declare namespace $.$$ {
-}
-
-declare namespace $.$$ {
     class $mol_text_code extends $.$mol_text_code {
         render_visible_only(): boolean;
         text_lines(): readonly string[];
@@ -3267,6 +3264,9 @@ declare namespace $.$$ {
     }
 }
 
+declare namespace $.$$ {
+}
+
 declare namespace $ {
     class $mol_expander extends $mol_list {
         rows(): readonly any[];
@@ -3281,14 +3281,14 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_expander extends $.$mol_expander {
         rows(): $mol_view[];
         expandable(): boolean;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3320,9 +3320,6 @@ declare namespace $ {
     function $mol_try<Result>(handler2: () => Result): Result | Error;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_dump_value extends $.$mol_dump_value {
         sub(): $mol_text_code[] | $mol_expander[];
@@ -3338,6 +3335,9 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_dump_list extends $mol_view {
         values(): readonly any[];
         sub(): readonly any[];
@@ -3349,15 +3349,15 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_dump_list extends $.$mol_dump_list {
         sub(): $mol_dump_value[];
         dump_value(index: number): any;
         expand_all(event?: Event, blacklist?: Set<unknown>): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3393,9 +3393,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_link_iconed extends $.$mol_link_iconed {
         icon(): string;
@@ -3403,6 +3400,9 @@ declare namespace $.$$ {
         title(): string;
         sub(): readonly any[];
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3459,9 +3459,6 @@ declare namespace $ {
     function $mol_wait_timeout(this: $, timeout: number): void;
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_embed_native extends $.$mol_embed_native {
         window(): Window;
@@ -3472,6 +3469,9 @@ declare namespace $.$$ {
         uri_change(event: MessageEvent<[string, string]>): void;
         auto(): (Window | $mol_dom_listener)[];
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3497,14 +3497,14 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_frame extends $.$mol_frame {
         window(): any;
         allow(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3522,9 +3522,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_embed_youtube extends $.$mol_embed_youtube {
         video_embed(): string;
@@ -3532,6 +3529,9 @@ declare namespace $.$$ {
         video_preview(): string;
         sub(): ($mol_image | $mol_frame)[];
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3619,9 +3619,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_text extends $.$mol_text {
         flow_tokens(): readonly {
@@ -3706,6 +3703,9 @@ declare namespace $.$$ {
     class $mol_text_header extends $.$mol_text_header {
         dom_name(): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -3878,9 +3878,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $hyoo_sync_watch_world extends $.$hyoo_sync_watch_world {
         land_id(next?: string): `${string}_${string}`;
@@ -3905,6 +3902,9 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+}
+
+declare namespace $ {
     class $mol_pick extends $mol_pop {
         event(): {
             keydown: (event?: any) => any;
@@ -3918,13 +3918,13 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_pick extends $.$mol_pick {
         keydown(event: KeyboardEvent): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -4060,14 +4060,14 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_format extends $.$mol_format {
         selection([from, to]?: [number, number]): number[];
         value_changed(next?: string): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -4087,13 +4087,13 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_hor extends $.$mol_hor {
         minimal_width(): number;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -4138,9 +4138,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_calendar extends $.$mol_calendar {
         month_moment(): $mol_time_moment;
@@ -4160,6 +4157,9 @@ declare namespace $.$$ {
         day_selected(day: string): boolean;
         day_theme(day: string): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -4194,9 +4194,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $mol_date extends $.$mol_date {
         trigger_content(): string[];
@@ -4209,6 +4206,9 @@ declare namespace $.$$ {
         prev(): void;
         next(): void;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {
@@ -4315,9 +4315,6 @@ declare namespace $ {
     }
 }
 
-declare namespace $ {
-}
-
 declare namespace $.$$ {
     class $hyoo_sync_watch_log extends $.$hyoo_sync_watch_log {
         source(): $mol_tree2;
@@ -4335,6 +4332,9 @@ declare namespace $.$$ {
         row_field_moment([row, field]: [number, string]): $mol_time_moment;
         row_field_text([row, field]: [number, string]): string;
     }
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {

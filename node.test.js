@@ -1,4 +1,12 @@
 "use strict";
+"use strict";
+Error.stackTraceLimit = 50;
+var $;
+(function ($) {
+})($ || ($ = {}));
+module.exports = $;
+//mam.ts
+;
 "use strict"
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -11,14 +19,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var $ = ( typeof module === 'object' ) ? ( module['export'+'s'] = globalThis ) : globalThis
 $.$$ = $
 
-;
-"use strict";
-Error.stackTraceLimit = 50;
-var $;
-(function ($) {
-})($ || ($ = {}));
-module.exports = $;
-//mam.ts
 ;
 "use strict";
 //hyoo/hyoo.ts
@@ -3983,6 +3983,9 @@ var $;
 //hyoo/harp/from/string/string.ts
 ;
 "use strict";
+//mol/state/arg/arg.ts
+;
+"use strict";
 var $;
 (function ($) {
     class $mol_state_arg extends $mol_object {
@@ -5816,16 +5819,6 @@ var $;
 ;
 "use strict";
 var $;
-(function ($) {
-    function $mol_test_complete() {
-        process.exit(0);
-    }
-    $.$mol_test_complete = $mol_test_complete;
-})($ || ($ = {}));
-//mol/test/test.node.test.ts
-;
-"use strict";
-var $;
 (function ($_1) {
     function $mol_test(set) {
         for (let name in set) {
@@ -5913,6 +5906,16 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    function $mol_test_complete() {
+        process.exit(0);
+    }
+    $.$mol_test_complete = $mol_test_complete;
+})($ || ($ = {}));
+//mol/test/test.node.test.ts
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test_mocks.push($ => {
         $.$mol_log3_come = () => { };
@@ -5929,10 +5932,10 @@ var $;
 //mol/type/error/error.ts
 ;
 "use strict";
-//mol/type/assert/assert.test.ts
+//mol/type/assert/assert.ts
 ;
 "use strict";
-//mol/type/assert/assert.ts
+//mol/type/assert/assert.test.ts
 ;
 "use strict";
 //mol/type/equals/equals.test.ts
@@ -6129,38 +6132,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_test({
-        'must be false'() {
-            $mol_assert_not(0);
-        },
-        'must be true'() {
-            $mol_assert_ok(1);
-        },
-        'two must be equal'() {
-            $mol_assert_equal(2, 2);
-        },
-        'three must be equal'() {
-            $mol_assert_equal(2, 2, 2);
-        },
-        'two must be unique'() {
-            $mol_assert_unique([3], [3]);
-        },
-        'three must be unique'() {
-            $mol_assert_unique([3], [3], [3]);
-        },
-        'two must be alike'() {
-            $mol_assert_like([3], [3]);
-        },
-        'three must be alike'() {
-            $mol_assert_like([3], [3], [3]);
-        },
-    });
-})($ || ($ = {}));
-//mol/assert/assert.test.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_assert_ok(value) {
         if (value)
             return;
@@ -6251,6 +6222,38 @@ var $;
     $.$mol_assert_dom = $mol_assert_dom;
 })($ || ($ = {}));
 //mol/assert/assert.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'must be false'() {
+            $mol_assert_not(0);
+        },
+        'must be true'() {
+            $mol_assert_ok(1);
+        },
+        'two must be equal'() {
+            $mol_assert_equal(2, 2);
+        },
+        'three must be equal'() {
+            $mol_assert_equal(2, 2, 2);
+        },
+        'two must be unique'() {
+            $mol_assert_unique([3], [3]);
+        },
+        'three must be unique'() {
+            $mol_assert_unique([3], [3], [3]);
+        },
+        'two must be alike'() {
+            $mol_assert_like([3], [3]);
+        },
+        'three must be alike'() {
+            $mol_assert_like([3], [3], [3]);
+        },
+    });
+})($ || ($ = {}));
+//mol/assert/assert.test.ts
 ;
 "use strict";
 var $;
@@ -6529,6 +6532,9 @@ var $;
 //mol/wire/fiber/fiber.test.ts
 ;
 "use strict";
+//mol/type/tail/tail.test.ts
+;
+"use strict";
 var $;
 (function ($) {
     function $mol_promise() {
@@ -6607,9 +6613,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/wire/async/async.test.ts
-;
-"use strict";
-//mol/type/tail/tail.test.ts
 ;
 "use strict";
 var $;
@@ -7177,6 +7180,23 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_wire_probe(task, next) {
+        const warm = $mol_wire_fiber.warm;
+        try {
+            $mol_wire_fiber.warm = false;
+            return task();
+        }
+        finally {
+            $mol_wire_fiber.warm = warm;
+        }
+    }
+    $.$mol_wire_probe = $mol_wire_probe;
+})($ || ($ = {}));
+//mol/wire/probe/probe.ts
+;
+"use strict";
+var $;
+(function ($) {
     $mol_test({
         'Previous value'() {
             class Cache extends $mol_object2 {
@@ -7203,23 +7223,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_wire_probe(task, next) {
-        const warm = $mol_wire_fiber.warm;
-        try {
-            $mol_wire_fiber.warm = false;
-            return task();
-        }
-        finally {
-            $mol_wire_fiber.warm = warm;
-        }
-    }
-    $.$mol_wire_probe = $mol_wire_probe;
-})($ || ($ = {}));
-//mol/wire/probe/probe.ts
-;
-"use strict";
-var $;
-(function ($) {
     $mol_test({
         'init with overload'() {
             class X extends $mol_object {
@@ -7235,6 +7238,22 @@ var $;
     });
 })($ || ($ = {}));
 //mol/object/object.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'local get set delete'() {
+            var key = '$mol_state_local_test:' + Math.random();
+            $mol_assert_equal($mol_state_local.value(key), null);
+            $mol_state_local.value(key, 123);
+            $mol_assert_equal($mol_state_local.value(key), 123);
+            $mol_state_local.value(key, null);
+            $mol_assert_equal($mol_state_local.value(key), null);
+        },
+    });
+})($ || ($ = {}));
+//mol/state/local/local.test.ts
 ;
 "use strict";
 var $;
@@ -7258,22 +7277,6 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'local get set delete'() {
-            var key = '$mol_state_local_test:' + Math.random();
-            $mol_assert_equal($mol_state_local.value(key), null);
-            $mol_state_local.value(key, 123);
-            $mol_assert_equal($mol_state_local.value(key), 123);
-            $mol_state_local.value(key, null);
-            $mol_assert_equal($mol_state_local.value(key), null);
-        },
-    });
-})($ || ($ = {}));
-//mol/state/local/local.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
         'encode utf8 string'() {
             const str = 'Hello, ΧΨΩЫ';
             const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
@@ -7282,6 +7285,149 @@ var $;
     });
 })($ || ($ = {}));
 //mol/charset/encode/encode.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'run callback'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            $mol_assert_equal(Plus1.run(() => 2), 3);
+        },
+        'wrap function'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            const obj = {
+                level: 2,
+                pow: Plus1.func(function (a) {
+                    return a ** this.level;
+                })
+            };
+            $mol_assert_equal(obj.pow(2), 5);
+        },
+        'decorate field getter'() {
+            class Plus1 extends $mol_wrapper {
+                static last = 0;
+                static wrap(task) {
+                    return function (...args) {
+                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static get two() {
+                    return 1;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                Plus1.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Plus1.last, 2);
+            $mol_assert_equal(Foo.two, 2);
+        },
+        'decorate instance method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo1 {
+                level = 2;
+                pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo1.prototype, "pow", null);
+            const Foo2 = Foo1;
+            const foo = new Foo2;
+            $mol_assert_equal(foo.pow(2), 5);
+        },
+        'decorate static method'() {
+            class Plus1 extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        return task.call(this, ...args) + 1;
+                    };
+                }
+            }
+            class Foo {
+                static level = 2;
+                static pow(a) {
+                    return a ** this.level;
+                }
+            }
+            __decorate([
+                Plus1.method
+            ], Foo, "pow", null);
+            $mol_assert_equal(Foo.pow(2), 5);
+        },
+        'decorate class'() {
+            class BarInc extends $mol_wrapper {
+                static wrap(task) {
+                    return function (...args) {
+                        const foo = task.call(this, ...args);
+                        foo.bar++;
+                        return foo;
+                    };
+                }
+            }
+            let Foo = class Foo {
+                bar;
+                constructor(bar) {
+                    this.bar = bar;
+                }
+            };
+            Foo = __decorate([
+                BarInc.class
+            ], Foo);
+            $mol_assert_equal(new Foo(2).bar, 3);
+        },
+    });
+})($ || ($ = {}));
+//mol/wrapper/wrapper.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'memoize field'() {
+            class Foo {
+                static one = 1;
+                static get two() {
+                    return ++this.one;
+                }
+                static set two(next) { }
+            }
+            __decorate([
+                $mol_memo.field
+            ], Foo, "two", null);
+            $mol_assert_equal(Foo.two, 2);
+            $mol_assert_equal(Foo.two, 2);
+            Foo.two = 3;
+            $mol_assert_equal(Foo.two, 3);
+            $mol_assert_equal(Foo.two, 3);
+        },
+    });
+})($ || ($ = {}));
+//mol/memo/memo.test.ts
 ;
 "use strict";
 var $;
@@ -7482,6 +7628,82 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/unit/unit.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'fresh'() {
+            const clock = new $hyoo_crowd_clock;
+            clock.see_peer('b_33', 1);
+            clock.see_peer('m_66', 2);
+            $mol_assert_ok(clock.fresh('m_66', 3));
+            $mol_assert_ok(clock.fresh('x_99', 1));
+            $mol_assert_not(clock.fresh('m_66', 1));
+        },
+        'fork'() {
+            const left = new $hyoo_crowd_clock;
+            left.see_peer('b_33', 1);
+            left.see_peer('m_66', 2);
+            const right = new $hyoo_crowd_clock(left);
+            $mol_assert_equal(right.last_time, 2);
+            $mol_assert_like([...right], [
+                ['b_33', 1],
+                ['m_66', 2],
+            ]);
+        },
+        'generate'() {
+            const clock = new $hyoo_crowd_clock;
+            clock.see_peer('b_33', $mol_int62_min + 1);
+            clock.see_peer('m_66', $mol_int62_min + 2);
+            const now = clock.now();
+            const time1 = clock.tick('b_33');
+            $mol_assert_like(time1, now);
+            $mol_assert_like(clock.last_time, now);
+            clock.see_peer('m_66', clock.now() + 10);
+            const time2 = clock.tick('m_66');
+            $mol_assert_like(time2, now + 11);
+            $mol_assert_like(clock.last_time, now + 11);
+        },
+        'ahead'() {
+            const clock1 = new $hyoo_crowd_clock;
+            clock1.see_peer('b_33', 1);
+            clock1.see_peer('m_66', 2);
+            const clock2 = new $hyoo_crowd_clock;
+            clock2.see_peer('b_33', 1);
+            clock2.see_peer('x_99', 2);
+            const clock3 = new $hyoo_crowd_clock;
+            clock3.see_peer('b_33', 1);
+            clock3.see_peer('m_66', 2);
+            clock3.see_peer('x_99', 2);
+            $mol_assert_ok(clock1.ahead(clock2));
+            $mol_assert_ok(clock2.ahead(clock1));
+            $mol_assert_ok(clock3.ahead(clock1));
+            $mol_assert_ok(clock3.ahead(clock2));
+            $mol_assert_not(clock1.ahead(clock3));
+            $mol_assert_not(clock2.ahead(clock3));
+        },
+        'bin'() {
+            const clocks1 = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
+            clocks1[$hyoo_crowd_unit_group.auth].see_peer('b_33', 1);
+            clocks1[$hyoo_crowd_unit_group.data].see_peer('b_33', 2);
+            const bin = $hyoo_crowd_clock_bin.from('2_b', clocks1);
+            $mol_assert_like(bin.land(), '2_b');
+            const clocks2 = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
+            clocks2[$hyoo_crowd_unit_group.auth].see_bin(bin, $hyoo_crowd_unit_group.auth);
+            clocks2[$hyoo_crowd_unit_group.data].see_bin(bin, $hyoo_crowd_unit_group.data);
+            $mol_assert_like(clocks2.map(clock => new Map(clock)), [
+                new Map([
+                    ['b_33', 1],
+                ]),
+                new Map([
+                    ['b_33', 2],
+                ]),
+            ]);
+        },
+    });
+})($ || ($ = {}));
+//hyoo/crowd/clock/clock.test.ts
 ;
 "use strict";
 var $;
@@ -8007,225 +8229,6 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/crowd/text/text.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'fresh'() {
-            const clock = new $hyoo_crowd_clock;
-            clock.see_peer('b_33', 1);
-            clock.see_peer('m_66', 2);
-            $mol_assert_ok(clock.fresh('m_66', 3));
-            $mol_assert_ok(clock.fresh('x_99', 1));
-            $mol_assert_not(clock.fresh('m_66', 1));
-        },
-        'fork'() {
-            const left = new $hyoo_crowd_clock;
-            left.see_peer('b_33', 1);
-            left.see_peer('m_66', 2);
-            const right = new $hyoo_crowd_clock(left);
-            $mol_assert_equal(right.last_time, 2);
-            $mol_assert_like([...right], [
-                ['b_33', 1],
-                ['m_66', 2],
-            ]);
-        },
-        'generate'() {
-            const clock = new $hyoo_crowd_clock;
-            clock.see_peer('b_33', $mol_int62_min + 1);
-            clock.see_peer('m_66', $mol_int62_min + 2);
-            const now = clock.now();
-            const time1 = clock.tick('b_33');
-            $mol_assert_like(time1, now);
-            $mol_assert_like(clock.last_time, now);
-            clock.see_peer('m_66', clock.now() + 10);
-            const time2 = clock.tick('m_66');
-            $mol_assert_like(time2, now + 11);
-            $mol_assert_like(clock.last_time, now + 11);
-        },
-        'ahead'() {
-            const clock1 = new $hyoo_crowd_clock;
-            clock1.see_peer('b_33', 1);
-            clock1.see_peer('m_66', 2);
-            const clock2 = new $hyoo_crowd_clock;
-            clock2.see_peer('b_33', 1);
-            clock2.see_peer('x_99', 2);
-            const clock3 = new $hyoo_crowd_clock;
-            clock3.see_peer('b_33', 1);
-            clock3.see_peer('m_66', 2);
-            clock3.see_peer('x_99', 2);
-            $mol_assert_ok(clock1.ahead(clock2));
-            $mol_assert_ok(clock2.ahead(clock1));
-            $mol_assert_ok(clock3.ahead(clock1));
-            $mol_assert_ok(clock3.ahead(clock2));
-            $mol_assert_not(clock1.ahead(clock3));
-            $mol_assert_not(clock2.ahead(clock3));
-        },
-        'bin'() {
-            const clocks1 = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
-            clocks1[$hyoo_crowd_unit_group.auth].see_peer('b_33', 1);
-            clocks1[$hyoo_crowd_unit_group.data].see_peer('b_33', 2);
-            const bin = $hyoo_crowd_clock_bin.from('2_b', clocks1);
-            $mol_assert_like(bin.land(), '2_b');
-            const clocks2 = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
-            clocks2[$hyoo_crowd_unit_group.auth].see_bin(bin, $hyoo_crowd_unit_group.auth);
-            clocks2[$hyoo_crowd_unit_group.data].see_bin(bin, $hyoo_crowd_unit_group.data);
-            $mol_assert_like(clocks2.map(clock => new Map(clock)), [
-                new Map([
-                    ['b_33', 1],
-                ]),
-                new Map([
-                    ['b_33', 2],
-                ]),
-            ]);
-        },
-    });
-})($ || ($ = {}));
-//hyoo/crowd/clock/clock.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'run callback'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            $mol_assert_equal(Plus1.run(() => 2), 3);
-        },
-        'wrap function'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            const obj = {
-                level: 2,
-                pow: Plus1.func(function (a) {
-                    return a ** this.level;
-                })
-            };
-            $mol_assert_equal(obj.pow(2), 5);
-        },
-        'decorate field getter'() {
-            class Plus1 extends $mol_wrapper {
-                static last = 0;
-                static wrap(task) {
-                    return function (...args) {
-                        return Plus1.last = (task.call(this, ...args) || 0) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static get two() {
-                    return 1;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                Plus1.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Plus1.last, 2);
-            $mol_assert_equal(Foo.two, 2);
-        },
-        'decorate instance method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo1 {
-                level = 2;
-                pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo1.prototype, "pow", null);
-            const Foo2 = Foo1;
-            const foo = new Foo2;
-            $mol_assert_equal(foo.pow(2), 5);
-        },
-        'decorate static method'() {
-            class Plus1 extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        return task.call(this, ...args) + 1;
-                    };
-                }
-            }
-            class Foo {
-                static level = 2;
-                static pow(a) {
-                    return a ** this.level;
-                }
-            }
-            __decorate([
-                Plus1.method
-            ], Foo, "pow", null);
-            $mol_assert_equal(Foo.pow(2), 5);
-        },
-        'decorate class'() {
-            class BarInc extends $mol_wrapper {
-                static wrap(task) {
-                    return function (...args) {
-                        const foo = task.call(this, ...args);
-                        foo.bar++;
-                        return foo;
-                    };
-                }
-            }
-            let Foo = class Foo {
-                bar;
-                constructor(bar) {
-                    this.bar = bar;
-                }
-            };
-            Foo = __decorate([
-                BarInc.class
-            ], Foo);
-            $mol_assert_equal(new Foo(2).bar, 3);
-        },
-    });
-})($ || ($ = {}));
-//mol/wrapper/wrapper.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'memoize field'() {
-            class Foo {
-                static one = 1;
-                static get two() {
-                    return ++this.one;
-                }
-                static set two(next) { }
-            }
-            __decorate([
-                $mol_memo.field
-            ], Foo, "two", null);
-            $mol_assert_equal(Foo.two, 2);
-            $mol_assert_equal(Foo.two, 2);
-            Foo.two = 3;
-            $mol_assert_equal(Foo.two, 3);
-            $mol_assert_equal(Foo.two, 3);
-        },
-    });
-})($ || ($ = {}));
-//mol/memo/memo.test.ts
 ;
 "use strict";
 var $;
@@ -9099,6 +9102,9 @@ var $;
 //mol/tree/tree.test.ts
 ;
 "use strict";
+//mol/type/foot/foot.test.ts
+;
+"use strict";
 var $;
 (function ($) {
     class $mol_wire_log extends $mol_object2 {
@@ -9163,9 +9169,6 @@ var $;
     $.$mol_wire_log = $mol_wire_log;
 })($ || ($ = {}));
 //mol/wire/log/log.ts
-;
-"use strict";
-//mol/type/foot/foot.test.ts
 ;
 "use strict";
 var $;

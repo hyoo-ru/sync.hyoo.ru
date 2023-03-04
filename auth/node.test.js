@@ -1,4 +1,12 @@
 "use strict";
+"use strict";
+Error.stackTraceLimit = 50;
+var $;
+(function ($) {
+})($ || ($ = {}));
+module.exports = $;
+//mam.ts
+;
 "use strict"
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -13,34 +21,11 @@ $.$$ = $
 
 ;
 "use strict";
-Error.stackTraceLimit = 50;
-var $;
-(function ($) {
-})($ || ($ = {}));
-module.exports = $;
-//mam.ts
-;
-"use strict";
 //hyoo/hyoo.ts
 ;
 "use strict";
 let $hyoo_sync_revision = "7ca4736";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_offline() { }
-    $.$mol_offline = $mol_offline;
-})($ || ($ = {}));
-//mol/offline/offline.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_offline();
-})($ || ($ = {}));
-//mol/offline/install/install.ts
 ;
 "use strict";
 var $;
@@ -2146,6 +2131,21 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_offline() { }
+    $.$mol_offline = $mol_offline;
+})($ || ($ = {}));
+//mol/offline/offline.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_offline();
+})($ || ($ = {}));
+//mol/offline/install/install.ts
+;
+"use strict";
+var $;
+(function ($) {
     $mol_dom_context.addEventListener('message', event => {
         if (!Array.isArray(event.data))
             return;
@@ -2163,14 +2163,22 @@ var $;
 //hyoo/sync/auth/auth.ts
 ;
 "use strict";
-var $;
-(function ($) {
-    function $mol_test_complete() {
-        process.exit(0);
-    }
-    $.$mol_test_complete = $mol_test_complete;
-})($ || ($ = {}));
-//mol/test/test.node.test.ts
+//mol/type/error/error.ts
+;
+"use strict";
+//mol/type/assert/assert.ts
+;
+"use strict";
+//mol/type/assert/assert.test.ts
+;
+"use strict";
+//mol/type/equals/equals.ts
+;
+"use strict";
+//mol/type/equals/equals.test.ts
+;
+"use strict";
+//mol/type/writable/writable.test.ts
 ;
 "use strict";
 var $;
@@ -2262,6 +2270,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_test_complete() {
+        process.exit(0);
+    }
+    $.$mol_test_complete = $mol_test_complete;
+})($ || ($ = {}));
+//mol/test/test.node.test.ts
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_dom_render_children(el, childNodes) {
         const node_set = new Set(childNodes);
         let nextNode = el.firstChild;
@@ -2315,115 +2333,10 @@ var $;
 //mol/dom/render/children/children.ts
 ;
 "use strict";
-//mol/type/error/error.ts
-;
-"use strict";
-//mol/type/assert/assert.test.ts
-;
-"use strict";
-//mol/type/assert/assert.ts
-;
-"use strict";
-//mol/type/equals/equals.test.ts
-;
-"use strict";
-//mol/type/equals/equals.ts
-;
-"use strict";
-//mol/type/partial/deep/deep.test.ts
-;
-"use strict";
 //mol/type/partial/deep/deep.ts
 ;
 "use strict";
-var $;
-(function ($) {
-    $mol_test({
-        'Make empty div'() {
-            $mol_assert_equal(($mol_jsx("div", null)).outerHTML, '<div></div>');
-        },
-        'Define native field'() {
-            const dom = $mol_jsx("input", { value: '123' });
-            $mol_assert_equal(dom.outerHTML, '<input value="123">');
-            $mol_assert_equal(dom.value, '123');
-        },
-        'Define classes'() {
-            const dom = $mol_jsx("div", { class: 'foo bar' });
-            $mol_assert_equal(dom.outerHTML, '<div class="foo bar"></div>');
-        },
-        'Define styles'() {
-            const dom = $mol_jsx("div", { style: { color: 'red' } });
-            $mol_assert_equal(dom.outerHTML, '<div style="color: red;"></div>');
-        },
-        'Define dataset'() {
-            const dom = $mol_jsx("div", { dataset: { foo: 'bar' } });
-            $mol_assert_equal(dom.outerHTML, '<div data-foo="bar"></div>');
-        },
-        'Define attributes'() {
-            const dom = $mol_jsx("div", { lang: "ru", hidden: true });
-            $mol_assert_equal(dom.outerHTML, '<div lang="ru" hidden=""></div>');
-        },
-        'Define child nodes'() {
-            const dom = $mol_jsx("div", null,
-                "hello",
-                $mol_jsx("strong", null, "world"),
-                "!");
-            $mol_assert_equal(dom.outerHTML, '<div>hello<strong>world</strong>!</div>');
-        },
-        'Function as component'() {
-            const Button = (props, target) => {
-                return $mol_jsx("button", { title: props.hint }, target());
-            };
-            const dom = $mol_jsx(Button, { id: "foo", hint: "click me" }, () => 'hey!');
-            $mol_assert_equal(dom.outerHTML, '<button id="foo" title="click me" class="Button">hey!</button>');
-        },
-        'Nested guid generation'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx(Bar, { id: "bar" },
-                        $mol_jsx("img", { id: "icon" })));
-            };
-            const Bar = (props, icon) => {
-                return $mol_jsx("span", null,
-                    icon,
-                    $mol_jsx("i", { id: "label" }));
-            };
-            const dom = $mol_jsx(Foo, { id: "foo" });
-            $mol_assert_equal(dom.outerHTML, '<div id="foo" class="Foo"><span id="foo/bar" class="Foo_bar Bar"><img id="foo/icon" class="Foo_icon"><i id="foo/bar/label" class="Foo_bar_label Bar_label"></i></span></div>');
-        },
-        'Fail on non unique ids'() {
-            const App = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx("span", { id: "bar" }),
-                    $mol_jsx("span", { id: "bar" }));
-            };
-            $mol_assert_fail(() => $mol_jsx(App, { id: "foo" }), 'JSX already has tag with id "foo/bar"');
-        },
-        'Owner based guid generationn'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx(Bar, { id: "middle", icon: () => $mol_jsx("img", { id: "icon" }) }));
-            };
-            const Bar = (props) => {
-                return $mol_jsx("span", null, props.icon());
-            };
-            const dom = $mol_jsx(Foo, { id: "app" });
-            $mol_assert_equal(dom.outerHTML, '<div id="app" class="Foo"><span id="app/middle" class="Foo_middle Bar"><img id="app/icon" class="Foo_icon"></span></div>');
-        },
-        'Fail on same ids from different caller'() {
-            const Foo = () => {
-                return $mol_jsx("div", null,
-                    $mol_jsx("img", { id: "icon" }),
-                    $mol_jsx(Bar, { id: "bar", icon: () => $mol_jsx("img", { id: "icon" }) }));
-            };
-            const Bar = (props) => {
-                return $mol_jsx("span", null, props.icon());
-            };
-            $mol_assert_fail(() => $mol_jsx(Foo, { id: "foo" }), 'JSX already has tag with id "foo/icon"');
-        },
-    });
-})($ || ($ = {}));
-//mol/jsx/jsx.test.tsx
+//mol/type/partial/deep/deep.test.ts
 ;
 "use strict";
 var $;
@@ -2550,6 +2463,96 @@ var $;
 var $;
 (function ($) {
     $mol_test({
+        'Make empty div'() {
+            $mol_assert_equal(($mol_jsx("div", null)).outerHTML, '<div></div>');
+        },
+        'Define native field'() {
+            const dom = $mol_jsx("input", { value: '123' });
+            $mol_assert_equal(dom.outerHTML, '<input value="123">');
+            $mol_assert_equal(dom.value, '123');
+        },
+        'Define classes'() {
+            const dom = $mol_jsx("div", { class: 'foo bar' });
+            $mol_assert_equal(dom.outerHTML, '<div class="foo bar"></div>');
+        },
+        'Define styles'() {
+            const dom = $mol_jsx("div", { style: { color: 'red' } });
+            $mol_assert_equal(dom.outerHTML, '<div style="color: red;"></div>');
+        },
+        'Define dataset'() {
+            const dom = $mol_jsx("div", { dataset: { foo: 'bar' } });
+            $mol_assert_equal(dom.outerHTML, '<div data-foo="bar"></div>');
+        },
+        'Define attributes'() {
+            const dom = $mol_jsx("div", { lang: "ru", hidden: true });
+            $mol_assert_equal(dom.outerHTML, '<div lang="ru" hidden=""></div>');
+        },
+        'Define child nodes'() {
+            const dom = $mol_jsx("div", null,
+                "hello",
+                $mol_jsx("strong", null, "world"),
+                "!");
+            $mol_assert_equal(dom.outerHTML, '<div>hello<strong>world</strong>!</div>');
+        },
+        'Function as component'() {
+            const Button = (props, target) => {
+                return $mol_jsx("button", { title: props.hint }, target());
+            };
+            const dom = $mol_jsx(Button, { id: "foo", hint: "click me" }, () => 'hey!');
+            $mol_assert_equal(dom.outerHTML, '<button id="foo" title="click me" class="Button">hey!</button>');
+        },
+        'Nested guid generation'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx(Bar, { id: "bar" },
+                        $mol_jsx("img", { id: "icon" })));
+            };
+            const Bar = (props, icon) => {
+                return $mol_jsx("span", null,
+                    icon,
+                    $mol_jsx("i", { id: "label" }));
+            };
+            const dom = $mol_jsx(Foo, { id: "foo" });
+            $mol_assert_equal(dom.outerHTML, '<div id="foo" class="Foo"><span id="foo/bar" class="Foo_bar Bar"><img id="foo/icon" class="Foo_icon"><i id="foo/bar/label" class="Foo_bar_label Bar_label"></i></span></div>');
+        },
+        'Fail on non unique ids'() {
+            const App = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx("span", { id: "bar" }),
+                    $mol_jsx("span", { id: "bar" }));
+            };
+            $mol_assert_fail(() => $mol_jsx(App, { id: "foo" }), 'JSX already has tag with id "foo/bar"');
+        },
+        'Owner based guid generationn'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx(Bar, { id: "middle", icon: () => $mol_jsx("img", { id: "icon" }) }));
+            };
+            const Bar = (props) => {
+                return $mol_jsx("span", null, props.icon());
+            };
+            const dom = $mol_jsx(Foo, { id: "app" });
+            $mol_assert_equal(dom.outerHTML, '<div id="app" class="Foo"><span id="app/middle" class="Foo_middle Bar"><img id="app/icon" class="Foo_icon"></span></div>');
+        },
+        'Fail on same ids from different caller'() {
+            const Foo = () => {
+                return $mol_jsx("div", null,
+                    $mol_jsx("img", { id: "icon" }),
+                    $mol_jsx(Bar, { id: "bar", icon: () => $mol_jsx("img", { id: "icon" }) }));
+            };
+            const Bar = (props) => {
+                return $mol_jsx("span", null, props.icon());
+            };
+            $mol_assert_fail(() => $mol_jsx(Foo, { id: "foo" }), 'JSX already has tag with id "foo/icon"');
+        },
+    });
+})($ || ($ = {}));
+//mol/jsx/jsx.test.tsx
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
         'nulls & undefineds'() {
             $mol_assert_ok($mol_compare_deep(null, null));
             $mol_assert_ok($mol_compare_deep(undefined, undefined));
@@ -2656,38 +2659,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_test({
-        'must be false'() {
-            $mol_assert_not(0);
-        },
-        'must be true'() {
-            $mol_assert_ok(1);
-        },
-        'two must be equal'() {
-            $mol_assert_equal(2, 2);
-        },
-        'three must be equal'() {
-            $mol_assert_equal(2, 2, 2);
-        },
-        'two must be unique'() {
-            $mol_assert_unique([3], [3]);
-        },
-        'three must be unique'() {
-            $mol_assert_unique([3], [3], [3]);
-        },
-        'two must be alike'() {
-            $mol_assert_like([3], [3]);
-        },
-        'three must be alike'() {
-            $mol_assert_like([3], [3], [3]);
-        },
-    });
-})($ || ($ = {}));
-//mol/assert/assert.test.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_assert_ok(value) {
         if (value)
             return;
@@ -2781,6 +2752,38 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    $mol_test({
+        'must be false'() {
+            $mol_assert_not(0);
+        },
+        'must be true'() {
+            $mol_assert_ok(1);
+        },
+        'two must be equal'() {
+            $mol_assert_equal(2, 2);
+        },
+        'three must be equal'() {
+            $mol_assert_equal(2, 2, 2);
+        },
+        'two must be unique'() {
+            $mol_assert_unique([3], [3]);
+        },
+        'three must be unique'() {
+            $mol_assert_unique([3], [3], [3]);
+        },
+        'two must be alike'() {
+            $mol_assert_like([3], [3]);
+        },
+        'three must be alike'() {
+            $mol_assert_like([3], [3], [3]);
+        },
+    });
+})($ || ($ = {}));
+//mol/assert/assert.test.ts
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test({
         'FQN of anon function'($) {
@@ -2797,67 +2800,20 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'get'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_equal(proxy.foo, 777);
-        },
-        'has'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_equal('foo' in proxy, true);
-        },
-        'set'() {
-            const target = { foo: 777 };
-            const proxy = $mol_delegate({}, () => target);
-            proxy.foo = 123;
-            $mol_assert_equal(target.foo, 123);
-        },
-        'getOwnPropertyDescriptor'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
-            $mol_assert_like(Object.getOwnPropertyDescriptor(proxy, 'foo'), {
-                value: 777,
-                writable: true,
-                enumerable: true,
-                configurable: true,
+        'init with overload'() {
+            class X extends $mol_object {
+                foo() {
+                    return 1;
+                }
+            }
+            var x = X.make({
+                foo: () => 2,
             });
-        },
-        'ownKeys'() {
-            const proxy = $mol_delegate({}, () => ({ foo: 777, [Symbol.toStringTag]: 'bar' }));
-            $mol_assert_like(Reflect.ownKeys(proxy), ['foo', Symbol.toStringTag]);
-        },
-        'getPrototypeOf'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_equal(Object.getPrototypeOf(proxy), Foo.prototype);
-        },
-        'setPrototypeOf'() {
-            class Foo {
-            }
-            const target = {};
-            const proxy = $mol_delegate({}, () => target);
-            Object.setPrototypeOf(proxy, Foo.prototype);
-            $mol_assert_equal(Object.getPrototypeOf(target), Foo.prototype);
-        },
-        'instanceof'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_ok(proxy instanceof Foo);
-            $mol_assert_ok(proxy instanceof $mol_delegate);
-        },
-        'autobind'() {
-            class Foo {
-            }
-            const proxy = $mol_delegate({}, () => new Foo);
-            $mol_assert_ok(proxy instanceof Foo);
-            $mol_assert_ok(proxy instanceof $mol_delegate);
+            $mol_assert_equal(x.foo(), 2);
         },
     });
 })($ || ($ = {}));
-//mol/delegate/delegate.test.ts
-;
-"use strict";
-//mol/type/writable/writable.test.ts
+//mol/object/object.test.ts
 ;
 "use strict";
 var $;
@@ -3056,6 +3012,9 @@ var $;
 //mol/wire/fiber/fiber.test.ts
 ;
 "use strict";
+//mol/type/tail/tail.test.ts
+;
+"use strict";
 var $;
 (function ($) {
     function $mol_promise() {
@@ -3120,6 +3079,36 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    function $mol_wire_async(obj) {
+        let fiber;
+        const temp = $mol_wire_task.getter(obj);
+        return new Proxy(obj, {
+            get(obj, field) {
+                const val = obj[field];
+                if (typeof val !== 'function')
+                    return val;
+                let fiber;
+                const temp = $mol_wire_task.getter(val);
+                return function $mol_wire_async(...args) {
+                    fiber?.destructor();
+                    fiber = temp(obj, args);
+                    return fiber.async();
+                };
+            },
+            apply(obj, self, args) {
+                fiber?.destructor();
+                fiber = temp(self, args);
+                return fiber.async();
+            },
+        });
+    }
+    $.$mol_wire_async = $mol_wire_async;
+})($ || ($ = {}));
+//mol/wire/async/async.ts
+;
+"use strict";
+var $;
 (function ($_1) {
     $mol_test({
         async 'Latest method calls wins'($) {
@@ -3160,39 +3149,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/wire/async/async.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_wire_async(obj) {
-        let fiber;
-        const temp = $mol_wire_task.getter(obj);
-        return new Proxy(obj, {
-            get(obj, field) {
-                const val = obj[field];
-                if (typeof val !== 'function')
-                    return val;
-                let fiber;
-                const temp = $mol_wire_task.getter(val);
-                return function $mol_wire_async(...args) {
-                    fiber?.destructor();
-                    fiber = temp(obj, args);
-                    return fiber.async();
-                };
-            },
-            apply(obj, self, args) {
-                fiber?.destructor();
-                fiber = temp(self, args);
-                return fiber.async();
-            },
-        });
-    }
-    $.$mol_wire_async = $mol_wire_async;
-})($ || ($ = {}));
-//mol/wire/async/async.ts
-;
-"use strict";
-//mol/type/tail/tail.test.ts
 ;
 "use strict";
 var $;
@@ -3760,6 +3716,23 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_wire_probe(task, next) {
+        const warm = $mol_wire_fiber.warm;
+        try {
+            $mol_wire_fiber.warm = false;
+            return task();
+        }
+        finally {
+            $mol_wire_fiber.warm = warm;
+        }
+    }
+    $.$mol_wire_probe = $mol_wire_probe;
+})($ || ($ = {}));
+//mol/wire/probe/probe.ts
+;
+"use strict";
+var $;
+(function ($) {
     $mol_test({
         'Previous value'() {
             class Cache extends $mol_object2 {
@@ -3786,38 +3759,60 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_wire_probe(task, next) {
-        const warm = $mol_wire_fiber.warm;
-        try {
-            $mol_wire_fiber.warm = false;
-            return task();
-        }
-        finally {
-            $mol_wire_fiber.warm = warm;
-        }
-    }
-    $.$mol_wire_probe = $mol_wire_probe;
-})($ || ($ = {}));
-//mol/wire/probe/probe.ts
-;
-"use strict";
-var $;
-(function ($) {
     $mol_test({
-        'init with overload'() {
-            class X extends $mol_object {
-                foo() {
-                    return 1;
-                }
+        'Primitives'() {
+            $mol_assert_equal($mol_key(null), 'null');
+            $mol_assert_equal($mol_key(false), 'false');
+            $mol_assert_equal($mol_key(true), 'true');
+            $mol_assert_equal($mol_key(0), '0');
+            $mol_assert_equal($mol_key(''), '""');
+        },
+        'Array & POJO'() {
+            $mol_assert_equal($mol_key([null]), '[null]');
+            $mol_assert_equal($mol_key({ foo: 0 }), '{"foo":0}');
+            $mol_assert_equal($mol_key({ foo: [false] }), '{"foo":[false]}');
+        },
+        'Function'() {
+            const func = () => { };
+            $mol_assert_equal($mol_key(func), $mol_key(func));
+            $mol_assert_unique($mol_key(func), $mol_key(() => { }));
+        },
+        'Objects'() {
+            class User {
             }
-            var x = X.make({
-                foo: () => 2,
-            });
-            $mol_assert_equal(x.foo(), 2);
+            const jin = new User();
+            $mol_assert_equal($mol_key(jin), $mol_key(jin));
+            $mol_assert_unique($mol_key(jin), $mol_key(new User()));
+        },
+        'Elements'() {
+            const foo = $mol_jsx("div", null, "bar");
+            $mol_assert_equal($mol_key(foo), $mol_key(foo));
+            $mol_assert_unique($mol_key(foo), $mol_key($mol_jsx("div", null, "bar")));
+        },
+        'Custom JSON representation'() {
+            class User {
+                name;
+                age;
+                constructor(name, age) {
+                    this.name = name;
+                    this.age = age;
+                }
+                toJSON() { return { name: this.name }; }
+            }
+            $mol_assert_equal($mol_key(new User('jin', 18)), '{"name":"jin"}');
+        },
+        'Special native classes'() {
+            $mol_assert_equal($mol_key(new Date('xyz')), 'null');
+            $mol_assert_equal($mol_key(new Date('2001-01-02T03:04:05.678Z')), '"2001-01-02T03:04:05.678Z"');
+            $mol_assert_equal($mol_key(/./), '"/./"');
+            $mol_assert_equal($mol_key(/\./gimsu), '"/\\\\./gimsu"');
         },
     });
 })($ || ($ = {}));
-//mol/object/object.test.ts
+//mol/key/key.test.tsx
+;
+"use strict";
+//mol/type/foot/foot.test.ts
 ;
 "use strict";
 var $;
@@ -3902,67 +3897,25 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_test({
-        'Primitives'() {
-            $mol_assert_equal($mol_key(null), 'null');
-            $mol_assert_equal($mol_key(false), 'false');
-            $mol_assert_equal($mol_key(true), 'true');
-            $mol_assert_equal($mol_key(0), '0');
-            $mol_assert_equal($mol_key(''), '""');
-        },
-        'Array & POJO'() {
-            $mol_assert_equal($mol_key([null]), '[null]');
-            $mol_assert_equal($mol_key({ foo: 0 }), '{"foo":0}');
-            $mol_assert_equal($mol_key({ foo: [false] }), '{"foo":[false]}');
-        },
-        'Function'() {
-            const func = () => { };
-            $mol_assert_equal($mol_key(func), $mol_key(func));
-            $mol_assert_unique($mol_key(func), $mol_key(() => { }));
-        },
-        'Objects'() {
-            class User {
-            }
-            const jin = new User();
-            $mol_assert_equal($mol_key(jin), $mol_key(jin));
-            $mol_assert_unique($mol_key(jin), $mol_key(new User()));
-        },
-        'Elements'() {
-            const foo = $mol_jsx("div", null, "bar");
-            $mol_assert_equal($mol_key(foo), $mol_key(foo));
-            $mol_assert_unique($mol_key(foo), $mol_key($mol_jsx("div", null, "bar")));
-        },
-        'Custom JSON representation'() {
-            class User {
-                name;
-                age;
-                constructor(name, age) {
-                    this.name = name;
-                    this.age = age;
-                }
-                toJSON() { return { name: this.name }; }
-            }
-            $mol_assert_equal($mol_key(new User('jin', 18)), '{"name":"jin"}');
-        },
-        'Special native classes'() {
-            $mol_assert_equal($mol_key(new Date('xyz')), 'null');
-            $mol_assert_equal($mol_key(new Date('2001-01-02T03:04:05.678Z')), '"2001-01-02T03:04:05.678Z"');
-            $mol_assert_equal($mol_key(/./), '"/./"');
-            $mol_assert_equal($mol_key(/\./gimsu), '"/\\\\./gimsu"');
-        },
-    });
+    $mol_wire_log.active();
 })($ || ($ = {}));
-//mol/key/key.test.tsx
-;
-"use strict";
-//mol/type/foot/foot.test.ts
+//mol/wire/atom/atom.test.ts
 ;
 "use strict";
 var $;
 (function ($) {
-    $mol_wire_log.active();
+    $mol_test({
+        'local get set delete'() {
+            var key = '$mol_state_local_test:' + Math.random();
+            $mol_assert_equal($mol_state_local.value(key), null);
+            $mol_state_local.value(key, 123);
+            $mol_assert_equal($mol_state_local.value(key), 123);
+            $mol_state_local.value(key, null);
+            $mol_assert_equal($mol_state_local.value(key), null);
+        },
+    });
 })($ || ($ = {}));
-//mol/wire/atom/atom.test.ts
+//mol/state/local/local.test.ts
 ;
 "use strict";
 var $;
@@ -3986,22 +3939,6 @@ var $;
 var $;
 (function ($) {
     $mol_test({
-        'local get set delete'() {
-            var key = '$mol_state_local_test:' + Math.random();
-            $mol_assert_equal($mol_state_local.value(key), null);
-            $mol_state_local.value(key, 123);
-            $mol_assert_equal($mol_state_local.value(key), 123);
-            $mol_state_local.value(key, null);
-            $mol_assert_equal($mol_state_local.value(key), null);
-        },
-    });
-})($ || ($ = {}));
-//mol/state/local/local.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_test({
         'encode utf8 string'() {
             const str = 'Hello, ΧΨΩЫ';
             const encoded = new Uint8Array([72, 101, 108, 108, 111, 44, 32, 206, 167, 206, 168, 206, 169, 208, 171]);
@@ -4010,6 +3947,69 @@ var $;
     });
 })($ || ($ = {}));
 //mol/charset/encode/encode.test.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'get'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_equal(proxy.foo, 777);
+        },
+        'has'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_equal('foo' in proxy, true);
+        },
+        'set'() {
+            const target = { foo: 777 };
+            const proxy = $mol_delegate({}, () => target);
+            proxy.foo = 123;
+            $mol_assert_equal(target.foo, 123);
+        },
+        'getOwnPropertyDescriptor'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777 }));
+            $mol_assert_like(Object.getOwnPropertyDescriptor(proxy, 'foo'), {
+                value: 777,
+                writable: true,
+                enumerable: true,
+                configurable: true,
+            });
+        },
+        'ownKeys'() {
+            const proxy = $mol_delegate({}, () => ({ foo: 777, [Symbol.toStringTag]: 'bar' }));
+            $mol_assert_like(Reflect.ownKeys(proxy), ['foo', Symbol.toStringTag]);
+        },
+        'getPrototypeOf'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_equal(Object.getPrototypeOf(proxy), Foo.prototype);
+        },
+        'setPrototypeOf'() {
+            class Foo {
+            }
+            const target = {};
+            const proxy = $mol_delegate({}, () => target);
+            Object.setPrototypeOf(proxy, Foo.prototype);
+            $mol_assert_equal(Object.getPrototypeOf(target), Foo.prototype);
+        },
+        'instanceof'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_ok(proxy instanceof Foo);
+            $mol_assert_ok(proxy instanceof $mol_delegate);
+        },
+        'autobind'() {
+            class Foo {
+            }
+            const proxy = $mol_delegate({}, () => new Foo);
+            $mol_assert_ok(proxy instanceof Foo);
+            $mol_assert_ok(proxy instanceof $mol_delegate);
+        },
+    });
+})($ || ($ = {}));
+//mol/delegate/delegate.test.ts
 ;
 "use strict";
 var $;

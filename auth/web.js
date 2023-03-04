@@ -1,18 +1,5 @@
 "use strict";
 function require( path ){ return $node[ path ] };
-"use strict"
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-	else for (var i = decorators.length - 1; i >= 0; i--) if ((d = decorators[i])) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-	return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-
-var $ = ( typeof module === 'object' ) ? ( module['export'+'s'] = globalThis ) : globalThis
-$.$$ = $
-
-;
 
 var $node = $node || {}
 void function( module ) { var exports = module.exports = this; function require( id ) { return $node[ id.replace( /^.\// , "../" ) ] }; 
@@ -28,72 +15,25 @@ module.exports = $;
 
 $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
 ;
+"use strict"
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+	var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	else for (var i = decorators.length - 1; i >= 0; i--) if ((d = decorators[i])) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var $ = ( typeof module === 'object' ) ? ( module['export'+'s'] = globalThis ) : globalThis
+$.$$ = $
+
+;
 "use strict";
 //hyoo/hyoo.ts
 ;
 "use strict";
 let $hyoo_sync_revision = "7ca4736";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const blacklist = new Set([
-        '//cse.google.com/adsense/search/async-ads.js'
-    ]);
-    function $mol_offline() {
-        if (typeof window === 'undefined') {
-            self.addEventListener('install', (event) => {
-                self['skipWaiting']();
-            });
-            self.addEventListener('activate', (event) => {
-                caches.delete('v1');
-                caches.delete('$mol_offline');
-                self['clients'].claim();
-                console.info('$mol_offline activated');
-            });
-            self.addEventListener('fetch', (event) => {
-                if (blacklist.has(event.request.url.replace(/^https?:/, ''))) {
-                    return event.respondWith(new Response(null, {
-                        status: 418,
-                        statusText: 'Blocked'
-                    }));
-                }
-                if (event.request.method !== 'GET') {
-                    return event.respondWith(fetch(event.request));
-                }
-                const fresh = fetch(event.request).then(response => {
-                    event.waitUntil(caches.open('$mol_offline').then(cache => cache.put(event.request, response)));
-                    return response.clone();
-                });
-                event.waitUntil(fresh);
-                event.respondWith(caches.match(event.request).then(response => response || fresh));
-            });
-            self.addEventListener('beforeinstallprompt', (event) => {
-                console.log(event);
-                event.prompt();
-            });
-        }
-        else if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-            console.warn('HTTPS or localhost is required for service workers.');
-        }
-        else if (!navigator.serviceWorker) {
-            console.warn('Service Worker is not supported.');
-        }
-        else {
-            navigator.serviceWorker.register('web.js');
-        }
-    }
-    $.$mol_offline = $mol_offline;
-})($ || ($ = {}));
-//mol/offline/offline.web.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_offline();
-})($ || ($ = {}));
-//mol/offline/install/install.ts
 ;
 "use strict";
 var $;
@@ -1912,6 +1852,67 @@ var $;
     ];
 })($ || ($ = {}));
 //hyoo/sync/origins/origins.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const blacklist = new Set([
+        '//cse.google.com/adsense/search/async-ads.js'
+    ]);
+    function $mol_offline() {
+        if (typeof window === 'undefined') {
+            self.addEventListener('install', (event) => {
+                self['skipWaiting']();
+            });
+            self.addEventListener('activate', (event) => {
+                caches.delete('v1');
+                caches.delete('$mol_offline');
+                self['clients'].claim();
+                console.info('$mol_offline activated');
+            });
+            self.addEventListener('fetch', (event) => {
+                const request = event.request;
+                if (blacklist.has(request.url.replace(/^https?:/, ''))) {
+                    return event.respondWith(new Response(null, {
+                        status: 418,
+                        statusText: 'Blocked'
+                    }));
+                }
+                if (request.method !== 'GET' || !/^https?:/.test(request.url)) {
+                    return event.respondWith(fetch(request));
+                }
+                const fresh = fetch(event.request).then(response => {
+                    event.waitUntil(caches.open('$mol_offline').then(cache => cache.put(event.request, response)));
+                    return response.clone();
+                });
+                event.waitUntil(fresh);
+                event.respondWith(caches.match(event.request).then(response => response || fresh));
+            });
+            self.addEventListener('beforeinstallprompt', (event) => {
+                console.log(event);
+                event.prompt();
+            });
+        }
+        else if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+            console.warn('HTTPS or localhost is required for service workers.');
+        }
+        else if (!navigator.serviceWorker) {
+            console.warn('Service Worker is not supported.');
+        }
+        else {
+            navigator.serviceWorker.register('web.js');
+        }
+    }
+    $.$mol_offline = $mol_offline;
+})($ || ($ = {}));
+//mol/offline/offline.web.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_offline();
+})($ || ($ = {}));
+//mol/offline/install/install.ts
 ;
 "use strict";
 var $;

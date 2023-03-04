@@ -16,13 +16,6 @@ declare namespace $ {
 declare let $hyoo_sync_revision: string;
 
 declare namespace $ {
-    function $mol_offline(): void;
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     var $mol_dom_context: typeof globalThis;
 }
 
@@ -473,6 +466,13 @@ declare namespace $ {
 
 declare namespace $ {
     let $hyoo_sync_origins: string[];
+}
+
+declare namespace $ {
+    function $mol_offline(): void;
+}
+
+declare namespace $ {
 }
 
 declare namespace $ {

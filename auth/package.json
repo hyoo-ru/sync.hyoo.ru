@@ -18,11 +18,9 @@
     "$hyoo_sync_auth",
     "$hyoo_sync",
     "$hyoo",
-    "$mol_offline_install",
-    "$mol_offline",
-    "$mol",
     "$mol_dom_context",
     "$mol_dom",
+    "$mol",
     "$node",
     "$node_modules",
     "$mol_exec",
@@ -78,7 +76,9 @@
     "$mol_crypto_auditor",
     "$mol_crypto",
     "$mol_crypto_native",
-    "$hyoo_sync_origins"
+    "$hyoo_sync_origins",
+    "$mol_offline_install",
+    "$mol_offline"
   ],
   "dependencies": {
     "jsdom": "*"

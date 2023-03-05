@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "894a19d";
+let $hyoo_sync_revision = "6f92ff4";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5609,7 +5609,7 @@ var $;
                             case 'text':
                                 data[fetch] = node.sub(field, $hyoo_crowd_text).text();
                                 if (accept === 'text/html') {
-                                    data[fetch] = fetch === 'title'
+                                    data[fetch] = field === 'title'
                                         ? this.$.$mol_html_encode(data[fetch])
                                         : this.$.$hyoo_marked_to_html(data[fetch]);
                                 }

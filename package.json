@@ -127,6 +127,8 @@
     "$mol_type_intersect",
     "$mol_type_override",
     "$mol_unicode",
+    "$mol_html_encode",
+    "$mol_html",
     "$hyoo_marked_to_html",
     "$hyoo_marked_to",
     "$hyoo_marked",

@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "a0ca8ec";
+let $hyoo_sync_revision = "73c0f45";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14688,6 +14688,18 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    class $mol_icon_calendar_today extends $mol_icon {
+        path() {
+            return "M7,10H12V15H7M19,19H5V8H19M19,3H18V1H16V3H8V1H6V3H5C3.89,3 3,3.9 3,5V19C3,20.1 3.9,21 5,21H19C20.1,21 21,20.1 21,19V5C21,3.9 20.1,3 19,3Z";
+        }
+    }
+    $.$mol_icon_calendar_today = $mol_icon_calendar_today;
+})($ || ($ = {}));
+//mol/icon/calendar/today/-view.tree/today.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
     class $mol_format extends $mol_string {
         allow() {
             return "0123456789";
@@ -15139,7 +15151,7 @@ var $;
         }
         bubble_content() {
             return [
-                this.Input(),
+                this.Input_row(),
                 this.Calendar()
             ];
         }
@@ -15152,6 +15164,28 @@ var $;
             if (val !== undefined)
                 return val;
             const obj = new this.$.$mol_time_moment();
+            return obj;
+        }
+        today_enabled() {
+            return true;
+        }
+        today_click(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        Today_icon() {
+            const obj = new this.$.$mol_icon_calendar_today();
+            return obj;
+        }
+        Today() {
+            const obj = new this.$.$mol_button_minor();
+            obj.hint = () => this.$.$mol_locale.text('$mol_date_Today_hint');
+            obj.enabled = () => this.today_enabled();
+            obj.click = (event) => this.today_click(event);
+            obj.sub = () => [
+                this.Today_icon()
+            ];
             return obj;
         }
         value(val) {
@@ -15170,6 +15204,36 @@ var $;
             obj.value = (val) => this.value(val);
             obj.mask = (id) => this.input_mask(id);
             obj.enabled = () => this.enabled();
+            return obj;
+        }
+        clear(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        Clear_icon() {
+            const obj = new this.$.$mol_icon_cross();
+            return obj;
+        }
+        Clear() {
+            const obj = new this.$.$mol_button_minor();
+            obj.hint = () => this.$.$mol_locale.text('$mol_date_Clear_hint');
+            obj.click = (event) => this.clear(event);
+            obj.sub = () => [
+                this.Clear_icon()
+            ];
+            return obj;
+        }
+        input_content() {
+            return [
+                this.Today(),
+                this.Input(),
+                this.Clear()
+            ];
+        }
+        Input_row() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => this.input_content();
             return obj;
         }
         month_moment() {
@@ -15259,10 +15323,31 @@ var $;
     ], $mol_date.prototype, "value_moment", null);
     __decorate([
         $mol_mem
+    ], $mol_date.prototype, "today_click", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "Today_icon", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "Today", null);
+    __decorate([
+        $mol_mem
     ], $mol_date.prototype, "value", null);
     __decorate([
         $mol_mem
     ], $mol_date.prototype, "Input", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "clear", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "Clear_icon", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "Clear", null);
+    __decorate([
+        $mol_mem
+    ], $mol_date.prototype, "Input_row", null);
     __decorate([
         $mol_mem_key
     ], $mol_date.prototype, "day_click", null);
@@ -15332,6 +15417,13 @@ var $;
             input_mask(val) {
                 return val.length > 8 ? '____-__-__ __:__' : '____-__-__ ';
             }
+            input_content() {
+                return [
+                    this.Today(),
+                    this.Input(),
+                    ...this.value() ? [this.Clear()] : [],
+                ];
+            }
             value(val) {
                 const moment = this.value_moment();
                 if (val === undefined)
@@ -15345,6 +15437,16 @@ var $;
             value_moment(val) {
                 const stamp = this.value_number(val && val.valueOf());
                 return isNaN(stamp) ? null : new $mol_time_moment(stamp);
+            }
+            value_moment_today() {
+                return this.value()
+                    ? new $mol_time_moment().mask(this.value())
+                    : new $mol_time_moment();
+            }
+            clear() {
+                this.value('');
+                this.Input().focused(true);
+                this.Input().selection([0, 0]);
             }
             month_moment(next) {
                 if (next)
@@ -15371,6 +15473,13 @@ var $;
             next() {
                 this.month_moment(this.month_moment().shift({ month: +1 }));
             }
+            today_enabled() {
+                const val = this.value_moment();
+                return !val || val.valueOf() !== this.value_moment_today().valueOf();
+            }
+            today_click() {
+                this.value_moment(this.value_moment_today());
+            }
         }
         __decorate([
             $mol_mem
@@ -15380,7 +15489,13 @@ var $;
         ], $mol_date.prototype, "value_moment", null);
         __decorate([
             $mol_mem
+        ], $mol_date.prototype, "value_moment_today", null);
+        __decorate([
+            $mol_mem
         ], $mol_date.prototype, "month_moment", null);
+        __decorate([
+            $mol_mem
+        ], $mol_date.prototype, "today_enabled", null);
         $$.$mol_date = $mol_date;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));

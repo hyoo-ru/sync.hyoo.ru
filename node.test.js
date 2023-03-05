@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "a0ca8ec";
+let $hyoo_sync_revision = "73c0f45";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -4855,6 +4855,22 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const mapping = {
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        '&': '&amp;',
+    };
+    function $mol_html_encode(text) {
+        return text.replace(/[&<">]/gi, str => mapping[str]);
+    }
+    $.$mol_html_encode = $mol_html_encode;
+})($ || ($ = {}));
+//mol/html/encode/encode.ts
+;
+"use strict";
+var $;
+(function ($) {
     function $mol_dom_render_children(el, childNodes) {
         const node_set = new Set(childNodes);
         let nextNode = el.firstChild;
@@ -5592,8 +5608,11 @@ var $;
                                 continue;
                             case 'text':
                                 data[fetch] = node.sub(field, $hyoo_crowd_text).text();
-                                if (accept === 'text/html')
-                                    data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
+                                if (accept === 'text/html') {
+                                    data[fetch] = fetch === 'title'
+                                        ? this.$.$mol_html_encode(data[fetch])
+                                        : this.$.$hyoo_marked_to_html(data[fetch]);
+                                }
                                 continue;
                             case 'html':
                                 data[fetch] = node.sub(field, $hyoo_crowd_dom).html();

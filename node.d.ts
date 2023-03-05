@@ -1132,6 +1132,10 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    function $mol_html_encode(text: string): string;
+}
+
+declare namespace $ {
     function $mol_dom_render_children(el: Element | DocumentFragment, childNodes: NodeList | Array<Node | string | null>): void;
 }
 

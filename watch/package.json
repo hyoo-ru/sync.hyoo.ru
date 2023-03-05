@@ -272,6 +272,7 @@
     "$mol_time",
     "$mol_time_duration",
     "$mol_time_base",
+    "$mol_icon_calendar_today",
     "$mol_format",
     "$mol_icon_chevron_left",
     "$mol_icon_chevron_right",

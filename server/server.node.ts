@@ -160,7 +160,11 @@ namespace $ {
 							
 							case 'text':
 								data[ fetch ] = node.sub( field, $hyoo_crowd_text ).text()
-								if( accept === 'text/html' ) data[ fetch ] = this.$.$hyoo_marked_to_html( data[ fetch ] )
+								if( accept === 'text/html' ) {
+									data[ fetch ] = fetch === 'title'
+										? this.$.$mol_html_encode( data[ fetch ] )
+										: this.$.$hyoo_marked_to_html( data[ fetch ] )
+								}
 								continue
 							
 							case 'html':

@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "73c0f45";
+let $hyoo_sync_revision = "894a19d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5649,11 +5649,11 @@ var $;
                             'Access-Control-Allow-Origin': '*',
                         });
                         const html = Object.entries(reply).flatMap(([id, props]) => [
-                            `<land id="land=${id}">`,
+                            `<land id="land=${id}=">`,
                             ...Object.entries(props).flatMap(([name, value]) => {
                                 const tag = name.replace(/_.*$/, '');
                                 return [
-                                    `<${tag} id="land=${id}[${name}]">`,
+                                    `<${tag} id="land=${id}=(${name})">`,
                                     value,
                                     `</${tag}>`,
                                 ];

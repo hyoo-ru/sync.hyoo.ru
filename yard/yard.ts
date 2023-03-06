@@ -20,7 +20,10 @@ namespace $ {
 		@ $mol_mem_key
 		land_init( land: $hyoo_crowd_land ) {
 			this.db_land_init( land )
-			if( !land.grabbed() ) this.$.$mol_wait_timeout( 5000 )
+			if( !land.grabbed() ) {
+				this.$.$mol_wait_timeout( 5000 )
+				throw new Error( 'Land is free' )
+			}
 		}
 		
 		land( id: $mol_int62_string ) {

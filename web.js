@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "7b7dd79";
+let $hyoo_sync_revision = "18dcd8d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 
 //# sourceMappingURL=web.js.map

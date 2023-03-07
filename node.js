@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "18dcd8d";
+let $hyoo_sync_revision = "2984096";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5560,165 +5560,175 @@ var $;
         }
         http() {
             const server = $node.http.createServer($mol_wire_async((req, res) => {
-                const world = this.world();
-                const query_str = req.url.slice(1);
-                if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
-                    const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
-                    try {
-                        const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString();
-                        res.writeHead(200, {
-                            'Access-Control-Allow-Origin': '*',
-                            'Content-Type': {
-                                js: 'application/javascript',
-                                html: 'text/html',
-                            }[ext] ?? '',
-                        });
-                        res.end(content);
-                    }
-                    catch (error) {
-                        res.writeHead(500).end(error.message ?? error);
-                    }
-                    return;
-                }
-                const query = $hyoo_harp_from_string(query_str);
-                if (query.log) {
-                    res.writeHead(200, {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                        'Access-Control-Allow-Origin': '*',
-                    });
-                    const path = this.$.$mol_state_arg.value('log');
-                    if (!path)
-                        return res.end('\\Use `log` parameter to provide path to server logs in tree format\n');
-                    res.end($node.fs.readFileSync(path).toString());
-                    return;
-                }
-                if (query.blob) {
-                    const land_id = query.blob.land["="][0][0];
-                    if (!land_id)
-                        $mol_fail(new Error('land is required'));
-                    const head_id = query.blob.head["="][0][0];
-                    if (!head_id)
-                        $mol_fail(new Error('head is required'));
-                    const land = world.land(land_id);
-                    const node = land.node(head_id, $hyoo_crowd_blob);
-                    const type = node.type();
-                    res.writeHead(200, {
-                        'Content-Type': type,
-                        'Content-Disposition': /^(image|video)\//.test(type) ? '' : 'attachment',
-                        'Cache-Control': 'public, proxy-revalidate, max-age=1000',
-                        'Access-Control-Allow-Origin': '*',
-                    });
-                    res.end(node.buffer());
-                    return;
-                }
-                if (!query.land) {
-                    res.writeHead(301, {
-                        'Content-Type': 'text/plain;charset=utf-8',
-                        'Location': '/watch/',
-                        'Access-Control-Allow-Origin': '*',
-                    });
-                    res.end('$hyoo_sync_server ' + $hyoo_sync_revision);
-                    return;
-                }
-                const entry = query.land["="][0][0];
-                const land = world.land(entry);
-                const reply = {
-                    [entry]: {}
-                };
-                const accept = req.headers.accept ?? 'application/json';
-                const proceed = (data, node, query) => {
-                    for (let fetch in query) {
-                        if (/^!?=$/.test(fetch))
-                            continue;
-                        const [_, field, type] = fetch.match(/^(\w+)_([a-z]+)$/) ?? ['', fetch, ''];
-                        if (!type)
-                            continue;
-                        switch (type) {
-                            case 'reg':
-                                data[fetch] = node.sub(field, $hyoo_crowd_reg).value();
-                                continue;
-                            case 'ref':
-                                const id = node.sub(field, $hyoo_crowd_reg).value();
-                                if (typeof id !== 'string') {
-                                    data[fetch] = null;
-                                    continue;
-                                }
-                                const sub = reply[id] = {};
-                                const land = world.land(id);
-                                if (!land)
-                                    continue;
-                                proceed(sub, land.chief, query[fetch]);
-                                continue;
-                            case 'list':
-                                data[fetch] = node.sub(field, $hyoo_crowd_list).list();
-                                continue;
-                            case 'json':
-                                data[fetch] = node.sub(field, $hyoo_crowd_json).json();
-                                continue;
-                            case 'text':
-                                data[fetch] = node.sub(field, $hyoo_crowd_text).text();
-                                if (accept === 'text/html') {
-                                    data[fetch] = field === 'title'
-                                        ? this.$.$mol_html_encode(data[fetch])
-                                        : this.$.$hyoo_marked_to_html(data[fetch]);
-                                }
-                                continue;
-                            case 'html':
-                                data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
-                                continue;
-                            case 'blob':
-                                const blob = node.sub(field, $hyoo_crowd_blob);
-                                const type = blob.type();
-                                if (/^text\//.test(type)) {
-                                    data[fetch] = blob.str();
-                                    if (type === 'text/plain' && accept === 'text/html') {
-                                        data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
-                                    }
-                                }
-                                else {
-                                    data[fetch] = blob.buffer();
-                                }
-                                continue;
+                try {
+                    const world = this.world();
+                    const query_str = req.url.slice(1);
+                    if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
+                        const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
+                        try {
+                            const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString();
+                            res.writeHead(200, {
+                                'Access-Control-Allow-Origin': '*',
+                                'Content-Type': {
+                                    js: 'application/javascript',
+                                    html: 'text/html',
+                                }[ext] ?? '',
+                            });
+                            res.end(content);
                         }
+                        catch (error) {
+                            res.writeHead(500).end(error.message ?? error);
+                        }
+                        return;
                     }
-                };
-                proceed(reply[entry], land.chief, query.land);
-                const response = {
-                    _query: {
-                        [query_str]: {
-                            reply: [`land=${entry}`],
+                    const query = $hyoo_harp_from_string(query_str);
+                    if (query.log) {
+                        res.writeHead(200, {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        const path = this.$.$mol_state_arg.value('log');
+                        if (!path)
+                            return res.end('\\Use `log` parameter to provide path to server logs in tree format\n');
+                        res.end($node.fs.readFileSync(path).toString());
+                        return;
+                    }
+                    if (query.blob) {
+                        const land_id = query.blob.land["="][0][0];
+                        if (!land_id)
+                            $mol_fail(new Error('land is required'));
+                        const head_id = query.blob.head["="][0][0];
+                        if (!head_id)
+                            $mol_fail(new Error('head is required'));
+                        const land = world.land(land_id);
+                        const node = land.node(head_id, $hyoo_crowd_blob);
+                        const type = node.type();
+                        res.writeHead(200, {
+                            'Content-Type': type,
+                            'Content-Disposition': /^(image|video)\//.test(type) ? '' : 'attachment',
+                            'Cache-Control': 'public, proxy-revalidate, max-age=1000',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        res.end(node.buffer());
+                        return;
+                    }
+                    if (!query.land) {
+                        res.writeHead(301, {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                            'Location': '/watch/',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        res.end('$hyoo_sync_server ' + $hyoo_sync_revision);
+                        return;
+                    }
+                    const entry = query.land["="][0][0];
+                    const land = world.land(entry);
+                    const reply = {
+                        [entry]: {}
+                    };
+                    const accept = req.headers.accept ?? 'application/json';
+                    const proceed = (data, node, query) => {
+                        for (let fetch in query) {
+                            if (/^!?=$/.test(fetch))
+                                continue;
+                            const [_, field, type] = fetch.match(/^(\w+)_([a-z]+)$/) ?? ['', fetch, ''];
+                            if (!type)
+                                continue;
+                            switch (type) {
+                                case 'reg':
+                                    data[fetch] = node.sub(field, $hyoo_crowd_reg).value();
+                                    continue;
+                                case 'ref':
+                                    const id = node.sub(field, $hyoo_crowd_reg).value();
+                                    if (typeof id !== 'string') {
+                                        data[fetch] = null;
+                                        continue;
+                                    }
+                                    const sub = reply[id] = {};
+                                    const land = world.land(id);
+                                    if (!land)
+                                        continue;
+                                    proceed(sub, land.chief, query[fetch]);
+                                    continue;
+                                case 'list':
+                                    data[fetch] = node.sub(field, $hyoo_crowd_list).list();
+                                    continue;
+                                case 'json':
+                                    data[fetch] = node.sub(field, $hyoo_crowd_json).json();
+                                    continue;
+                                case 'text':
+                                    data[fetch] = node.sub(field, $hyoo_crowd_text).text();
+                                    if (accept === 'text/html') {
+                                        data[fetch] = field === 'title'
+                                            ? this.$.$mol_html_encode(data[fetch])
+                                            : this.$.$hyoo_marked_to_html(data[fetch]);
+                                    }
+                                    continue;
+                                case 'html':
+                                    data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
+                                    continue;
+                                case 'blob':
+                                    const blob = node.sub(field, $hyoo_crowd_blob);
+                                    const type = blob.type();
+                                    if (/^text\//.test(type)) {
+                                        data[fetch] = blob.str();
+                                        if (type === 'text/plain' && accept === 'text/html') {
+                                            data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
+                                        }
+                                    }
+                                    else {
+                                        data[fetch] = blob.buffer();
+                                    }
+                                    continue;
+                            }
+                        }
+                    };
+                    proceed(reply[entry], land.chief, query.land);
+                    const response = {
+                        _query: {
+                            [query_str]: {
+                                reply: [`land=${entry}`],
+                            },
                         },
-                    },
-                    land: reply,
-                };
-                switch (accept) {
-                    case 'text/html':
-                        res.writeHead(200, {
-                            'Content-Type': 'text/html;charset=utf-8',
-                            'Access-Control-Allow-Origin': '*',
-                        });
-                        const html = Object.entries(reply).flatMap(([id, props]) => [
-                            `<land id="land=${id}=">`,
-                            ...Object.entries(props).flatMap(([name, value]) => {
-                                const tag = name.replace(/_.*$/, '');
-                                return [
-                                    `<${tag} id="land=${id}=(${name})">`,
-                                    value,
-                                    `</${tag}>`,
-                                ];
-                            }),
-                            `</land>`,
-                        ]);
-                        res.end(html.join(''));
-                        break;
-                    default:
-                    case 'application/json':
-                        res.writeHead(200, {
-                            'Content-Type': 'application/json;charset=utf-8',
-                            'Access-Control-Allow-Origin': '*',
-                        });
-                        res.end(JSON.stringify(response, null, '\t'));
-                        break;
+                        land: reply,
+                    };
+                    switch (accept) {
+                        case 'text/html':
+                            res.writeHead(200, {
+                                'Content-Type': 'text/html;charset=utf-8',
+                                'Access-Control-Allow-Origin': '*',
+                            });
+                            const html = Object.entries(reply).flatMap(([id, props]) => [
+                                `<land id="land=${id}=">`,
+                                ...Object.entries(props).flatMap(([name, value]) => {
+                                    const tag = name.replace(/_.*$/, '');
+                                    return [
+                                        `<${tag} id="land=${id}=(${name})">`,
+                                        value,
+                                        `</${tag}>`,
+                                    ];
+                                }),
+                                `</land>`,
+                            ]);
+                            res.end(html.join(''));
+                            break;
+                        default:
+                        case 'application/json':
+                            res.writeHead(200, {
+                                'Content-Type': 'application/json;charset=utf-8',
+                                'Access-Control-Allow-Origin': '*',
+                            });
+                            res.end(JSON.stringify(response, null, '\t'));
+                            break;
+                    }
+                }
+                catch (error) {
+                    this.$.$mol_log3_fail({
+                        place: this,
+                        message: String(error.message || error),
+                        stack: String(error.stack || ''),
+                        uri: req.url,
+                    });
                 }
             }));
             server.listen(this.port());

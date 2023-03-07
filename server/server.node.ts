@@ -15,6 +15,8 @@ namespace $ {
 				res: InstanceType< $node['http']['ServerResponse'] >,
 			)=> {
 				
+				try {
+				
 				const world = this.world()
 				
 				const query_str = req.url!.slice(1)
@@ -233,7 +235,16 @@ namespace $ {
 						res.end( JSON.stringify( response, null, '\t' ) )
 						break
 					
-				}				
+				}
+				
+				} catch( error: any ) {
+					this.$.$mol_log3_fail({
+						place: this,
+						message: String( error.message || error ),
+						stack: String( error.stack || '' ),
+						uri: req.url,
+					})
+				}
 				
 			} ) )
 			

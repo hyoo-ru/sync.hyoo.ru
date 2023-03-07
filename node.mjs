@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "2984096";
+let $hyoo_sync_revision = "792f351";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5723,12 +5723,17 @@ var $;
                     }
                 }
                 catch (error) {
+                    const message = String(error.message || error);
                     this.$.$mol_log3_fail({
                         place: this,
-                        message: String(error.message || error),
+                        message,
                         stack: String(error.stack || ''),
                         uri: req.url,
                     });
+                    res.writeHead(500, {
+                        'Access-Control-Allow-Origin': '*',
+                    });
+                    res.end(message);
                 }
             }));
             server.listen(this.port());

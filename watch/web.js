@@ -11529,7 +11529,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: baseline;\n\tdisplay: inline-flex;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1.5em;\n\twidth: 1em;\n\tflex: 0 0 auto;\n\tdisplay: inline-block;\n\talign-self: normal;\n\tvertical-align: top;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: var(--mol_theme_image);\n}\n");
+    $mol_style_attach("mol/link/iconed/iconed.view.css", "[mol_link_iconed] {\n\talign-items: baseline;\n\tdisplay: inline-flex;\n\tpadding: var(--mol_gap_text);\n}\n\n[mol_link_iconed_icon] {\n\tbox-shadow: none;\n\theight: 1.5em;\n\twidth: 1em;\n\tflex: 0 0 auto;\n\tdisplay: inline-block;\n\talign-self: normal;\n\tvertical-align: top;\n\tborder-radius: 0;\n\tobject-fit: scale-down;\n\topacity: .75;\n}\n\n[mol_theme=\"$mol_theme_dark\"] [mol_link_iconed_icon] {\n\tfilter: var(--mol_theme_image);\n}\n");
 })($ || ($ = {}));
 //mol/link/iconed/-css/iconed.view.css.ts
 ;
@@ -15060,7 +15060,7 @@ var $;
     (function ($$) {
         class $mol_date extends $.$mol_date {
             trigger_content() {
-                return [this.value_moment()?.toString('YYYY-MM-DD hh:mm') ?? this.Icon()];
+                return [this.value() || this.Icon()];
             }
             input_mask(val) {
                 return val.length > 8 ? '____-__-__ __:__' : '____-__-__ ';
@@ -15082,9 +15082,27 @@ var $;
                 this.value_moment(moment2);
                 return val;
             }
-            value_moment(val) {
-                const stamp = this.value_number(val && val.valueOf());
-                return isNaN(stamp) ? null : new $mol_time_moment(stamp);
+            value_moment(next) {
+                const stamp = this.value_number();
+                if (next === undefined) {
+                    return isNaN(stamp) ? null : new $mol_time_moment(stamp);
+                }
+                this.value_number(next?.valueOf() ?? NaN);
+                return next;
+            }
+            value_number(next) {
+                const value = this.value();
+                if (next === undefined) {
+                    if (!value)
+                        return NaN;
+                    const moment = $mol_try(() => new $mol_time_moment(value));
+                    if (moment instanceof Error)
+                        return NaN;
+                    return moment.valueOf() ?? NaN;
+                }
+                const moment = $mol_try(() => new $mol_time_moment(next));
+                this.value(moment.toString(value.length > 12 ? 'YYYY-MM-DD hh:mm' : 'YYYY-MM-DD'));
+                return next;
             }
             value_moment_today() {
                 return this.value()
@@ -15135,6 +15153,9 @@ var $;
         __decorate([
             $mol_mem
         ], $mol_date.prototype, "value_moment", null);
+        __decorate([
+            $mol_mem
+        ], $mol_date.prototype, "value_number", null);
         __decorate([
             $mol_mem
         ], $mol_date.prototype, "value_moment_today", null);

@@ -239,6 +239,8 @@ namespace $ {
 				
 				} catch( error: any ) {
 					
+					if( error instanceof Promise ) $mol_fail_hidden( error )
+					
 					const message = String( error.message || error )
 					
 					this.$.$mol_log3_fail({

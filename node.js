@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "792f351";
+let $hyoo_sync_revision = "1b2fd4b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5725,6 +5725,8 @@ var $;
                     }
                 }
                 catch (error) {
+                    if (error instanceof Promise)
+                        $mol_fail_hidden(error);
                     const message = String(error.message || error);
                     this.$.$mol_log3_fail({
                         place: this,

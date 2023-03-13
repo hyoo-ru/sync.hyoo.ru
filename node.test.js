@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "84eba85";
+let $hyoo_sync_revision = "318df19";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5786,8 +5786,9 @@ var $;
                                 'Content-Type': 'text/html;charset=utf-8',
                                 'Access-Control-Allow-Origin': '*',
                             });
+                            const styles = `<style>title{display:block}</style>`;
                             const html = Object.entries(reply).flatMap(([id, props]) => [
-                                props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<land id="land=${id}=">`,
+                                props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<section id="land=${id}=">`,
                                 ...Object.entries(props).flatMap(([name, value]) => {
                                     if (!name)
                                         return '';
@@ -5798,9 +5799,9 @@ var $;
                                         `</${tag}>`,
                                     ];
                                 }),
-                                props[''] ? `</a>` : `</land>`,
+                                props[''] ? `</a>` : `</section>`,
                             ]);
-                            res.end(html.join(''));
+                            res.end(styles + html.join(''));
                             break;
                         default:
                         case 'application/json':

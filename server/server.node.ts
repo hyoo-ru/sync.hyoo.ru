@@ -136,19 +136,21 @@ namespace $ {
 							
 							case 'ref':
 								
-								const id = node.sub( field, $hyoo_crowd_reg ).value()
+								const ids = node.sub( field, $hyoo_crowd_list ).list()
 								
-								if( typeof id !== 'string' ) {
-									data[ fetch ] = null
-									continue
+								for( const val of ids ) {
+									
+									const id = $mol_int62_string_ensure( val )
+									if( !id ) continue
+									
+									const sub = reply[ id ] = {}
+									
+									const land = world.land( id as $mol_int62_string )
+									if( !land ) continue
+									
+									proceed( sub, land.chief, query[ fetch ] )
+									
 								}
-								
-								const sub = reply[ id ] = {}
-								
-								const land = world.land( id as $mol_int62_string )
-								if( !land ) continue
-								
-								proceed( sub, land.chief, query[ fetch ] )
 								
 								continue
 							

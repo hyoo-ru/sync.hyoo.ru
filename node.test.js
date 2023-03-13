@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "1b2fd4b";
+let $hyoo_sync_revision = "52ca50c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5722,16 +5722,17 @@ var $;
                                     data[fetch] = node.sub(field, $hyoo_crowd_reg).value();
                                     continue;
                                 case 'ref':
-                                    const id = node.sub(field, $hyoo_crowd_reg).value();
-                                    if (typeof id !== 'string') {
-                                        data[fetch] = null;
-                                        continue;
+                                    const ids = node.sub(field, $hyoo_crowd_list).list();
+                                    for (const val of ids) {
+                                        const id = $mol_int62_string_ensure(val);
+                                        if (!id)
+                                            continue;
+                                        const sub = reply[id] = {};
+                                        const land = world.land(id);
+                                        if (!land)
+                                            continue;
+                                        proceed(sub, land.chief, query[fetch]);
                                     }
-                                    const sub = reply[id] = {};
-                                    const land = world.land(id);
-                                    if (!land)
-                                        continue;
-                                    proceed(sub, land.chief, query[fetch]);
                                     continue;
                                 case 'list':
                                     data[fetch] = node.sub(field, $hyoo_crowd_list).list();

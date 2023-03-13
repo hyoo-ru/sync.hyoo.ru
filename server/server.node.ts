@@ -218,8 +218,11 @@ namespace $ {
 							'Content-Type': 'text/html;charset=utf-8',
 							'Access-Control-Allow-Origin': '*',
 						} )
+						
+						const styles = `<style>title{display:block}</style>`
+						
 						const html = Object.entries( reply ).flatMap( ([ id, props ])=> [
-							props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<land id="land=${id}=">`,
+							props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<section id="land=${id}=">`,
 								... Object.entries( props ).flatMap( ([ name, value ])=> {
 									if( !name ) return ''
 									const tag = name.replace( /_.*$/, '' )
@@ -229,9 +232,10 @@ namespace $ {
 										`</${tag}>`,
 									]
 								} ),
-							props[''] ? `</a>` : `</land>`,
+							props[''] ? `</a>` : `</section>`,
 						] )
-						res.end( html.join('') )
+						
+						res.end( styles + html.join('') )
 						break
 					
 					default:case 'application/json':

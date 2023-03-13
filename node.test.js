@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "52ca50c";
+let $hyoo_sync_revision = "84eba85";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5728,6 +5728,10 @@ var $;
                                         if (!id)
                                             continue;
                                         const sub = reply[id] = {};
+                                        const param = query[fetch]['='];
+                                        if (param && /^\w*$/.test(param[0]?.[0] ?? '')) {
+                                            sub[''] = `/#${param[0]?.[0] ?? ''}=${id}`;
+                                        }
                                         const land = world.land(id);
                                         if (!land)
                                             continue;
@@ -5783,8 +5787,10 @@ var $;
                                 'Access-Control-Allow-Origin': '*',
                             });
                             const html = Object.entries(reply).flatMap(([id, props]) => [
-                                `<land id="land=${id}=">`,
+                                props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<land id="land=${id}=">`,
                                 ...Object.entries(props).flatMap(([name, value]) => {
+                                    if (!name)
+                                        return '';
                                     const tag = name.replace(/_.*$/, '');
                                     return [
                                         `<${tag} id="land=${id}=(${name})">`,
@@ -5792,7 +5798,7 @@ var $;
                                         `</${tag}>`,
                                     ];
                                 }),
-                                `</land>`,
+                                props[''] ? `</a>` : `</land>`,
                             ]);
                             res.end(html.join(''));
                             break;

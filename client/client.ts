@@ -150,7 +150,7 @@ namespace $ {
 				
 				line.onerror = ()=> {
 					this.master_cursor( ( this.master_cursor() + 1 ) % this.$.$hyoo_sync_masters.length )
-					fail( new Error( `Master is unabailable` ) )
+					fail( new Error( `Master is unavailable` ) )
 				}
 				
 			} ) as any as WebSocket

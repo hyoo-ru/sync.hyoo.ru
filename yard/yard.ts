@@ -21,7 +21,7 @@ namespace $ {
 		land_init( land: $hyoo_crowd_land ) {
 			// this.db_land_init( land )
 			this.land_sync( land )
-			if( !land.grabbed() ) this.$.$mol_wait_timeout( 5_000 )
+			if( !land.grabbed() ) this.$.$mol_wait_timeout( 10_000 )
 		}
 		
 		land( id: $mol_int62_string ) {

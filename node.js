@@ -3151,6 +3151,8 @@ var $;
             return authors;
         }
         steal_rights(donor) {
+            if (!this.allowed_law())
+                return;
             for (const peer of donor.peers()) {
                 this.level(peer, donor.level(peer));
             }

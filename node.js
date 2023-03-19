@@ -5660,6 +5660,12 @@ var $;
             return $mol_key(data);
         }
         http() {
+		if( $node.fs.existsSync( './test.txt' ) ) {
+			console.log( 'test', $node.fs.readFileSync( './test.txt' ) )
+		} else {
+			$node.fs.writeFileSync( './test.txt', 'xxx' )
+			console.log( 'test created' )
+		}	
             const server = $node.http.createServer($mol_wire_async((req, res) => {
                 try {
                     const world = this.world();

@@ -221,8 +221,11 @@ namespace $ {
 			return next
 		}
 		
+		@ $mol_mem
 		master_link() {
-			return this.$.$hyoo_sync_masters[ this.master_cursor() ]
+			const scheme = this.$.$mol_dom_context.document.location.protocol.replace( /^http/ , 'ws' )
+			const host = this.$.$hyoo_sync_masters[ this.master_cursor() ]
+			return `${scheme}//${host}`
 		}
 		
 		master() {
@@ -396,7 +399,7 @@ namespace $ {
 			
 				const { allow, forbid } = await world.apply( message )
 				
-				for( const [ unit, error ] of forbid ) {
+				for( const [ { bin, ... unit }, error ] of forbid ) {
 					
 					this.$.$mol_log3_fail({
 						place: this,

@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "cd2d6ac";
+let $hyoo_sync_revision = "fcc9026";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3662,7 +3662,7 @@ var $;
             return world;
         }
         land_init(land) {
-            this.land_sync(land);
+            this.db_land_init(land);
             if (!land.grabbed())
                 this.$.$mol_wait_timeout(10_000);
         }

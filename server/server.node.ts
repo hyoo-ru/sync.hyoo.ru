@@ -15,13 +15,6 @@ namespace $ {
 				res: InstanceType< $node['http']['ServerResponse'] >,
 			)=> {
 				
-				this.$.$mol_log3_rise({
-					place: this,
-					message: 'Request',
-					host: req.headers.host,
-					uri: req.url,
-				})
-				
 				try {
 				
 				const world = this.world()

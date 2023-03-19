@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "f5e0b6d";
+let $hyoo_sync_revision = "3bb4688";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8527,7 +8527,7 @@ var $;
             return world;
         }
         land_init(land) {
-            this.land_sync(land);
+            this.db_land_init(land);
             if (!land.grabbed())
                 this.$.$mol_wait_timeout(10_000);
         }
@@ -8677,7 +8677,7 @@ var $;
             const units = land.delta(clocks);
             if (!units.length)
                 return;
-            $mol_wire_sync(this).line_send_units(line, units);
+            this.line_send_units(line, units);
             this.$.$mol_log3_rise({
                 place: this,
                 land: land.id(),

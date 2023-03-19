@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "53ffa57";
+let $hyoo_sync_revision = "f5e0b6d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -9149,7 +9149,7 @@ var $;
             let interval;
             line.onclose = () => {
                 clearInterval(interval);
-                setTimeout(() => this.reconnects(null), 5000);
+                setTimeout(() => this.reconnects(null), 1000);
             };
             Object.assign(line, {
                 destructor: () => {

@@ -19,8 +19,8 @@ namespace $ {
 		
 		@ $mol_mem_key
 		land_init( land: $hyoo_crowd_land ) {
-			// this.db_land_init( land )
-			this.land_sync( land )
+			this.db_land_init( land )
+			// this.land_sync( land )
 			if( !land.grabbed() ) this.$.$mol_wait_timeout( 10_000 )
 		}
 		
@@ -285,7 +285,7 @@ namespace $ {
 			const units = land.delta( clocks )
 			if( !units.length ) return
 			
-			$mol_wire_sync( this as $hyoo_sync_yard<any> ).line_send_units( line, units )
+			this.line_send_units( line, units )
 			
 			this.$.$mol_log3_rise({
 				place: this,

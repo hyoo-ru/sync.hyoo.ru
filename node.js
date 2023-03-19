@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "92d264d";
+let $hyoo_sync_revision = "d7d6842";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5656,12 +5656,6 @@ var $;
         }
         http() {
             const server = $node.http.createServer($mol_wire_async((req, res) => {
-                this.$.$mol_log3_rise({
-                    place: this,
-                    message: 'Request',
-                    host: req.headers.host,
-                    uri: req.url,
-                });
                 try {
                     const world = this.world();
                     const query_str = req.url.slice(1);

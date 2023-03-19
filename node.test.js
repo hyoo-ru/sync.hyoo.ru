@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "35c16c1";
+let $hyoo_sync_revision = "fd5f534";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -9190,7 +9190,7 @@ var $;
 (function ($) {
     $.$hyoo_sync_masters = [
         `localhost:9090`,
-        $mol_dom_context.document.location.origin.replace(/^\w+:/, ''),
+        $mol_dom_context.document.location.origin.replace(/^\w+:\/\//, ''),
     ];
 })($ || ($ = {}));
 //hyoo/sync/masters/masters.test.ts

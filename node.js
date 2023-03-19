@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "35c16c1";
+let $hyoo_sync_revision = "fd5f534";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5660,12 +5660,6 @@ var $;
             return $mol_key(data);
         }
         http() {
-		if( $node.fs.existsSync( './test.txt' ) ) {
-			console.log( 'test', $node.fs.readFileSync( './test.txt' ) )
-		} else {
-			$node.fs.writeFileSync( './test.txt', 'xxx' )
-			console.log( 'test created' )
-		}	
             const server = $node.http.createServer($mol_wire_async((req, res) => {
                 try {
                     const world = this.world();

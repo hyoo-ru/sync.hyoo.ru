@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "35c16c1";
+let $hyoo_sync_revision = "fd5f534";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -8886,7 +8886,11 @@ var $;
                 setTimeout(() => this.reconnects(null), 5000);
             };
             Object.assign(line, {
-                destructor: () => line.close()
+                destructor: () => {
+                    line.onclose = () => { };
+                    clearInterval(interval);
+                    line.close();
+                }
             });
             return new Promise((done, fail) => {
                 line.onopen = () => {
@@ -8900,6 +8904,8 @@ var $;
                     done(line);
                 };
                 line.onerror = () => {
+                    line.onclose = () => { };
+                    clearInterval(interval);
                     this.master_cursor((this.master_cursor() + 1) % this.$.$hyoo_sync_masters.length);
                     fail(new Error(`Master is unavailable`));
                 };

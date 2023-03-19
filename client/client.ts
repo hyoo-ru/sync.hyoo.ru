@@ -125,7 +125,7 @@ namespace $ {
 
 			line.onclose = ()=> {
 				clearInterval( interval )
-				setTimeout( ()=> this.reconnects( null ), 5000 )
+				setTimeout( ()=> this.reconnects( null ), 1000 )
 			}
 			
 			Object.assign( line, {

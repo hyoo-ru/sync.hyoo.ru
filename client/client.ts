@@ -153,10 +153,11 @@ namespace $ {
 				}
 				
 				line.onerror = ()=> {
-					line.onclose = ()=> {}
+					line.onclose = event => {
+						fail( new Error( `Master is unavailable (${ event.code })` ) )
+					}
 					clearInterval( interval )
 					this.master_cursor( ( this.master_cursor() + 1 ) % this.$.$hyoo_sync_masters.length )
-					fail( new Error( `Master is unavailable` ) )
 				}
 				
 			} ) as any as WebSocket

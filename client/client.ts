@@ -129,7 +129,11 @@ namespace $ {
 			}
 			
 			Object.assign( line, {
-				destructor: ()=> line.close()
+				destructor: ()=> {
+					line.onclose = ()=> {}
+					clearInterval( interval )
+					line.close()
+				}
 			} )
 			
 			return new Promise< typeof line >( ( done, fail )=> {
@@ -149,6 +153,8 @@ namespace $ {
 				}
 				
 				line.onerror = ()=> {
+					line.onclose = ()=> {}
+					clearInterval( interval )
 					this.master_cursor( ( this.master_cursor() + 1 ) % this.$.$hyoo_sync_masters.length )
 					fail( new Error( `Master is unavailable` ) )
 				}

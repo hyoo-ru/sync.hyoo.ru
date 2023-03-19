@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "d7d6842";
+let $hyoo_sync_revision = "35c16c1";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -3609,9 +3609,9 @@ var $;
 var $;
 (function ($) {
     $.$hyoo_sync_masters = [
-        `wss://sync.hyoo.ru/`,
-        `wss://crowd.up.railway.app/`,
-        `wss://crowd2.up.railway.app/`,
+        `sync.hyoo.ru`,
+        `crowd.up.railway.app`,
+        `crowd2.up.railway.app`,
     ];
 })($ || ($ = {}));
 //hyoo/sync/masters/masters.ts
@@ -3780,7 +3780,9 @@ var $;
             return next;
         }
         master_link() {
-            return this.$.$hyoo_sync_masters[this.master_cursor()];
+            const scheme = this.$.$mol_dom_context.document.location.protocol.replace(/^http/, 'ws');
+            const host = this.$.$hyoo_sync_masters[this.master_cursor()];
+            return `${scheme}//${host}`;
         }
         master() {
             return null;
@@ -3869,7 +3871,7 @@ var $;
                     return;
                 }
                 const { allow, forbid } = await world.apply(message);
-                for (const [unit, error] of forbid) {
+                for (const [{ bin, ...unit }, error] of forbid) {
                     this.$.$mol_log3_fail({
                         place: this,
                         land: land.id(),
@@ -3931,6 +3933,9 @@ var $;
     __decorate([
         $mol_mem
     ], $hyoo_sync_yard.prototype, "master_cursor", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_yard.prototype, "master_link", null);
     __decorate([
         $mol_mem
     ], $hyoo_sync_yard.prototype, "slaves", null);
@@ -9184,8 +9189,8 @@ var $;
 var $;
 (function ($) {
     $.$hyoo_sync_masters = [
-        `ws://localhost:9090/`,
-        $mol_dom_context.document.location.origin.replace(/^\w+:/, 'ws:'),
+        `localhost:9090`,
+        $mol_dom_context.document.location.origin.replace(/^\w+:/, ''),
     ];
 })($ || ($ = {}));
 //hyoo/sync/masters/masters.test.ts

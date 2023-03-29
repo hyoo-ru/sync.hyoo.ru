@@ -86,6 +86,7 @@ declare namespace $ {
 declare namespace $ {
     class $mol_object2 {
         static $: typeof $$;
+        [Symbol.toStringTag]: string;
         [$mol_ambient_ref]: typeof $$;
         get $(): $;
         set $(next: $);
@@ -110,7 +111,7 @@ declare namespace $ {
         static begin(uri: string, source?: string): $mol_span;
         static end(uri: string, source: string): $mol_span;
         static entire(uri: string, source: string): $mol_span;
-        toString(): any;
+        toString(): string;
         toJSON(): {
             uri: string;
             row: number;
@@ -355,6 +356,7 @@ declare namespace $ {
         static plan_task: $mol_after_frame | null;
         static plan(): void;
         static sync(): void;
+        [Symbol.toStringTag]: string;
         cache: Result | Error | Promise<Result | Error>;
         get args(): Args;
         result(): Result | undefined;
@@ -362,8 +364,8 @@ declare namespace $ {
         constructor(id: string, task: (this: Host, ...args: Args) => Result, host?: Host | undefined, args?: Args);
         plan(): void;
         reap(): void;
-        toString(): any;
-        toJSON(): any;
+        toString(): string;
+        toJSON(): string;
         get $(): any;
         emit(quant?: $mol_wire_cursor): void;
         fresh(): void;

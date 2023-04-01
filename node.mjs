@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6b47cb8";
+let $hyoo_sync_revision = "1a9c6e5";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5770,6 +5770,7 @@ var $;
                                     continue;
                                 case 'ref':
                                     const ids = node.sub(field, $hyoo_crowd_list).list();
+                                    data[fetch] = ids;
                                     for (const val of ids) {
                                         const id = $mol_int62_string_ensure(val);
                                         if (!id)

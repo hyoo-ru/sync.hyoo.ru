@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "c360e8f";
+let $hyoo_sync_revision = "5ce601b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5783,10 +5783,10 @@ var $;
                                         if (dom.nodeType === dom.ELEMENT_NODE) {
                                             const el = dom;
                                             for (const attr of el.attributes) {
-                                                const name = attr.nodeName.toLowerCase();
+                                                const name = attr.localName.toLowerCase();
                                                 if (!['href', 'src', 'data'].includes(name))
                                                     continue;
-                                                el.setAttribute(attr.localName, uri_normal(attr.nodeValue));
+                                                el.setAttributeNS(attr.namespaceURI, attr.localName, uri_normal(attr.nodeValue));
                                             }
                                         }
                                         for (const kid of dom.childNodes)

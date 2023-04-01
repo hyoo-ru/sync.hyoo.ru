@@ -1,5 +1,19 @@
 namespace $ {
 	
+	const uri_normal = ( uri: string )=> /^https?:/.test( uri ) ? uri : '?' + uri
+	const sanit = ( dom: Node )=> {
+		if( dom.nodeType === dom.ELEMENT_NODE ) {
+			const el = dom as Element
+			for( const attr of el.attributes ) {
+				const name = attr.localName.toLowerCase()
+				if( ![ 'href', 'src', 'data' ].includes( name ) ) continue
+				el.setAttributeNS( attr.namespaceURI, attr.localName, uri_normal( attr.nodeValue! ) )
+			}
+		}
+		for( const kid of dom.childNodes ) sanit( kid )
+		return dom
+	}
+	
 	export class $hyoo_sync_server extends $hyoo_sync_yard< InstanceType< $node['ws'] > > {
 		
 		log_pack( data: any ) {
@@ -178,20 +192,7 @@ namespace $ {
 							
 							case 'html':
 								const dom = node.sub( field, $hyoo_crowd_dom ).dom()
-								const uri_normal = ( uri: string )=> /^https?:/.test( uri ) ? uri : '?' + uri
-								const sanit = ( dom: Node )=> {
-									if( dom.nodeType === dom.ELEMENT_NODE ) {
-										const el = dom as Element
-										for( const attr of el.attributes ) {
-											const name = attr.localName.toLowerCase()
-											if( ![ 'href', 'src', 'data' ].includes( name ) ) continue
-											el.setAttributeNS( attr.namespaceURI, attr.localName, uri_normal( attr.nodeValue! ) )
-										}
-									}
-									for( const kid of dom.childNodes ) sanit( kid )
-								}
-								sanit( dom )
-								data[ fetch ] = $mol_dom_serialize( dom )
+								data[ fetch ] = $mol_dom_serialize( sanit( dom ) )
 								continue
 							
 							case 'blob':
@@ -200,7 +201,8 @@ namespace $ {
 								if( /^text\//.test( type ) ) {
 									data[ fetch ] = blob.str()
 									if( type === 'text/plain' && accept === 'text/html' ) {
-										data[ fetch ] = this.$.$hyoo_marked_to_html( data[ fetch ] )
+										const dom = this.$.$hyoo_marked_to_dom( data[ fetch ] )
+										data[ fetch ] = $mol_dom_serialize( sanit( dom ) )
 									}
 								} else {
 									data[ fetch ] = blob.buffer()

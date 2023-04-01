@@ -19,41 +19,41 @@ namespace $ {
 			
 		}
 		
-		const frame = <iframe src="https://sync.hyoo.ru/auth/"></iframe> as HTMLIFrameElement
-		frame.style.display = 'none'
+		// const frame = <iframe src="https://sync.hyoo.ru/auth/"></iframe> as HTMLIFrameElement
+		// frame.style.display = 'none'
 		
-		await new Promise< any >( ( done, fail )=> {
+		// await new Promise< any >( ( done, fail )=> {
 			
-			frame.onload = done
-			frame.onerror = fail
-			frame.onabort = fail
+		// 	frame.onload = done
+		// 	frame.onerror = fail
+		// 	frame.onabort = fail
 			
-			document.body.appendChild( frame )
+		// 	document.body.appendChild( frame )
 			
-		} )
+		// } )
 		
-		const serial_ext = await new Promise< string | null >( ( done, fail )=> {
+		// const serial_ext = await new Promise< string | null >( ( done, fail )=> {
 			
-			window.addEventListener( 'message', event => {
+		// 	window.addEventListener( 'message', event => {
 				
-				if( !Array.isArray( event.data ) ) return
-				if( event.data[0] !== '$hyoo_sync_peer' ) return
+		// 		if( !Array.isArray( event.data ) ) return
+		// 		if( event.data[0] !== '$hyoo_sync_peer' ) return
 				
-				done( event.data[1] )
+		// 		done( event.data[1] )
 				
-			} )
+		// 	} )
 			
-			frame.contentWindow!.postMessage( [ '$hyoo_sync_peer', serial ], '*' )
-			setTimeout( ()=> done( serial ), 5000 )
+		// 	frame.contentWindow!.postMessage( [ '$hyoo_sync_peer', serial ], '*' )
+		// 	setTimeout( ()=> done( serial ), 5000 )
 			
-		} )
+		// } )
 		
-		document.body.removeChild( frame )
+		// document.body.removeChild( frame )
 		
-		if( typeof serial_ext === 'string' ) {
-			if( !serial ) $mol_state_local.value( '$hyoo_sync_peer', serial_ext )
-			return await $hyoo_crowd_peer.restore( serial_ext )
-		}
+		// if( typeof serial_ext === 'string' ) {
+		// 	if( !serial ) $mol_state_local.value( '$hyoo_sync_peer', serial_ext )
+		// 	return await $hyoo_crowd_peer.restore( serial_ext )
+		// }
 		
 		const peer = await $hyoo_crowd_peer.generate()
 		$mol_state_local.value( '$hyoo_sync_peer', peer.key_private_serial )

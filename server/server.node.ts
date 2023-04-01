@@ -151,6 +151,7 @@ namespace $ {
 							case 'ref':
 								
 								const ids = node.sub( field, $hyoo_crowd_list ).list()
+								data[ fetch ] = ids
 								
 								for( const val of ids ) {
 									

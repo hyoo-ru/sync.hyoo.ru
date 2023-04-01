@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "5ce601b";
+let $hyoo_sync_revision = "6b47cb8";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5667,6 +5667,21 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    const uri_normal = (uri) => /^https?:/.test(uri) ? uri : '?' + uri;
+    const sanit = (dom) => {
+        if (dom.nodeType === dom.ELEMENT_NODE) {
+            const el = dom;
+            for (const attr of el.attributes) {
+                const name = attr.localName.toLowerCase();
+                if (!['href', 'src', 'data'].includes(name))
+                    continue;
+                el.setAttributeNS(attr.namespaceURI, attr.localName, uri_normal(attr.nodeValue));
+            }
+        }
+        for (const kid of dom.childNodes)
+            sanit(kid);
+        return dom;
+    };
     class $hyoo_sync_server extends $hyoo_sync_yard {
         log_pack(data) {
             if (data instanceof Array)
@@ -5786,22 +5801,7 @@ var $;
                                     continue;
                                 case 'html':
                                     const dom = node.sub(field, $hyoo_crowd_dom).dom();
-                                    const uri_normal = (uri) => /^https?:/.test(uri) ? uri : '?' + uri;
-                                    const sanit = (dom) => {
-                                        if (dom.nodeType === dom.ELEMENT_NODE) {
-                                            const el = dom;
-                                            for (const attr of el.attributes) {
-                                                const name = attr.localName.toLowerCase();
-                                                if (!['href', 'src', 'data'].includes(name))
-                                                    continue;
-                                                el.setAttributeNS(attr.namespaceURI, attr.localName, uri_normal(attr.nodeValue));
-                                            }
-                                        }
-                                        for (const kid of dom.childNodes)
-                                            sanit(kid);
-                                    };
-                                    sanit(dom);
-                                    data[fetch] = $mol_dom_serialize(dom);
+                                    data[fetch] = $mol_dom_serialize(sanit(dom));
                                     continue;
                                 case 'blob':
                                     const blob = node.sub(field, $hyoo_crowd_blob);
@@ -5809,7 +5809,8 @@ var $;
                                     if (/^text\//.test(type)) {
                                         data[fetch] = blob.str();
                                         if (type === 'text/plain' && accept === 'text/html') {
-                                            data[fetch] = this.$.$hyoo_marked_to_html(data[fetch]);
+                                            const dom = this.$.$hyoo_marked_to_dom(data[fetch]);
+                                            data[fetch] = $mol_dom_serialize(sanit(dom));
                                         }
                                     }
                                     else {

@@ -183,9 +183,9 @@ namespace $ {
 									if( dom.nodeType === dom.ELEMENT_NODE ) {
 										const el = dom as Element
 										for( const attr of el.attributes ) {
-											const name = attr.nodeName.toLowerCase()
+											const name = attr.localName.toLowerCase()
 											if( ![ 'href', 'src', 'data' ].includes( name ) ) continue
-											el.setAttribute( attr.localName, uri_normal( attr.nodeValue! ) )
+											el.setAttributeNS( attr.namespaceURI, attr.localName, uri_normal( attr.nodeValue! ) )
 										}
 									}
 									for( const kid of dom.childNodes ) sanit( kid )

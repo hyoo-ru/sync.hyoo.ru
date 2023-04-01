@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "37cf8f4";
+let $hyoo_sync_revision = "c360e8f";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5762,7 +5762,7 @@ var $;
                                         const sub = reply[id] = {};
                                         const param = query[fetch]['='];
                                         if (param && /^\w*$/.test(param[0]?.[0] ?? '')) {
-                                            sub[''] = `/#${param[0]?.[0] ?? ''}=${id}`;
+                                            sub[''] = `?#!${param[0]?.[0] ?? ''}=${id}`;
                                         }
                                         const land = world.land(id);
                                         if (!land)
@@ -5785,7 +5785,23 @@ var $;
                                     }
                                     continue;
                                 case 'html':
-                                    data[fetch] = node.sub(field, $hyoo_crowd_dom).html();
+                                    const dom = node.sub(field, $hyoo_crowd_dom).dom();
+                                    const uri_normal = (uri) => /^https?:/.test(uri) ? uri : '?' + uri;
+                                    const sanit = (dom) => {
+                                        if (dom.nodeType === dom.ELEMENT_NODE) {
+                                            const el = dom;
+                                            for (const attr of el.attributes) {
+                                                const name = attr.nodeName.toLowerCase();
+                                                if (!['href', 'src', 'data'].includes(name))
+                                                    continue;
+                                                el.setAttribute(attr.localName, uri_normal(attr.nodeValue));
+                                            }
+                                        }
+                                        for (const kid of dom.childNodes)
+                                            sanit(kid);
+                                    };
+                                    sanit(dom);
+                                    data[fetch] = $mol_dom_serialize(dom);
                                     continue;
                                 case 'blob':
                                     const blob = node.sub(field, $hyoo_crowd_blob);

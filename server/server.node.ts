@@ -147,7 +147,7 @@ namespace $ {
 									
 									const param = query[ fetch ]['=']
 									if( param && /^\w*$/.test( param[0]?.[0] ?? '' ) ) {
-										sub[''] = `/#${ param[0]?.[0] ?? '' }=${id}`
+										sub[''] = `?#!${ param[0]?.[0] ?? '' }=${id}`
 									}
 									
 									const land = world.land( id as $mol_int62_string )
@@ -177,7 +177,21 @@ namespace $ {
 								continue
 							
 							case 'html':
-								data[ fetch ] = node.sub( field, $hyoo_crowd_dom ).html()
+								const dom = node.sub( field, $hyoo_crowd_dom ).dom()
+								const uri_normal = ( uri: string )=> /^https?:/.test( uri ) ? uri : '?' + uri
+								const sanit = ( dom: Node )=> {
+									if( dom.nodeType === dom.ELEMENT_NODE ) {
+										const el = dom as Element
+										for( const attr of el.attributes ) {
+											const name = attr.nodeName.toLowerCase()
+											if( ![ 'href', 'src', 'data' ].includes( name ) ) continue
+											el.setAttribute( attr.localName, uri_normal( attr.nodeValue! ) )
+										}
+									}
+									for( const kid of dom.childNodes ) sanit( kid )
+								}
+								sanit( dom )
+								data[ fetch ] = $mol_dom_serialize( dom )
 								continue
 							
 							case 'blob':

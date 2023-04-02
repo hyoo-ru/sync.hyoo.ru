@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "1a9c6e5";
+let $hyoo_sync_revision = "aa32c70";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5828,7 +5828,31 @@ var $;
                                 'Content-Type': 'text/html;charset=utf-8',
                                 'Access-Control-Allow-Origin': '*',
                             });
-                            const styles = `<style>title{display:block}</style>`;
+                            const styles = `<style>
+							
+							body {
+								font: 1rem/1.5rem sans-serif;
+								margin: 0;
+								padding: .75rem;
+							}
+							
+							title {
+								display: block;
+								padding: 0.5rem 0.75rem;
+								font-size: 1.5rem;
+							}
+							
+							h1, h2, h3, h4, h5, h6, p {
+								margin: 0;
+								padding: .5rem .75rem;
+							}
+							
+							a {
+								padding: 0.5rem 0.75rem;
+								text-decoration: none;
+							}
+							
+						</style>`;
                             const html = Object.entries(reply).flatMap(([id, props]) => [
                                 props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<section id="land=${id}=">`,
                                 ...Object.entries(props).flatMap(([name, value]) => {

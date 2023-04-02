@@ -247,9 +247,12 @@ namespace $ {
 								padding: .75rem;
 							}
 							
+							section > * {
+								padding: .5rem .75rem;
+							}
+							
 							title {
 								display: block;
-								padding: 0.5rem 0.75rem;
 								font-size: 1.5rem;
 							}
 							

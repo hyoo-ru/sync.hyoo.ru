@@ -250,10 +250,10 @@ namespace $ {
 							
 							section > * {
 								padding: .5rem .75rem;
+								display: block;
 							}
 							
-							title {
-								display: block;
+							section > title {
 								font-size: 1.5rem;
 							}
 							

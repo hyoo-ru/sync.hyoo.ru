@@ -253,10 +253,10 @@ namespace $ {
 							h1, h2, h3, h4, h5, h6, p {
 								margin: 0;
 								padding: .5rem .75rem;
+								line-height: 1.5rem;
 							}
 							
 							a {
-								padding: 0.5rem 0.75rem;
 								text-decoration: none;
 							}
 							

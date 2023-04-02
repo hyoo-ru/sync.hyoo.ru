@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "e9d65be";
+let $hyoo_sync_revision = "4d3b959";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5842,10 +5842,10 @@ var $;
 							
 							section > * {
 								padding: .5rem .75rem;
+								display: block;
 							}
 							
-							title {
-								display: block;
+							section > title {
 								font-size: 1.5rem;
 							}
 							

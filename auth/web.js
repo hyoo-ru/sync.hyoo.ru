@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "cb0f8f9";
+let $hyoo_sync_revision = "2115398";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";

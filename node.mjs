@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "a9fd4e1";
+let $hyoo_sync_revision = "3df7f40";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5861,6 +5861,11 @@ var $;
 								margin: 0;
 								padding: .5rem .75rem;
 								line-height: 1.5rem;
+							}
+							
+							blockquote {
+								margin: 0;
+								padding: .75rem;
 							}
 							
 							a {

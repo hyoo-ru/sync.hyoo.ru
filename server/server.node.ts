@@ -241,6 +241,9 @@ namespace $ {
 							body {
 								font: 1rem/1.5rem sans-serif;
 								margin: 0;
+							}
+							
+							body > * {
 								padding: .75rem;
 							}
 							

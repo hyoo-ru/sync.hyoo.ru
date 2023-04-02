@@ -263,6 +263,11 @@ namespace $ {
 								line-height: 1.5rem;
 							}
 							
+							blockquote {
+								margin: 0;
+								padding: .75rem;
+							}
+							
 							a {
 								text-decoration: none;
 							}

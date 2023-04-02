@@ -248,7 +248,7 @@ namespace $ {
 								display: block;
 							}
 							
-							section > * {
+							body > * > * {
 								padding: .5rem .75rem;
 								display: block;
 							}

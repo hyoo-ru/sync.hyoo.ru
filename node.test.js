@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "3df7f40";
+let $hyoo_sync_revision = "e2c09f7";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -564,6 +564,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_promise_like(val) {
+        return val && typeof val.then === 'function';
+    }
+    $.$mol_promise_like = $mol_promise_like;
+})($ || ($ = {}));
+//mol/promise/like/like.ts
+;
+"use strict";
+var $;
+(function ($) {
     const handled = new WeakSet();
     class $mol_wire_fiber extends $mol_wire_pub_sub {
         task;
@@ -611,7 +621,7 @@ var $;
             return this.data.slice(0, this.pub_from);
         }
         result() {
-            if (this.cache instanceof Promise)
+            if ($mol_promise_like(this.cache))
                 return;
             if (this.cache instanceof Error)
                 return;
@@ -690,7 +700,7 @@ var $;
                         result = this.task.call(this.host, ...this.args);
                         break;
                 }
-                if (result instanceof Promise) {
+                if ($mol_promise_like(result)) {
                     const put = (res) => {
                         if (this.cache === result)
                             this.put(res);
@@ -703,13 +713,13 @@ var $;
                 }
             }
             catch (error) {
-                if (error instanceof Error || error instanceof Promise) {
+                if (error instanceof Error || $mol_promise_like(error)) {
                     result = error;
                 }
                 else {
                     result = new Error(String(error), { cause: error });
                 }
-                if (result instanceof Promise && !handled.has(result)) {
+                if ($mol_promise_like(result) && !handled.has(result)) {
                     result = Object.assign(result.finally(() => {
                         if (this.cache === result)
                             this.absorb();
@@ -719,7 +729,7 @@ var $;
                     handled.add(result);
                 }
             }
-            if (!(result instanceof Promise)) {
+            if (!$mol_promise_like(result)) {
                 this.track_cut();
             }
             this.track_off(bu);
@@ -738,7 +748,7 @@ var $;
             if (this.cache instanceof Error) {
                 return $mol_fail_hidden(this.cache);
             }
-            if (this.cache instanceof Promise) {
+            if ($mol_promise_like(this.cache)) {
                 return $mol_fail_hidden(this.cache);
             }
             return this.cache;
@@ -749,7 +759,7 @@ var $;
                 if (this.cache instanceof Error) {
                     $mol_fail_hidden(this.cache);
                 }
-                if (!(this.cache instanceof Promise))
+                if (!$mol_promise_like(this.cache))
                     return this.cache;
                 await this.cache;
                 if (this.cursor === $mol_wire_cursor.final) {
@@ -1004,14 +1014,14 @@ var $;
             };
         }
         complete() {
-            if (this.cache instanceof Promise)
+            if ($mol_promise_like(this.cache))
                 return;
             this.destructor();
         }
         put(next) {
             const prev = this.cache;
             this.cache = next;
-            if (next instanceof Promise) {
+            if ($mol_promise_like(next)) {
                 this.cursor = $mol_wire_cursor.fresh;
                 if (next !== prev)
                     this.emit();
@@ -1068,7 +1078,7 @@ var $;
     function $mol_fail_catch(error) {
         if (typeof error !== 'object')
             return false;
-        if (error instanceof Promise)
+        if ($mol_promise_like(error))
             $mol_fail_hidden(error);
         if (catched.get(error))
             return false;
@@ -1083,7 +1093,7 @@ var $;
 var $;
 (function ($) {
     function $mol_fail_log(error) {
-        if (error instanceof Promise)
+        if ($mol_promise_like(error))
             return false;
         if (!$mol_fail_catch(error))
             return false;
@@ -1207,7 +1217,7 @@ var $;
             }
             this.cache = next;
             this.cursor = $mol_wire_cursor.fresh;
-            if (next instanceof Promise)
+            if ($mol_promise_like(next))
                 return next;
             this.complete_pubs();
             return next;
@@ -2245,6 +2255,22 @@ var $;
     $.$hyoo_sync_peer = $hyoo_sync_peer;
 })($ || ($ = {}));
 //hyoo/sync/peer/peer.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_wire_solid() {
+        const current = $mol_wire_auto();
+        if (current.reap !== nothing) {
+            current?.sub_on(sub, sub.data.length);
+        }
+        current.reap = nothing;
+    }
+    $.$mol_wire_solid = $mol_wire_solid;
+    const nothing = () => { };
+    const sub = new $mol_wire_pub_sub;
+})($ || ($ = {}));
+//mol/wire/solid/solid.ts
 ;
 "use strict";
 var $;
@@ -3559,7 +3585,7 @@ var $;
     }
     $.$mol_promise = $mol_promise;
 })($ || ($ = {}));
-//mol/promise/promise.ts
+//mol/promise/promise/promise.ts
 ;
 "use strict";
 var $;
@@ -3591,7 +3617,7 @@ var $;
                 return error;
             }
         });
-        const promises = results.filter(res => res instanceof Promise);
+        const promises = results.filter(res => $mol_promise_like(res));
         if (promises.length)
             $mol_fail(Promise.race(promises));
         const error = results.find(res => res instanceof Error);
@@ -3602,22 +3628,6 @@ var $;
     $.$mol_wire_race = $mol_wire_race;
 })($ || ($ = {}));
 //mol/wire/race/race.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_wire_solid() {
-        const current = $mol_wire_auto();
-        if (current.reap !== nothing) {
-            current?.sub_on(sub, sub.data.length);
-        }
-        current.reap = nothing;
-    }
-    $.$mol_wire_solid = $mol_wire_solid;
-    const nothing = () => { };
-    const sub = new $mol_wire_pub_sub;
-})($ || ($ = {}));
-//mol/wire/solid/solid.ts
 ;
 "use strict";
 var $;
@@ -3671,12 +3681,19 @@ var $;
             return $mol_wire_sync($hyoo_sync_peer)(this + '.peer()');
         }
         world() {
+            $mol_wire_solid();
             const world = new this.$.$hyoo_crowd_world(this.peer());
             world.land_init = land => this.land_init(land);
             return world;
         }
         land_init(land) {
             this.db_land_init(land);
+            try {
+                this.db_land_sync(land);
+            }
+            catch (error) {
+                $mol_fail_log(error);
+            }
             if (!land.grabbed())
                 this.$.$mol_wait_timeout(10_000);
         }
@@ -6089,7 +6106,7 @@ var $;
             for (let mock of $_1.$mol_test_mocks)
                 await mock(context);
             const res = test(context);
-            if (res instanceof Promise) {
+            if ($mol_promise_like(res)) {
                 await new Promise((done, fail) => {
                     res.then(done, fail);
                     setTimeout(() => fail(new Error('Test timeout: ' + test.name)), 1000);
@@ -6777,7 +6794,7 @@ var $;
                         return $mol_wire_sync(Handle).sum(1, 2);
                     }
                     catch (error) {
-                        if (error instanceof Promise)
+                        if ($mol_promise_like(error))
                             $mol_fail_hidden(error);
                         $mol_assert_equal(error.message, 'test error 3');
                     }

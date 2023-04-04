@@ -12,6 +12,7 @@ namespace $ {
 		
 		@ $mol_mem
 		world() {
+			$mol_wire_solid()
 			const world = new this.$.$hyoo_crowd_world( this.peer() )
 			world.land_init = land => this.land_init( land )
 			return world
@@ -20,7 +21,13 @@ namespace $ {
 		@ $mol_mem_key
 		land_init( land: $hyoo_crowd_land ) {
 			this.db_land_init( land )
-			// this.land_sync( land )
+			
+			try {
+				this.db_land_sync( land )
+			} catch( error ) {
+				$mol_fail_log( error )
+			}
+			
 			if( !land.grabbed() ) this.$.$mol_wait_timeout( 10_000 )
 		}
 		

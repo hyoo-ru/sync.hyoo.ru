@@ -1690,11 +1690,12 @@ var $;
         for (let name in styles) {
             let val = styles[name];
             const style = el.style;
+            const kebab = (name) => name.replace(/[A-Z]/g, letter => '-' + letter.toLowerCase());
             if (typeof val === 'number') {
-                style[name] = `${val}px`;
+                style.setProperty(kebab(name), `${val}px`);
             }
             else {
-                style[name] = val;
+                style.setProperty(kebab(name), val);
             }
         }
     }
@@ -2513,7 +2514,7 @@ var $;
                 return res;
             };
             for (const key of Object.keys(config).reverse()) {
-                if (/^[a-z]/.test(key)) {
+                if (/^(--)?[a-z]/.test(key)) {
                     const addProp = (keys, val) => {
                         if (Array.isArray(val)) {
                             if (val[0] && [Array, Object].includes(val[0].constructor)) {

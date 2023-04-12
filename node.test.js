@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "e2c09f7";
+let $hyoo_sync_revision = "9edf754";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5866,7 +5866,7 @@ var $;
 								font-size: 1.5rem;
 							}
 							
-							h1, h2, h3, h4, h5, h6, p {
+							h1, h2, h3, h4, h5, h6, p, pre, object {
 								margin: 0;
 								padding: .5rem .75rem;
 								line-height: 1.5rem;

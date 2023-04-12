@@ -257,7 +257,7 @@ namespace $ {
 								font-size: 1.5rem;
 							}
 							
-							h1, h2, h3, h4, h5, h6, p {
+							h1, h2, h3, h4, h5, h6, p, pre, object {
 								margin: 0;
 								padding: .5rem .75rem;
 								line-height: 1.5rem;

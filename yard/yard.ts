@@ -236,9 +236,9 @@ namespace $ {
 		}
 		
 		master() {
-			return null as Line | null
+			return null as Line | null as any
 		}
-		
+	
 		server() {
 			return null as any
 		}

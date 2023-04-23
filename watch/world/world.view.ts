@@ -40,7 +40,7 @@ namespace $.$$ {
 			
 			land.pub.promote()
 			
-			const spreads = {}
+			const spreads = {} as Record< string, $mol_view >
 			
 			for( const head of this.land()?._unit_lists.keys() ?? [] ) {
 				spreads[ head ] = this.Node( head )

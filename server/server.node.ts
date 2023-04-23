@@ -128,12 +128,12 @@ namespace $ {
 				const land = world.land( entry )
 				
 				const reply = {
-					[ entry ]: {}
+					[ entry as string ]: {} as Record< string, any >
 				}
 				
 				const accept = req.headers.accept ?? 'application/json'
 				
-				const proceed = ( data: {}, node: $hyoo_crowd_struct, query: $hyoo_harp_query )=> {
+				const proceed = ( data: Record< string, any >, node: $hyoo_crowd_struct, query: $hyoo_harp_query )=> {
 					
 					for( let fetch in query ) {
 						
@@ -158,7 +158,7 @@ namespace $ {
 									const id = $mol_int62_string_ensure( val )
 									if( !id ) continue
 									
-									const sub = reply[ id ] = {}
+									const sub = reply[ id ] = {} as Record< string, any >
 									
 									const param = query[ fetch ]['=']
 									if( param && /^\w*$/.test( param[0]?.[0] ?? '' ) ) {

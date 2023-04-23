@@ -935,7 +935,7 @@ declare namespace $ {
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         master_cursor(next?: number): number;
         master_link(): string;
-        master(): Line | null;
+        master(): any;
         server(): any;
         slaves(next?: readonly Line[]): readonly Line[];
         line_lands(line: Line, next?: $hyoo_crowd_land[]): $hyoo_crowd_land[];
@@ -1435,6 +1435,10 @@ declare namespace $ {
     }
 }
 
+declare namespace $ {
+    function $mol_wire_probe<Value>(task: () => Value, next?: Value): Value | undefined;
+}
+
 /// <reference types="node" />
 declare namespace $ {
     class $hyoo_sync_server extends $hyoo_sync_yard<InstanceType<$node['ws']>> {
@@ -1447,6 +1451,9 @@ declare namespace $ {
         server(): import("ws").Server<import("ws").WebSocket>;
         line_send_clocks(line: InstanceType<$node['ws']>, land: $hyoo_crowd_land): void;
         line_send_units(line: InstanceType<$node['ws']>, units: readonly $hyoo_crowd_unit[]): Promise<void>;
+        reconnects(reset?: null): number;
+        master_link(): string;
+        master(): WebSocket | undefined;
         port(): number;
         static port(port: number): $hyoo_sync_server;
         static run(port: number): void;

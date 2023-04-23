@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "11c03b4";
+let $hyoo_sync_revision = "de909ca";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5693,6 +5693,23 @@ var $;
 "use strict";
 var $;
 (function ($) {
+    function $mol_wire_probe(task, next) {
+        const warm = $mol_wire_fiber.warm;
+        try {
+            $mol_wire_fiber.warm = false;
+            return task();
+        }
+        finally {
+            $mol_wire_fiber.warm = warm;
+        }
+    }
+    $.$mol_wire_probe = $mol_wire_probe;
+})($ || ($ = {}));
+//mol/wire/probe/probe.ts
+;
+"use strict";
+var $;
+(function ($) {
     const uri_normal = (uri) => /^https?:/.test(uri) ? uri : '?' + uri;
     const sanit = (dom) => {
         if (dom.nodeType === dom.ELEMENT_NODE) {
@@ -6062,6 +6079,64 @@ var $;
             const message = new $node.buffer.Blob(units.map(unit => unit.bin));
             line.send(await message.arrayBuffer(), { binary: true });
         }
+        reconnects(reset) {
+            return ($mol_wire_probe(() => this.reconnects()) ?? 0) + 1;
+        }
+        master_link() {
+            const host = this.$.$hyoo_sync_masters[this.master_cursor()];
+            return host;
+        }
+        master() {
+            const link = this.master_link();
+            if (!link)
+                return;
+            this.reconnects();
+            const line = new $node['ws'].WebSocket(link);
+            line.binaryType = 'arraybuffer';
+            line.onmessage = async (event) => {
+                if (event.data instanceof ArrayBuffer) {
+                    await this.line_receive(line, new Uint8Array(event.data));
+                }
+                else {
+                    this.$.$mol_log3_fail({
+                        place: this,
+                        message: 'Wrong data',
+                        data: event.data
+                    });
+                }
+            };
+            let interval;
+            line.onclose = () => {
+                clearInterval(interval);
+                setTimeout(() => this.reconnects(null), 1000);
+            };
+            Object.assign(line, {
+                destructor: () => {
+                    line.onclose = () => { };
+                    clearInterval(interval);
+                    line.close();
+                }
+            });
+            return new Promise((done, fail) => {
+                line.onopen = () => {
+                    this.$.$mol_log3_come({
+                        place: this,
+                        message: 'Connected to Master',
+                        line: $mol_key(line),
+                        server: link,
+                    });
+                    interval = setInterval(() => line.send(new Uint8Array), 30000);
+                    done(line);
+                };
+                line.onerror = () => {
+                    line.onclose = event => {
+                        fail(new Error(`Master is unavailable (${event.code})`));
+                    };
+                    clearInterval(interval);
+                    this.master_cursor((this.master_cursor() + 1) % this.$.$hyoo_sync_masters.length);
+                };
+            });
+        }
         port() { return 0; }
         static port(port) {
             const server = new this;
@@ -6091,13 +6166,24 @@ var $;
         $mol_mem
     ], $hyoo_sync_server.prototype, "server", null);
     __decorate([
+        $mol_mem
+    ], $hyoo_sync_server.prototype, "reconnects", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_server.prototype, "master_link", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_server.prototype, "master", null);
+    __decorate([
         $mol_mem_key
     ], $hyoo_sync_server, "port", null);
     __decorate([
         $mol_mem_key
     ], $hyoo_sync_server, "run", null);
     $.$hyoo_sync_server = $hyoo_sync_server;
-    let port = Number($mol_state_arg.value('port') || process.env.PORT);
+    const port = Number($mol_state_arg.value('port') || process.env.PORT);
+    const masters = $mol_state_arg.value('masters');
+    $.$hyoo_sync_masters = masters ? masters.split(',').map(val => val.trim()).filter(val => val) : [];
     if (port)
         $hyoo_sync_server.run(port);
 })($ || ($ = {}));
@@ -7431,23 +7517,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/wire/plex/plex.test.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_wire_probe(task, next) {
-        const warm = $mol_wire_fiber.warm;
-        try {
-            $mol_wire_fiber.warm = false;
-            return task();
-        }
-        finally {
-            $mol_wire_fiber.warm = warm;
-        }
-    }
-    $.$mol_wire_probe = $mol_wire_probe;
-})($ || ($ = {}));
-//mol/wire/probe/probe.ts
 ;
 "use strict";
 var $;

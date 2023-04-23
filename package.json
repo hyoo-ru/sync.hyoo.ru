@@ -161,7 +161,8 @@
     "$hyoo_marked_paragraph",
     "$hyoo_crowd_dom",
     "$mol_dom_serialize",
-    "$mol_dom_parse"
+    "$mol_dom_parse",
+    "$mol_wire_probe"
   ],
   "dependencies": {
     "jsdom": "*",

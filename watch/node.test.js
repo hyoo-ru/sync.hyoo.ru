@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "de909ca";
+let $hyoo_sync_revision = "eb66485";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -21395,6 +21395,17 @@ var $;
     });
 })($ || ($ = {}));
 //mol/db/index/index.test.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$hyoo_sync_client = class extends $hyoo_sync_yard {
+            land_init(land) { }
+        };
+    });
+})($ || ($ = {}));
+//hyoo/sync/client/client.test.ts
 ;
 "use strict";
 var $;

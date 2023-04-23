@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "9edf754";
+let $hyoo_sync_revision = "11c03b4";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -289,9 +289,9 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    let auto = null;
-    function $mol_wire_auto(next = auto) {
-        return auto = next;
+    $.$mol_wire_auto_sub = null;
+    function $mol_wire_auto(next = $.$mol_wire_auto_sub) {
+        return $.$mol_wire_auto_sub = next;
     }
     $.$mol_wire_auto = $mol_wire_auto;
     $.$mol_wire_affected = [];
@@ -404,6 +404,9 @@ var $;
     class $mol_wire_pub_sub extends $mol_wire_pub {
         pub_from = 0;
         cursor = $mol_wire_cursor.stale;
+        get temp() {
+            return false;
+        }
         get pub_list() {
             const res = [];
             const max = this.cursor >= 0 ? this.cursor : this.sub_from;
@@ -1008,7 +1011,7 @@ var $;
                 const sub = $mol_wire_auto();
                 const existen = sub?.track_next();
                 reuse: if (existen) {
-                    if (!(existen instanceof $mol_wire_task))
+                    if (!existen.temp)
                         break reuse;
                     if (existen.host !== host)
                         break reuse;
@@ -1020,6 +1023,9 @@ var $;
                 }
                 return new $mol_wire_task(`${host?.[Symbol.toStringTag] ?? host}.${task.name}(#)`, task, host, args);
             };
+        }
+        get temp() {
+            return true;
         }
         complete() {
             if ($mol_promise_like(this.cache))
@@ -1176,7 +1182,7 @@ var $;
                     return this.resync([...this.args, next]);
                 if (!$mol_wire_fiber.warm)
                     return this.result();
-                if ($mol_wire_auto() instanceof $mol_wire_task) {
+                if ($mol_wire_auto()?.temp) {
                     return this.once();
                 }
                 else {
@@ -1259,7 +1265,7 @@ var $;
                 if ((args.length === 0) || (args[0] === undefined)) {
                     if (!$mol_wire_fiber.warm)
                         return atom.result();
-                    if ($mol_wire_auto() instanceof $mol_wire_task) {
+                    if ($mol_wire_auto()?.temp) {
                         return atom.once();
                     }
                     else {
@@ -1296,7 +1302,7 @@ var $;
                 if ((args.length === 1) || (args[1] === undefined)) {
                     if (!$mol_wire_fiber.warm)
                         return atom.result();
-                    if ($mol_wire_auto() instanceof $mol_wire_task) {
+                    if ($mol_wire_auto()?.temp) {
                         return atom.once();
                     }
                     else {
@@ -2829,6 +2835,9 @@ var $;
         [Symbol.toPrimitive]() {
             return `${this.constructor.name}("${this.land.id()}","${this.head}")`;
         }
+        toJSON() {
+            return this.id();
+        }
         [$mol_dev_format_head]() {
             return $mol_dev_format_span({}, $mol_dev_format_native(this), $mol_dev_format_shade(':'), $mol_dev_format_auto(this.land.unit_list(this.head)));
         }
@@ -3224,7 +3233,6 @@ var $;
             const unit_new = new $hyoo_crowd_unit(this.id(), auth, head, self, next, prev, time, data, null);
             this._unit_all.set(old_id, unit_new);
             unit_list.splice(seat, 0, unit_new);
-            unit_list.dirty = true;
             this._unit_alives.set(head, undefined);
             this.pub.emit();
             return unit_new;
@@ -4194,7 +4202,7 @@ var $;
             return next;
         }
         static link(next) {
-            var params = {};
+            const params = {};
             var prev = this.dict();
             for (var key in prev) {
                 params[key] = prev[key];
@@ -4205,11 +4213,11 @@ var $;
             return this.make_link(params);
         }
         static make_link(next) {
-            var chunks = [];
-            for (var key in next) {
-                if (null == next[key])
-                    continue;
-                chunks.push([key].concat(next[key]).map(encodeURIComponent).join('='));
+            const chunks = [];
+            for (const key in next) {
+                if (next[key] !== null) {
+                    chunks.push([key, next[key]].map(encodeURIComponent).join('='));
+                }
             }
             return chunks.join(' ');
         }
@@ -4227,8 +4235,8 @@ var $;
             return new this.constructor(this.prefix + postfix + '.');
         }
         link(next) {
-            var prefix = this.prefix;
-            var dict = {};
+            const prefix = this.prefix;
+            const dict = {};
             for (var key in next) {
                 dict[prefix + key] = next[key];
             }
@@ -4354,6 +4362,9 @@ var $;
             return this.land.node(unit.self, Node);
         }
     }
+    __decorate([
+        $mol_mem
+    ], $hyoo_crowd_list.prototype, "set", null);
     $.$hyoo_crowd_list = $hyoo_crowd_list;
 })($ || ($ = {}));
 //hyoo/crowd/list/list.ts
@@ -4752,7 +4763,7 @@ var $;
                 });
                 const regexp = new $mol_regexp(`(?:${chunks.join('|')})`, flags, groups);
                 const validator = new RegExp('^' + regexp.source + '$', flags);
-                regexp.generate = params => {
+                regexp.generate = (params) => {
                     for (let option in source) {
                         if (option in params) {
                             if (typeof params[option] === 'boolean') {
@@ -5585,6 +5596,14 @@ var $;
     class $hyoo_crowd_dom extends $hyoo_crowd_node {
         dom(next) {
             if (next) {
+                const ids = new Set();
+                for (const node of next.childNodes) {
+                    if (!(node instanceof this.$.$mol_dom_context.Element))
+                        continue;
+                    if (ids.has(node.id))
+                        node.id = '';
+                    ids.add(node.id);
+                }
                 const sample = [];
                 function collect(next) {
                     for (const node of next.childNodes) {
@@ -5594,7 +5613,7 @@ var $;
                             }
                         }
                         else {
-                            if (node.nodeName === 'span' && !Number(node.id)) {
+                            if (node.localName === 'span' && !Number(node.id)) {
                                 collect(node);
                             }
                             else {
@@ -5616,9 +5635,9 @@ var $;
                 function val(el) {
                     return typeof el === 'string'
                         ? el
-                        : el.nodeName === 'span'
+                        : el.localName === 'span'
                             ? el.textContent
-                            : [el.nodeName, attr(el)];
+                            : [el.localName, attr(el)];
                 }
                 let units = this.units();
                 $mol_reconcile({
@@ -5628,7 +5647,9 @@ var $;
                     next: sample,
                     equal: (next, prev) => typeof next === 'string'
                         ? prev.data === next
-                        : String(prev.self) === next['id'],
+                        : next.localName === 'span'
+                            ? prev.data === next.textContent
+                            : prev.self === next['id'],
                     drop: (prev, lead) => this.land.wipe(prev),
                     insert: (next, lead) => {
                         return this.land.put(this.head, typeof next === 'string'
@@ -5641,9 +5662,9 @@ var $;
                 units = this.units();
                 for (let i = 0; i < units.length; ++i) {
                     const sam = sample[i];
-                    if (typeof sam !== 'string') {
-                        $hyoo_crowd_dom.for(this.land, units[i].self).dom(sam);
-                    }
+                    if (typeof sam === 'string')
+                        continue;
+                    $hyoo_crowd_dom.for(this.land, units[i].self).dom(sam);
                 }
                 return next;
             }

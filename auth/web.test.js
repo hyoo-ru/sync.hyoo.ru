@@ -608,6 +608,9 @@ var $;
 //mol/wire/fiber/fiber.test.ts
 ;
 "use strict";
+//mol/type/tail/tail.test.ts
+;
+"use strict";
 var $;
 (function ($) {
     $mol_test({
@@ -708,9 +711,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/compare/deep/deep.test.tsx
-;
-"use strict";
-//mol/type/tail/tail.test.ts
 ;
 "use strict";
 var $;

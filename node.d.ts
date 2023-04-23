@@ -99,6 +99,7 @@ declare namespace $ {
 
 declare namespace $ {
     interface $mol_wire_sub extends $mol_wire_pub {
+        temp: boolean;
         track_on(): $mol_wire_sub | null;
         track_next(pub?: $mol_wire_pub): $mol_wire_pub | null;
         pub_off(pub_pos: number): void;
@@ -110,6 +111,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
+    let $mol_wire_auto_sub: $mol_wire_sub | null;
     function $mol_wire_auto(next?: $mol_wire_sub | null): $mol_wire_sub | null;
     const $mol_wire_affected: (number | $mol_wire_sub)[];
 }
@@ -146,6 +148,7 @@ declare namespace $ {
     class $mol_wire_pub_sub extends $mol_wire_pub implements $mol_wire_sub {
         protected pub_from: number;
         protected cursor: $mol_wire_cursor;
+        get temp(): boolean;
         get pub_list(): $mol_wire_pub[];
         track_on(): $mol_wire_sub | null;
         promote(): void;
@@ -233,7 +236,8 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_wire_task<Host, Args extends readonly unknown[], Result> extends $mol_wire_fiber<Host, Args, Result> {
-        static getter<Host, Args extends readonly unknown[], Result>(task: (this: Host, ...args: Args) => Result): (host: Host, args: Args) => $mol_wire_task<Host, [...Args], Result>;
+        static getter<Host, Args extends readonly unknown[], Result>(task: (this: Host, ...args: Args) => Result): (host: Host, args: Args) => $mol_wire_task<Host, Args, Result>;
+        get temp(): boolean;
         complete(): void;
         put(next: Result | Error | Promise<Result | Error>): Error | Result | Promise<Error | Result>;
     }
@@ -730,6 +734,7 @@ declare namespace $ {
         nodes<Node extends typeof $hyoo_crowd_node>(Node: Node): InstanceType<Node>[];
         virgin(): boolean;
         [Symbol.toPrimitive](): string;
+        toJSON(): `${string}_${string}`;
     }
 }
 
@@ -1003,19 +1008,15 @@ declare namespace $ {
             [key: string]: string;
         }>;
         static value(key: string, next?: string | null): string | null;
-        static link(next: any): string;
-        static make_link(next: {
-            [key: string]: any;
-        }): string;
+        static link(next: Record<string, string | null>): string;
+        static make_link(next: Record<string, string | null>): string;
         static go(next: {
             [key: string]: string | null;
         }): void;
         constructor(prefix?: string);
         value(key: string, next?: string): string | null;
         sub(postfix: string): $mol_state_arg;
-        link(next: {
-            [key: string]: string;
-        }): string;
+        link(next: Record<string, string | null>): string;
     }
 }
 
@@ -1049,7 +1050,7 @@ declare namespace $ {
 declare namespace $ {
     type $mol_blob = Blob;
     let $mol_blob: {
-        new (blobParts?: BlobPart[] | undefined, options?: BlobPropertyBag | undefined): Blob;
+        new (blobParts?: readonly BlobPart[], options?: BlobPropertyBag): Blob;
         prototype: Blob;
     };
 }

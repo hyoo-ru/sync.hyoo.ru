@@ -2578,8 +2578,8 @@ var $;
         for (let def of $mol_view_tree_classes(tree).sub) {
             if (!/^\$\w+$/.test(def.type))
                 throw def.error('Wrong component name');
-            var parent = def.sub[0];
-            var members = {};
+            const parent = def.sub[0];
+            const members = {};
             for (let param of $mol_view_tree_class_props(def).sub) {
                 try {
                     var needSet = false;
@@ -2620,12 +2620,12 @@ var $;
                                         if (val)
                                             items.push(val.join(""));
                                     });
-                                    return [`[`, items.join(' , '), `]`, (item_type ? ` as readonly ( ${item_type} )[]` : ` as readonly any[]`)];
+                                    return [`[`, items.join(' , '), `]`, (item_type ? ` as ( ${item_type} )[]` : ` as any[]`)];
                                 case (value.type[0] === '$'):
                                     if (!definition)
                                         throw value.error('Objects should be bound');
                                     needCache = true;
-                                    var overs = [];
+                                    const overs = [];
                                     value.sub.forEach(over => {
                                         if (/^[-\/]?$/.test(over.type))
                                             return '';
@@ -2657,21 +2657,28 @@ var $;
                                     const object_args = value.select('/', '').sub.map(arg => getValue(arg)).join(' , ');
                                     return ['(( obj )=>{\n', ...overs, '\t\t\treturn obj\n\t\t})( new this.$.', SourceNode(value.row, value.col, fileName, value.type), '( ', object_args, ' ) )'];
                                 case (value.type === '*'):
-                                    var opts = [];
-                                    value.sub.forEach(opt => {
+                                    const opts = [];
+                                    for (const opt of value.sub) {
                                         if (opt.type === '-')
-                                            return '';
+                                            continue;
                                         if (opt.type === '^') {
                                             opts.push(`\t\t\t...super.${param.type}() ,\n`);
-                                            return;
+                                            continue;
                                         }
-                                        var key = /(.*?)(?:\?(\w+))?$/.exec(opt.type);
-                                        var ns = needSet;
-                                        var v = getValue(opt.sub[0]);
-                                        var arg = key[2] ? ` ( ${key[2]}? : any )=> ` : '';
-                                        opts.push(...['\t\t\t"', SourceNode(opt.row, opt.col, fileName, key[1] + '" : '), arg, ' ', ...(v || []), ' ,\n']);
+                                        const key = /(.*?)(?:\?(\w+))?$/.exec(opt.type);
+                                        const ns = needSet;
+                                        const v = getValue(opt.sub[0]);
+                                        const arg = key[2] ? ` ( ${key[2]}? : any )=> ` : '';
+                                        opts.push(...[
+                                            '\t\t\t"',
+                                            SourceNode(opt.row, opt.col, fileName, key[1] + '" : '),
+                                            arg,
+                                            ' ',
+                                            ...(v || []),
+                                            ' ,\n'
+                                        ]);
                                         needSet = ns;
-                                    });
+                                    }
                                     return ['({\n', opts.join(''), '\t\t})'];
                                 case (value.type === '<=>'):
                                     if (value.sub.length === 1) {
@@ -2718,7 +2725,7 @@ var $;
                                 ...val
                             ];
                         val = ['return ', ...val];
-                        var decl = ['\t', SourceNode(param.row, param.col, fileName, propName[1]), '(', args.join(','), ') {\n\t\t', ...val, '\n\t}\n\n'];
+                        let decl = ['\t', SourceNode(param.row, param.col, fileName, propName[1]), '(', args.join(','), ') {\n\t\t', ...val, '\n\t}\n\n'];
                         if (needCache) {
                             if (propName[2])
                                 decl = ['\t@ $', 'mol_mem_key\n', ...decl];
@@ -4928,25 +4935,25 @@ var $;
     $mol_test({
         'import exported html'() {
             const left = $hyoo_crowd_land.make({ id: () => '1_1' });
-            left.chief.as($hyoo_crowd_dom).html('<body>foo<i data-xxx="yyy">ton</i>bar</body>');
+            left.chief.as($hyoo_crowd_dom).html('<body>foo<a data-xxx="yyy" href="hhh:zzz">ton</a>bar</body>');
             const html = left.chief.as($hyoo_crowd_dom).html();
             const right = $hyoo_crowd_land.make({ id: () => '2_2' });
             right.chief.as($hyoo_crowd_dom).html(html);
-            $mol_assert_like(left.chief.as($hyoo_crowd_list).list(), ['foo', ['i', { "data-xxx": "yyy" }], 'bar']);
+            $mol_assert_like(left.chief.as($hyoo_crowd_list).list(), ['foo', ['a', { "data-xxx": "yyy", "href": "hhh:zzz" }], 'bar']);
             $mol_assert_equal(left.chief.nodes($hyoo_crowd_text)[1].text(), 'ton');
             $mol_assert_equal(html, left.chief.as($hyoo_crowd_dom).html());
             $mol_assert_equal(left.chief.as($hyoo_crowd_text).str(), right.chief.as($hyoo_crowd_text).str(), 'footonbar');
         },
         'import wild spans'() {
             const land = $hyoo_crowd_land.make({ id: () => '1_1' });
-            land.chief.as($hyoo_crowd_dom).html('<body><span>foo bar<a href="ton"/></span></body>');
+            land.chief.as($hyoo_crowd_dom).html('<body><span>foo bar<a href="hhh:ton"/></span></body>');
             const dom = land.chief.as($hyoo_crowd_dom).dom();
             $mol_assert_equal(dom.children[0].nodeName, 'SPAN');
             $mol_assert_equal(dom.children[0].textContent, 'foo');
             $mol_assert_equal(dom.children[1].nodeName, 'SPAN');
             $mol_assert_equal(dom.children[1].textContent, ' bar');
             $mol_assert_equal(dom.children[2].nodeName, 'A');
-            $mol_assert_equal(dom.children[2].getAttribute('href'), 'ton');
+            $mol_assert_equal(dom.children[2].getAttribute('href'), 'hhh:ton');
         },
     });
 })($ || ($ = {}));

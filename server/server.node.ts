@@ -527,7 +527,6 @@ namespace $ {
 			const link = this.master_link()
 			if (!link) return
 
-			console.log({ link })
 			this.reconnects()
 
 			const line = new $node['ws'].WebSocket( link )

@@ -529,7 +529,7 @@ namespace $ {
 
 			this.reconnects()
 
-			const line = new $node['ws'].WebSocket( link )
+			const line = new $node['ws'].WebSocket( 'ws:' + link )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

@@ -9,10 +9,10 @@ Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/c
 
 ## Comparison
 
-| Property            | $hyoo_sync | [Logux](https://logux.io/)
-|---------------------|------------|---------------------------
-| Conflict resolution | CROWD      | Manual
-| Crypto encryption   | Manual     | Single user
-| Crypto signing      | Total      | No
-| Long offline        | Available  | Log compress rejects old changes
-| Persistent storage  | IndexedDB  | IndexedDB / LocalStorage / custom
+| Property            | **$hyoo_sync** | [FireBase](https://firebase.google.com/) | [Logux](https://logux.io/)
+|---------------------|----------------|--------------------|---------------------------
+| Conflict resolution | **CROWD**      | Compare-and-Set    | Manual
+| Crypto encryption   | Manual         | Manual             | Single user
+| Crypto signing      | **Total**      | No                 | No
+| Long offline        | **Available**  | Until session ends | Log compression rejects old changes
+| Persistent storage  | **IndexedDB**  | **IndexedDB**      | **IndexedDB** / LocalStorage / custom

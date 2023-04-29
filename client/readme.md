@@ -5,7 +5,7 @@ Synchronizes world state with server and local DB.
 ## Domain Model
 
 ```ts
-export class $y_person extends $hyoo_crowd_struct {
+export class $my_person extends $hyoo_crowd_struct {
 
   name( next?: string ) {
     return this.sub( 'name', $hyoo_crowd_reg ).str( next )

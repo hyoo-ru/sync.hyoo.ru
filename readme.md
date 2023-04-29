@@ -13,16 +13,7 @@ Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/c
 | Long offline        | Available  | Log compress rejects old changes
 | Persistent storage  | IndexedDB  | IndexedDB / LocalStorage / custom
 
-### How to raise your server?
+## Libs
 
-Simple: 
-```sh
-cd ./docker
-docker-compose build --no-cache
-docker-compose up -d
-```
-
-The server will start on port 3000 [(by default)](https://github.com/hyoo-ru/sync.hyoo.ru/blob/master/docker/docker-compose.yml#L8)
-
-You can look at the logs at
-[http://localhost:3000/watch/](http://localhost:3000/watch/)
+- [Server](https://github.com/hyoo-ru/sync.hyoo.ru/tree/master/server)
+- [Client](https://github.com/hyoo-ru/sync.hyoo.ru/tree/master/client)

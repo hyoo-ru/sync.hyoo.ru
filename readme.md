@@ -16,4 +16,4 @@ Shared local-first offline-ready store with [CROWD](https://github.com/hyoo-ru/c
 | Crypto signing      | **Total**      | No                 | No
 | Long offline        | **Available**  | Until session ends | Log compression rejects old changes
 | Persistent storage  | **IndexedDB**  | **IndexedDB**      | **IndexedDB** / LocalStorage / custom
-| Client lib size     | 17 KB          | 28 + 36 + 13 + 44 + 8 = 129 KB | 12 + 9 = 21 KB
+| Client lib size     | **17 KB**      | 28 + 36 + 13 + 44 + 8 = 129 KB | 12 + 9 = 21 KB

@@ -1,4 +1,4 @@
-name: $hyoo_sync
+name: $hyoo_sync_server
 
 on:
   workflow_dispatch:

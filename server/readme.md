@@ -1,15 +1,26 @@
 # $hyoo_sync_server
 
-CROWD based sync server
+CROWD based sync server.
 
 ## Run
 
-	node node.js port=9090 db=postrges://... log=/var/log/sync.log
+### Native
 
-## UI
-
-https://sync.hyoo.ru/watch/
+	node node.js port=3000 db=postrges://... log=/var/log/sync.log
 	
+### Docker
+
+```sh
+cd ../docker
+docker-compose build --no-cache
+docker-compose up -d
+```
+
+## Admin UI
+
+Dev: http://localhost:3000/watch/
+Prod: https://sync.hyoo.ru/watch/
+
 ## API
 
 ### Sync

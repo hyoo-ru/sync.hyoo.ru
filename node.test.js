@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "35aacaf";
+let $hyoo_sync_revision = "5d5b565";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -6068,7 +6068,6 @@ var $;
             this.world();
             const socket = new $node.ws.Server({
                 server: this.http(),
-                verifyClient: ({ origin, secure, req }) => 'sec-websocket-protocol' in req.headers,
                 handleProtocols: (ways, req) => ways.has('$hyoo_sync') ? '$hyoo_sync' : false
             });
             socket.on('connection', line => {

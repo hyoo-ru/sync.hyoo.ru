@@ -202,15 +202,9 @@ namespace $ {
 		) {
 			
 			if( line instanceof WebSocket ) {
-				
-				const message = new Uint8Array( $hyoo_crowd_clock_bin.from( land.id(), land._clocks ).buffer )
-				line.send( message )
-				
+				line.send( land.clocks_bin )
 			} else {
-				
-				const message = land._clocks
-				line.postMessage([ 'hyoo_sync_clocks', land.id(), message ])
-				
+				line.postMessage([ 'hyoo_sync_clocks', land.id(), land._clocks ])
 			}
 			
 		}

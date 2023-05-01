@@ -500,8 +500,7 @@ namespace $ {
 			line: InstanceType< $node['ws'] >,
 			land: $hyoo_crowd_land,
 		) {
-			const bin = $hyoo_crowd_clock_bin.from( land.id(), land._clocks )
-			line.send( new Uint8Array( bin.buffer ), { binary: true } )
+			line.send( land.clocks_bin, { binary: true } )
 		}
 		
 		async line_send_units(

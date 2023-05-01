@@ -92,19 +92,23 @@ namespace $ {
 				this.db_land_sync( land )
 			}
 			
-			const master = this.master()
-			if( master ) $mol_wire_race(
-				... [ ... this.world().lands.values() ].map( land =>
-					()=> this.line_land_sync({ line: master, land })
-				)
-			)
-			
 			$mol_wire_race(
 				... this.slaves().map( line =>
 					()=> this.line_sync( line )
 				)
 			)
 			
+			try {
+				const master = this.master()
+				if( master ) $mol_wire_race(
+					... [ ... this.world().lands.values() ].map( land =>
+						()=> this.line_land_sync({ line: master, land })
+					)
+				)
+			} catch( error ) {
+				$mol_fail_log( error )
+			}
+		
 		}
 		
 		@ $mol_mem_key
@@ -263,7 +267,13 @@ namespace $ {
 			next?: readonly[ $hyoo_crowd_clock, $hyoo_crowd_clock ]
 		) {
 			$mol_wire_solid()
-			this.master()
+			
+			// try{
+			// 	this.master()
+			// } catch( error ) {
+			// 	$mol_fail_log( error )
+			// }
+
 			return next
 		}
 		

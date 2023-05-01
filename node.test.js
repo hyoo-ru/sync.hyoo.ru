@@ -24,7 +24,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "06f569e";
+let $hyoo_sync_revision = "35aacaf";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -2941,6 +2941,9 @@ var $;
             this.pub.promote();
             return this._clocks;
         }
+        get clocks_bin() {
+            return new Uint8Array($hyoo_crowd_clock_bin.from(this.id(), this._clocks).buffer);
+        }
         pub = new $mol_wire_pub;
         _clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
         _unit_all = new Map();
@@ -3940,6 +3943,13 @@ var $;
             };
             this.line_land_neck({ line, land: land_id }, [
                 handle(this.line_land_neck({ line, land: land_id })[0])
+                    .catch(error => {
+                    this.$.$mol_log3_fail({
+                        place: this,
+                        land: land_id,
+                        message: String(error?.message ?? error),
+                    });
+                })
             ]);
         }
         line_send_clocks(line, land) { }
@@ -6058,6 +6068,8 @@ var $;
             this.world();
             const socket = new $node.ws.Server({
                 server: this.http(),
+                verifyClient: ({ origin, secure, req }) => 'sec-websocket-protocol' in req.headers,
+                handleProtocols: (ways, req) => ways.has('$hyoo_sync') ? '$hyoo_sync' : false
             });
             socket.on('connection', line => {
                 this.slaves([...this.slaves(), line]);
@@ -6077,8 +6089,7 @@ var $;
             return socket;
         }
         line_send_clocks(line, land) {
-            const bin = $hyoo_crowd_clock_bin.from(land.id(), land._clocks);
-            line.send(new Uint8Array(bin.buffer), { binary: true });
+            line.send(land.clocks_bin, { binary: true });
         }
         async line_send_units(line, units) {
             await this.world().sign_units(units);
@@ -6097,7 +6108,7 @@ var $;
             if (!link)
                 return;
             this.reconnects();
-            const line = new $node['ws'].WebSocket('ws:' + link);
+            const line = new $node['ws'].WebSocket('ws:' + link, { protocol: '$hyoo_sync' });
             line.binaryType = 'arraybuffer';
             line.onmessage = async (event) => {
                 if (event.data instanceof ArrayBuffer) {

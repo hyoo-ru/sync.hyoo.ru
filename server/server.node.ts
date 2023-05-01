@@ -455,7 +455,7 @@ namespace $ {
 
 			const socket = new $node.ws.Server({
 				server: this.http(),
-				verifyClient: ( { origin, secure, req }: { origin: string; secure: boolean; req: InstanceType< $node['http']['IncomingMessage'] > } )=> 'sec-websocket-protocol' in req.headers,
+				// verifyClient: ( { origin, secure, req }: { origin: string; secure: boolean; req: InstanceType< $node['http']['IncomingMessage'] > } )=> 'sec-websocket-protocol' in req.headers,
 				handleProtocols: ( ways, req )=> ways.has( '$hyoo_sync' ) ? '$hyoo_sync' : false
 			})
 

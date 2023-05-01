@@ -454,7 +454,9 @@ namespace $ {
 			this.world()
 
 			const socket = new $node.ws.Server({
-				server : this.http() ,
+				server: this.http(),
+				verifyClient: ( { origin, secure, req }: { origin: string; secure: boolean; req: InstanceType< $node['http']['IncomingMessage'] > } )=> 'sec-websocket-protocol' in req.headers,
+				handleProtocols: ( ways, req )=> ways.has( '$hyoo_sync' ) ? '$hyoo_sync' : false
 			})
 
 			socket.on( 'connection' , line => {
@@ -529,7 +531,7 @@ namespace $ {
 
 			this.reconnects()
 
-			const line = new $node['ws'].WebSocket( 'ws:' + link )
+			const line = new $node['ws'].WebSocket( 'ws:' + link, { protocol: '$hyoo_sync' } )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

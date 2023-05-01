@@ -438,6 +438,13 @@ namespace $ {
 				{ line, land: land_id },
 				[
 					handle( this.line_land_neck({ line, land: land_id })[0] )
+						.catch( error => {
+							this.$.$mol_log3_fail({
+								place: this,
+								land: land_id,
+								message: String( error?.message ?? error ),
+							})
+						} )
 				],
 			)
 

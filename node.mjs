@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "8b9fe5e";
+let $hyoo_sync_revision = "fac6330";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -207,96 +207,909 @@ var $;
 //mol/object2/object2.ts
 ;
 "use strict";
-var $;
-(function ($) {
-    let $mol_wire_cursor;
-    (function ($mol_wire_cursor) {
-        $mol_wire_cursor[$mol_wire_cursor["stale"] = -1] = "stale";
-        $mol_wire_cursor[$mol_wire_cursor["doubt"] = -2] = "doubt";
-        $mol_wire_cursor[$mol_wire_cursor["fresh"] = -3] = "fresh";
-        $mol_wire_cursor[$mol_wire_cursor["final"] = -4] = "final";
-    })($mol_wire_cursor = $.$mol_wire_cursor || ($.$mol_wire_cursor = {}));
-})($ || ($ = {}));
-//mol/wire/cursor/cursor.ts
+//node/node.ts
+;
+"use strict";
+var $node = new Proxy({ require }, {
+    get(target, name, wrapper) {
+        if (target[name])
+            return target[name];
+        const mod = target.require('module');
+        if (mod.builtinModules.indexOf(name) >= 0)
+            return target.require(name);
+        if (name[0] === '.')
+            return target.require(name);
+        const path = target.require('path');
+        const fs = target.require('fs');
+        let dir = path.resolve('.');
+        const suffix = `./node_modules/${name}`;
+        const $$ = $;
+        while (!fs.existsSync(path.join(dir, suffix))) {
+            const parent = path.resolve(dir, '..');
+            if (parent === dir) {
+                $$.$mol_exec('.', 'npm', 'install', '--omit=dev', name);
+                try {
+                    $$.$mol_exec('.', 'npm', 'install', '--omit=dev', '@types/' + name);
+                }
+                catch { }
+                break;
+            }
+            else {
+                dir = parent;
+            }
+        }
+        return target.require(name);
+    },
+    set(target, name, value) {
+        target[name] = value;
+        return true;
+    },
+});
+require = (req => Object.assign(function require(name) {
+    return $node[name];
+}, req))(require);
+//node/node.node.ts
 ;
 "use strict";
 var $;
 (function ($) {
-    class $mol_wire_pub extends Object {
-        data = [];
-        static get [Symbol.species]() {
-            return Array;
+    function $mol_log3_area_lazy(event) {
+        const self = this;
+        const stack = self.$mol_log3_stack;
+        const deep = stack.length;
+        let logged = false;
+        stack.push(() => {
+            logged = true;
+            self.$mol_log3_area.call(self, event);
+        });
+        return () => {
+            if (logged)
+                self.console.groupEnd();
+            if (stack.length > deep)
+                stack.length = deep;
+        };
+    }
+    $.$mol_log3_area_lazy = $mol_log3_area_lazy;
+    $.$mol_log3_stack = [];
+})($ || ($ = {}));
+//mol/log3/log3.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_span extends $mol_object2 {
+        uri;
+        source;
+        row;
+        col;
+        length;
+        constructor(uri, source, row, col, length) {
+            super();
+            this.uri = uri;
+            this.source = source;
+            this.row = row;
+            this.col = col;
+            this.length = length;
+            this[Symbol.toStringTag] = `${this.uri}#${this.row}:${this.col}/${this.length}`;
         }
-        sub_from = 0;
-        get sub_list() {
-            const res = [];
-            for (let i = this.sub_from; i < this.data.length; i += 2) {
-                res.push(this.data[i]);
-            }
-            return res;
+        static unknown = $mol_span.begin('?');
+        static begin(uri, source = '') {
+            return new $mol_span(uri, source, 1, 1, 0);
         }
-        get sub_empty() {
-            return this.sub_from === this.data.length;
+        static end(uri, source) {
+            return new $mol_span(uri, source, 1, source.length + 1, length);
         }
-        sub_on(sub, pub_pos) {
-            const pos = this.data.length;
-            this.data.push(sub, pub_pos);
-            return pos;
+        static entire(uri, source) {
+            return new $mol_span(uri, source, 1, 1, source.length);
         }
-        sub_off(sub_pos) {
-            if (!(sub_pos < this.data.length)) {
-                $mol_fail(new Error(`Wrong pos ${sub_pos}`));
-            }
-            const end = this.data.length - 2;
-            if (sub_pos !== end) {
-                this.peer_move(end, sub_pos);
-            }
-            this.data.pop();
-            this.data.pop();
-            if (this.data.length === this.sub_from)
-                this.reap();
+        toString() {
+            return this[Symbol.toStringTag];
         }
-        reap() { }
-        promote() {
-            $mol_wire_auto()?.track_next(this);
+        toJSON() {
+            return {
+                uri: this.uri,
+                row: this.row,
+                col: this.col,
+                length: this.length
+            };
         }
-        fresh() { }
-        complete() { }
-        emit(quant = $mol_wire_cursor.stale) {
-            for (let i = this.sub_from; i < this.data.length; i += 2) {
-                ;
-                this.data[i].absorb(quant);
-            }
+        error(message, Class = Error) {
+            return new Class(`${message}${this}`);
         }
-        peer_move(from_pos, to_pos) {
-            const peer = this.data[from_pos];
-            const self_pos = this.data[from_pos + 1];
-            this.data[to_pos] = peer;
-            this.data[to_pos + 1] = self_pos;
-            peer.peer_repos(self_pos, to_pos);
+        span(row, col, length) {
+            return new $mol_span(this.uri, this.source, row, col, length);
         }
-        peer_repos(peer_pos, self_pos) {
-            this.data[peer_pos + 1] = self_pos;
+        after(length = 0) {
+            return new $mol_span(this.uri, this.source, this.row, this.col + this.length, length);
+        }
+        slice(begin, end = -1) {
+            let len = this.length;
+            if (begin < 0)
+                begin += len;
+            if (end < 0)
+                end += len;
+            if (begin < 0 || begin > len)
+                this.$.$mol_fail(`Begin value '${begin}' out of range ${this}`);
+            if (end < 0 || end > len)
+                this.$.$mol_fail(`End value '${end}' out of range ${this}`);
+            if (end < begin)
+                this.$.$mol_fail(`End value '${end}' can't be less than begin value ${this}`);
+            return this.span(this.row, this.col + begin, end - begin);
         }
     }
-    $.$mol_wire_pub = $mol_wire_pub;
+    $.$mol_span = $mol_span;
 })($ || ($ = {}));
-//mol/wire/pub/pub.ts
-;
-"use strict";
-//mol/wire/sub/sub.ts
+//mol/span/span.ts
 ;
 "use strict";
 var $;
 (function ($) {
-    $.$mol_wire_auto_sub = null;
-    function $mol_wire_auto(next = $.$mol_wire_auto_sub) {
-        return $.$mol_wire_auto_sub = next;
+    function $mol_tree2_to_string(tree) {
+        let output = [];
+        function dump(tree, prefix = '') {
+            if (tree.type.length) {
+                if (!prefix.length) {
+                    prefix = "\t";
+                }
+                output.push(tree.type);
+                if (tree.kids.length == 1) {
+                    output.push(' ');
+                    dump(tree.kids[0], prefix);
+                    return;
+                }
+                output.push("\n");
+            }
+            else if (tree.value.length || prefix.length) {
+                output.push("\\" + tree.value + "\n");
+            }
+            for (const kid of tree.kids) {
+                output.push(prefix);
+                dump(kid, prefix + "\t");
+            }
+        }
+        dump(tree);
+        return output.join('');
     }
-    $.$mol_wire_auto = $mol_wire_auto;
-    $.$mol_wire_affected = [];
+    $.$mol_tree2_to_string = $mol_tree2_to_string;
 })($ || ($ = {}));
-//mol/wire/wire.ts
+//mol/tree2/to/string/string.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_tree2 extends Object {
+        type;
+        value;
+        kids;
+        span;
+        constructor(type, value, kids, span) {
+            super();
+            this.type = type;
+            this.value = value;
+            this.kids = kids;
+            this.span = span;
+            this[Symbol.toStringTag] = type || '\\' + value;
+        }
+        static list(kids, span = $mol_span.unknown) {
+            return new $mol_tree2('', '', kids, span);
+        }
+        list(kids) {
+            return $mol_tree2.list(kids, this.span);
+        }
+        static data(value, kids = [], span = $mol_span.unknown) {
+            const chunks = value.split('\n');
+            if (chunks.length > 1) {
+                let kid_span = span.span(span.row, span.col, 0);
+                const data = chunks.map(chunk => {
+                    kid_span = kid_span.after(chunk.length);
+                    return new $mol_tree2('', chunk, [], kid_span);
+                });
+                kids = [...data, ...kids];
+                value = '';
+            }
+            return new $mol_tree2('', value, kids, span);
+        }
+        data(value, kids = []) {
+            return $mol_tree2.data(value, kids, this.span);
+        }
+        static struct(type, kids = [], span = $mol_span.unknown) {
+            if (/[ \n\t\\]/.test(type)) {
+                $$.$mol_fail(span.error(`Wrong type ${JSON.stringify(type)}`));
+            }
+            return new $mol_tree2(type, '', kids, span);
+        }
+        struct(type, kids = []) {
+            return $mol_tree2.struct(type, kids, this.span);
+        }
+        clone(kids, span = this.span) {
+            return new $mol_tree2(this.type, this.value, kids, span);
+        }
+        text() {
+            var values = [];
+            for (var kid of this.kids) {
+                if (kid.type)
+                    continue;
+                values.push(kid.value);
+            }
+            return this.value + values.join('\n');
+        }
+        static fromString(str, uri = 'unknown') {
+            return $$.$mol_tree2_from_string(str, uri);
+        }
+        toString() {
+            return $$.$mol_tree2_to_string(this);
+        }
+        insert(value, ...path) {
+            if (path.length === 0)
+                return value;
+            const type = path[0];
+            if (typeof type === 'string') {
+                let replaced = false;
+                const sub = this.kids.map((item, index) => {
+                    if (item.type !== type)
+                        return item;
+                    replaced = true;
+                    return item.insert(value, ...path.slice(1));
+                }).filter(Boolean);
+                if (!replaced && value) {
+                    sub.push(this.struct(type, []).insert(value, ...path.slice(1)));
+                }
+                return this.clone(sub);
+            }
+            else if (typeof type === 'number') {
+                const sub = this.kids.slice();
+                sub[type] = (sub[type] || this.list([]))
+                    .insert(value, ...path.slice(1));
+                return this.clone(sub.filter(Boolean));
+            }
+            else {
+                const kids = ((this.kids.length === 0) ? [this.list([])] : this.kids)
+                    .map(item => item.insert(value, ...path.slice(1)))
+                    .filter(Boolean);
+                return this.clone(kids);
+            }
+        }
+        select(...path) {
+            let next = [this];
+            for (const type of path) {
+                if (!next.length)
+                    break;
+                const prev = next;
+                next = [];
+                for (var item of prev) {
+                    switch (typeof (type)) {
+                        case 'string':
+                            for (var child of item.kids) {
+                                if (child.type == type) {
+                                    next.push(child);
+                                }
+                            }
+                            break;
+                        case 'number':
+                            if (type < item.kids.length)
+                                next.push(item.kids[type]);
+                            break;
+                        default: next.push(...item.kids);
+                    }
+                }
+            }
+            return this.list(next);
+        }
+        filter(path, value) {
+            const sub = this.kids.filter(item => {
+                var found = item.select(...path);
+                if (value === undefined) {
+                    return Boolean(found.kids.length);
+                }
+                else {
+                    return found.kids.some(child => child.value == value);
+                }
+            });
+            return this.clone(sub);
+        }
+        hack(belt, context = {}) {
+            return [].concat(...this.kids.map(child => {
+                let handle = belt[child.type] || belt[''];
+                if (!handle || handle === Object.prototype[child.type]) {
+                    handle = (input, belt, context) => [
+                        input.clone(input.hack(belt, context), context.span)
+                    ];
+                }
+                try {
+                    return handle(child, belt, context);
+                }
+                catch (error) {
+                    error.message += `\n${child.clone([])}${child.span}`;
+                    $mol_fail_hidden(error);
+                }
+            }));
+        }
+        error(message, Class = Error) {
+            return this.span.error(`${message}\n${this.clone([])}`, Class);
+        }
+    }
+    $.$mol_tree2 = $mol_tree2;
+    class $mol_tree2_empty extends $mol_tree2 {
+        constructor() {
+            super('', '', [], $mol_span.unknown);
+        }
+    }
+    $.$mol_tree2_empty = $mol_tree2_empty;
+})($ || ($ = {}));
+//mol/tree2/tree2.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_error_syntax extends SyntaxError {
+        reason;
+        line;
+        span;
+        constructor(reason, line, span) {
+            super(`${reason}\n${span}\n${line.substring(0, span.col - 1).replace(/\S/g, ' ')}${''.padEnd(span.length, '!')}\n${line}`);
+            this.reason = reason;
+            this.line = line;
+            this.span = span;
+        }
+    }
+    $.$mol_error_syntax = $mol_error_syntax;
+})($ || ($ = {}));
+//mol/error/syntax/syntax.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_tree2_from_string(str, uri = '?') {
+        const span = $mol_span.entire(uri, str);
+        var root = $mol_tree2.list([], span);
+        var stack = [root];
+        var pos = 0, row = 0, min_indent = 0;
+        while (str.length > pos) {
+            var indent = 0;
+            var line_start = pos;
+            row++;
+            while (str.length > pos && str[pos] == '\t') {
+                indent++;
+                pos++;
+            }
+            if (!root.kids.length) {
+                min_indent = indent;
+            }
+            indent -= min_indent;
+            if (indent < 0 || indent >= stack.length) {
+                const sp = span.span(row, 1, pos - line_start);
+                while (str.length > pos && str[pos] != '\n') {
+                    pos++;
+                }
+                if (indent < 0) {
+                    if (str.length > pos) {
+                        this.$mol_fail(new this.$mol_error_syntax(`Too few tabs`, str.substring(line_start, pos), sp));
+                    }
+                }
+                else {
+                    this.$mol_fail(new this.$mol_error_syntax(`Too many tabs`, str.substring(line_start, pos), sp));
+                }
+            }
+            stack.length = indent + 1;
+            var parent = stack[indent];
+            while (str.length > pos && str[pos] != '\\' && str[pos] != '\n') {
+                var error_start = pos;
+                while (str.length > pos && (str[pos] == ' ' || str[pos] == '\t')) {
+                    pos++;
+                }
+                if (pos > error_start) {
+                    let line_end = str.indexOf('\n', pos);
+                    if (line_end === -1)
+                        line_end = str.length;
+                    const sp = span.span(row, error_start - line_start + 1, pos - error_start);
+                    this.$mol_fail(new this.$mol_error_syntax(`Wrong nodes separator`, str.substring(line_start, line_end), sp));
+                }
+                var type_start = pos;
+                while (str.length > pos &&
+                    str[pos] != '\\' &&
+                    str[pos] != ' ' &&
+                    str[pos] != '\t' &&
+                    str[pos] != '\n') {
+                    pos++;
+                }
+                if (pos > type_start) {
+                    let next = new $mol_tree2(str.slice(type_start, pos), '', [], span.span(row, type_start - line_start + 1, pos - type_start));
+                    const parent_kids = parent.kids;
+                    parent_kids.push(next);
+                    parent = next;
+                }
+                if (str.length > pos && str[pos] == ' ') {
+                    pos++;
+                }
+            }
+            if (str.length > pos && str[pos] == '\\') {
+                var data_start = pos;
+                while (str.length > pos && str[pos] != '\n') {
+                    pos++;
+                }
+                let next = new $mol_tree2('', str.slice(data_start + 1, pos), [], span.span(row, data_start - line_start + 2, pos - data_start - 1));
+                const parent_kids = parent.kids;
+                parent_kids.push(next);
+                parent = next;
+            }
+            if (str.length === pos && stack.length > 0) {
+                const sp = span.span(row, pos - line_start + 1, 1);
+                this.$mol_fail(new this.$mol_error_syntax(`Unexpected EOF, LF required`, str.substring(line_start, str.length), sp));
+            }
+            stack.push(parent);
+            pos++;
+        }
+        return root;
+    }
+    $.$mol_tree2_from_string = $mol_tree2_from_string;
+})($ || ($ = {}));
+//mol/tree2/from/string/string.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_tree2_from_json(json, span = $mol_span.unknown) {
+        if (typeof json === 'boolean' || typeof json === 'number' || json === null) {
+            return new $mol_tree2(String(json), '', [], span);
+        }
+        if (typeof json === 'string') {
+            return $mol_tree2.data(json, [], span);
+        }
+        if (Array.isArray(json)) {
+            const sub = json.map(json => $mol_tree2_from_json(json, span));
+            return new $mol_tree2('/', '', sub, span);
+        }
+        if (ArrayBuffer.isView(json)) {
+            const buf = new Uint8Array(json.buffer, json.byteOffset, json.byteLength);
+            return $mol_tree2.data(String.fromCharCode(...buf), [], span);
+        }
+        if (json instanceof Date) {
+            return new $mol_tree2('', json.toISOString(), [], span);
+        }
+        if (typeof json.toJSON === 'function') {
+            return $mol_tree2_from_json(json.toJSON());
+        }
+        if (json instanceof Error) {
+            const { name, message, stack } = json;
+            json = { ...json, name, message, stack };
+        }
+        const sub = [];
+        for (var key in json) {
+            const val = json[key];
+            if (val === undefined)
+                continue;
+            const subsub = $mol_tree2_from_json(val, span);
+            if (/^[^\n\t\\ ]+$/.test(key)) {
+                sub.push(new $mol_tree2(key, '', [subsub], span));
+            }
+            else {
+                sub.push($mol_tree2.data(key, [subsub], span));
+            }
+        }
+        return new $mol_tree2('*', '', sub, span);
+    }
+    $.$mol_tree2_from_json = $mol_tree2_from_json;
+})($ || ($ = {}));
+//mol/tree2/from/json/json.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_term_color {
+        static reset = this.ansi(0, 0);
+        static bold = this.ansi(1, 22);
+        static italic = this.ansi(3, 23);
+        static underline = this.ansi(4, 24);
+        static inverse = this.ansi(7, 27);
+        static hidden = this.ansi(8, 28);
+        static strike = this.ansi(9, 29);
+        static gray = this.ansi(90, 39);
+        static red = this.ansi(91, 39);
+        static green = this.ansi(92, 39);
+        static yellow = this.ansi(93, 39);
+        static blue = this.ansi(94, 39);
+        static magenta = this.ansi(95, 39);
+        static cyan = this.ansi(96, 39);
+        static Gray = (str) => this.inverse(this.gray(str));
+        static Red = (str) => this.inverse(this.red(str));
+        static Green = (str) => this.inverse(this.green(str));
+        static Yellow = (str) => this.inverse(this.yellow(str));
+        static Blue = (str) => this.inverse(this.blue(str));
+        static Magenta = (str) => this.inverse(this.magenta(str));
+        static Cyan = (str) => this.inverse(this.cyan(str));
+        static ansi(open, close) {
+            if (typeof process === 'undefined')
+                return String;
+            if (!process.stdout.isTTY)
+                return String;
+            const prefix = `\x1b[${open}m`;
+            const postfix = `\x1b[${close}m`;
+            const suffix_regexp = new RegExp(postfix.replace('[', '\\['), 'g');
+            return function colorer(str) {
+                str = String(str);
+                if (str === '')
+                    return str;
+                const suffix = str.replace(suffix_regexp, prefix);
+                return prefix + suffix + postfix;
+            };
+        }
+    }
+    $.$mol_term_color = $mol_term_color;
+})($ || ($ = {}));
+//mol/term/color/color.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_log3_node_make(level, output, type, color) {
+        return function $mol_log3_logger(event) {
+            if (!event.time)
+                event = { time: new Date().toISOString(), ...event };
+            let tree = this.$mol_tree2_from_json(event);
+            tree = tree.struct(type, tree.kids);
+            let str = color(tree.toString());
+            this.console[level](str);
+            const self = this;
+            return () => self.console.groupEnd();
+        };
+    }
+    $.$mol_log3_node_make = $mol_log3_node_make;
+    $.$mol_log3_come = $mol_log3_node_make('info', 'stdout', 'come', $mol_term_color.blue);
+    $.$mol_log3_done = $mol_log3_node_make('info', 'stdout', 'done', $mol_term_color.green);
+    $.$mol_log3_fail = $mol_log3_node_make('error', 'stderr', 'fail', $mol_term_color.red);
+    $.$mol_log3_warn = $mol_log3_node_make('warn', 'stderr', 'warn', $mol_term_color.yellow);
+    $.$mol_log3_rise = $mol_log3_node_make('log', 'stdout', 'rise', $mol_term_color.magenta);
+    $.$mol_log3_area = $mol_log3_node_make('log', 'stdout', 'area', $mol_term_color.cyan);
+})($ || ($ = {}));
+//mol/log3/log3.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_env() {
+        return {};
+    }
+    $.$mol_env = $mol_env;
+})($ || ($ = {}));
+//mol/env/env.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_env = function $mol_env() {
+        return this.process.env;
+    };
+})($ || ($ = {}));
+//mol/env/env.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_exec(dir, command, ...args) {
+        let [app, ...args0] = command.split(' ');
+        args = [...args0, ...args];
+        this.$mol_log3_come({
+            place: '$mol_exec',
+            dir: $node.path.relative('', dir),
+            message: 'Run',
+            command: `${app} ${args.join(' ')}`,
+        });
+        var res = $node['child_process'].spawnSync(app, args, {
+            cwd: $node.path.resolve(dir),
+            shell: true,
+            env: this.$mol_env(),
+        });
+        if (res.status || res.error)
+            return $mol_fail(res.error || new Error(res.stderr.toString()));
+        if (!res.stdout)
+            res.stdout = Buffer.from([]);
+        return res;
+    }
+    $.$mol_exec = $mol_exec;
+})($ || ($ = {}));
+//mol/exec/exec.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const TextEncoder = globalThis.TextEncoder ?? $node.util.TextEncoder;
+    const encoder = new TextEncoder();
+    function $mol_charset_encode(value) {
+        return encoder.encode(value);
+    }
+    $.$mol_charset_encode = $mol_charset_encode;
+})($ || ($ = {}));
+//mol/charset/encode/encode.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_int62_string_ensure(str) {
+        if (typeof str !== 'string')
+            return null;
+        return $mol_int62_from_string(str) && str;
+    }
+    $.$mol_int62_string_ensure = $mol_int62_string_ensure;
+    $.$mol_int62_max = (2 ** 30) - 1;
+    $.$mol_int62_min = -(2 ** 30);
+    $.$mol_int62_range = $.$mol_int62_max - $.$mol_int62_min + 1;
+    function $mol_int62_to_string({ lo, hi }) {
+        lo = (lo + $.$mol_int62_range) % $.$mol_int62_range;
+        hi = (hi + $.$mol_int62_range) % $.$mol_int62_range;
+        return lo.toString(36) + '_' + hi.toString(36);
+    }
+    $.$mol_int62_to_string = $mol_int62_to_string;
+    function $mol_int62_from_string(str) {
+        const [str_lo, str_hi] = str.split('_');
+        const int_lo = parseInt(str_lo, 36);
+        const int_hi = parseInt(str_hi, 36);
+        if (int_lo.toString(36) !== str_lo || int_hi.toString(36) !== str_hi) {
+            return null;
+        }
+        return {
+            lo: (int_lo - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+            hi: (int_hi - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
+        };
+    }
+    $.$mol_int62_from_string = $mol_int62_from_string;
+    function $mol_int62_compare(left_lo, left_hi, right_lo, right_hi) {
+        return (right_hi - left_hi) || (right_lo - left_lo);
+    }
+    $.$mol_int62_compare = $mol_int62_compare;
+    function $mol_int62_inc(lo, hi, max = $.$mol_int62_max) {
+        if (lo === max) {
+            return { lo: -max, hi: hi + 1 };
+        }
+        else {
+            return { lo: lo + 1, hi };
+        }
+    }
+    $.$mol_int62_inc = $mol_int62_inc;
+    function $mol_int62_random() {
+        return {
+            lo: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
+            hi: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
+        };
+    }
+    $.$mol_int62_random = $mol_int62_random;
+    function $mol_int62_hash_string(str) {
+        return $mol_int62_to_string($mol_int62_hash_buffer($mol_charset_encode(str)));
+    }
+    $.$mol_int62_hash_string = $mol_int62_hash_string;
+    function $mol_int62_hash_buffer(buf, seed = { lo: 0, hi: 0 }) {
+        let h1 = 0xdeadbeef ^ seed.lo;
+        let h2 = 0x41c6ce57 ^ seed.hi;
+        for (const byte of buf) {
+            h1 = Math.imul(h1 ^ byte, 2654435761);
+            h2 = Math.imul(h2 ^ byte, 1597334677);
+        }
+        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+        return { lo: h1 << 1 >> 1, hi: h2 << 1 >> 1 };
+    }
+    $.$mol_int62_hash_buffer = $mol_int62_hash_buffer;
+})($ || ($ = {}));
+//mol/int62/int62.ts
+;
+"use strict";
+//mol/data/value/value.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_data_setup(value, config) {
+        return Object.assign(value, {
+            config,
+            Value: null
+        });
+    }
+    $.$mol_data_setup = $mol_data_setup;
+})($ || ($ = {}));
+//mol/data/setup/setup.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_diff_path(...paths) {
+        const limit = Math.min(...paths.map(path => path.length));
+        lookup: for (var i = 0; i < limit; ++i) {
+            const first = paths[0][i];
+            for (let j = 1; j < paths.length; ++j) {
+                if (paths[j][i] !== first)
+                    break lookup;
+            }
+        }
+        return {
+            prefix: paths[0].slice(0, i),
+            suffix: paths.map(path => path.slice(i)),
+        };
+    }
+    $.$mol_diff_path = $mol_diff_path;
+})($ || ($ = {}));
+//mol/diff/path/path.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_error_mix extends Error {
+        errors;
+        constructor(message, ...errors) {
+            super(message);
+            this.errors = errors;
+            if (errors.length) {
+                const stacks = [...errors.map(error => error.stack), this.stack];
+                const diff = $mol_diff_path(...stacks.map(stack => {
+                    if (!stack)
+                        return [];
+                    return stack.split('\n').reverse();
+                }));
+                const head = diff.prefix.reverse().join('\n');
+                const tails = diff.suffix.map(path => path.reverse().map(line => line.replace(/^(?!\s+at)/, '\tat (.) ')).join('\n')).join('\n\tat (.) -----\n');
+                this.stack = `Error: ${this.constructor.name}\n\tat (.) /"""\\\n${tails}\n\tat (.) \\___/\n${head}`;
+                this.message += errors.map(error => '\n' + error.message).join('');
+            }
+        }
+        toJSON() {
+            return this.message;
+        }
+    }
+    $.$mol_error_mix = $mol_error_mix;
+})($ || ($ = {}));
+//mol/error/mix/mix.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_data_error extends $mol_error_mix {
+    }
+    $.$mol_data_error = $mol_data_error;
+})($ || ($ = {}));
+//mol/data/error/error.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_data_enum(name, dict) {
+        const index = {};
+        for (let key in dict) {
+            if (Number.isNaN(Number(key))) {
+                index[dict[key]] = key;
+            }
+        }
+        return $mol_data_setup((value) => {
+            if (typeof index[value] !== 'string') {
+                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
+            }
+            return value;
+        }, { name, dict });
+    }
+    $.$mol_data_enum = $mol_data_enum;
+})($ || ($ = {}));
+//mol/data/enum/enum.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_crypto_native = $node.crypto.webcrypto;
+})($ || ($ = {}));
+//mol/crypto/native/native.node.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const algorithm = {
+        name: 'ECDSA',
+        hash: 'SHA-256',
+        namedCurve: "P-256",
+    };
+    async function $mol_crypto_auditor_pair() {
+        const pair = await $mol_crypto_native.subtle.generateKey(algorithm, true, ['sign', 'verify']);
+        return {
+            public: new $mol_crypto_auditor_public(pair.publicKey),
+            private: new $mol_crypto_auditor_private(pair.privateKey),
+        };
+    }
+    $.$mol_crypto_auditor_pair = $mol_crypto_auditor_pair;
+    class $mol_crypto_auditor_public extends Object {
+        native;
+        static size = 86;
+        constructor(native) {
+            super();
+            this.native = native;
+        }
+        static async from(serial) {
+            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
+                crv: "P-256",
+                ext: true,
+                key_ops: ['verify'],
+                kty: "EC",
+                x: serial.slice(0, 43),
+                y: serial.slice(43, 86),
+            }, algorithm, true, ['verify']));
+        }
+        async serial() {
+            const { x, y } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
+            return x + y;
+        }
+        async verify(data, sign) {
+            return await $mol_crypto_native.subtle.verify(algorithm, this.native, sign, data);
+        }
+    }
+    $.$mol_crypto_auditor_public = $mol_crypto_auditor_public;
+    class $mol_crypto_auditor_private extends Object {
+        native;
+        static size = 129;
+        constructor(native) {
+            super();
+            this.native = native;
+        }
+        static async from(serial) {
+            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
+                crv: "P-256",
+                ext: true,
+                key_ops: ['sign'],
+                kty: "EC",
+                x: serial.slice(0, 43),
+                y: serial.slice(43, 86),
+                d: serial.slice(86, 129),
+            }, algorithm, true, ['sign']));
+        }
+        async serial() {
+            const { x, y, d } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
+            return x + y + d;
+        }
+        async sign(data) {
+            return await $mol_crypto_native.subtle.sign(algorithm, this.native, data);
+        }
+        async public() {
+            return await $mol_crypto_auditor_public.from($mol_crypto_auditor_private_to_public(await this.serial()));
+        }
+    }
+    $.$mol_crypto_auditor_private = $mol_crypto_auditor_private;
+    $.$mol_crypto_auditor_sign_size = 64;
+    function $mol_crypto_auditor_private_to_public(serial) {
+        return serial.slice(0, 86);
+    }
+    $.$mol_crypto_auditor_private_to_public = $mol_crypto_auditor_private_to_public;
+})($ || ($ = {}));
+//mol/crypto/auditor/auditor.ts
+;
+"use strict";
+var $;
+(function ($) {
+    let $hyoo_crowd_peer_level;
+    (function ($hyoo_crowd_peer_level) {
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["get"] = 0] = "get";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["add"] = 1] = "add";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["mod"] = 2] = "mod";
+        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["law"] = 3] = "law";
+    })($hyoo_crowd_peer_level = $.$hyoo_crowd_peer_level || ($.$hyoo_crowd_peer_level = {}));
+    class $hyoo_crowd_peer extends Object {
+        key_public;
+        key_public_serial;
+        key_private;
+        key_private_serial;
+        id;
+        constructor(key_public, key_public_serial, key_private, key_private_serial) {
+            super();
+            this.key_public = key_public;
+            this.key_public_serial = key_public_serial;
+            this.key_private = key_private;
+            this.key_private_serial = key_private_serial;
+            this.id = $mol_int62_hash_string(this.key_public_serial);
+        }
+        static async generate() {
+            const pair = await $$.$mol_crypto_auditor_pair();
+            const serial = await pair.private.serial();
+            return new this(pair.public, $mol_crypto_auditor_private_to_public(serial), pair.private, serial);
+        }
+        static async restore(serial) {
+            return new this(await $$.$mol_crypto_auditor_public.from(serial), $mol_crypto_auditor_private_to_public(serial), await $$.$mol_crypto_auditor_private.from(serial), serial);
+        }
+    }
+    $.$hyoo_crowd_peer = $hyoo_crowd_peer;
+})($ || ($ = {}));
+//hyoo/crowd/peer/peer.ts
 ;
 "use strict";
 var $;
@@ -397,6 +1210,334 @@ var $;
     });
 })($ || ($ = {}));
 //mol/dev/format/format.ts
+;
+"use strict";
+//mol/charset/encoding/encoding.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const decoders = {};
+    function $mol_charset_decode(buffer, encoding = 'utf8') {
+        let decoder = decoders[encoding];
+        if (!decoder)
+            decoder = decoders[encoding] = new TextDecoder(encoding);
+        return decoder.decode(buffer);
+    }
+    $.$mol_charset_decode = $mol_charset_decode;
+})($ || ($ = {}));
+//mol/charset/decode/decode.ts
+;
+"use strict";
+var $;
+(function ($) {
+    const level = $mol_data_enum('level', $hyoo_crowd_peer_level);
+    let $hyoo_crowd_unit_kind;
+    (function ($hyoo_crowd_unit_kind) {
+        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["grab"] = 0] = "grab";
+        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["join"] = 1] = "join";
+        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["give"] = 2] = "give";
+        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["data"] = 3] = "data";
+    })($hyoo_crowd_unit_kind = $.$hyoo_crowd_unit_kind || ($.$hyoo_crowd_unit_kind = {}));
+    let $hyoo_crowd_unit_group;
+    (function ($hyoo_crowd_unit_group) {
+        $hyoo_crowd_unit_group[$hyoo_crowd_unit_group["auth"] = 0] = "auth";
+        $hyoo_crowd_unit_group[$hyoo_crowd_unit_group["data"] = 1] = "data";
+    })($hyoo_crowd_unit_group = $.$hyoo_crowd_unit_group || ($.$hyoo_crowd_unit_group = {}));
+    class $hyoo_crowd_unit extends Object {
+        land;
+        auth;
+        head;
+        self;
+        next;
+        prev;
+        time;
+        data;
+        bin;
+        constructor(land, auth, head, self, next, prev, time, data, bin) {
+            super();
+            this.land = land;
+            this.auth = auth;
+            this.head = head;
+            this.self = self;
+            this.next = next;
+            this.prev = prev;
+            this.time = time;
+            this.data = data;
+            this.bin = bin;
+        }
+        kind() {
+            if (this.head === this.self && this.auth === this.self) {
+                if (this.head === this.land) {
+                    return $hyoo_crowd_unit_kind.grab;
+                }
+                else {
+                    return $hyoo_crowd_unit_kind.join;
+                }
+            }
+            if (this.head === this.land) {
+                return $hyoo_crowd_unit_kind.give;
+            }
+            return $hyoo_crowd_unit_kind.data;
+        }
+        group() {
+            return this.kind() === $hyoo_crowd_unit_kind.data
+                ? $hyoo_crowd_unit_group.data
+                : $hyoo_crowd_unit_group.auth;
+        }
+        level() {
+            switch (this.kind()) {
+                case $hyoo_crowd_unit_kind.grab: return $hyoo_crowd_peer_level.law;
+                case $hyoo_crowd_unit_kind.give: return level(this.data);
+                default: $mol_fail(new Error(`Wrong unit kind for getting level: ${this.kind()}`));
+            }
+        }
+        [Symbol.toPrimitive]() {
+            return JSON.stringify(this);
+        }
+        [$mol_dev_format_head]() {
+            switch (this.kind()) {
+                case $hyoo_crowd_unit_kind.grab:
+                    return $mol_dev_format_div({}, $mol_dev_format_native(this), ' 👑');
+                case $hyoo_crowd_unit_kind.join:
+                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 🔑 ', this.self));
+                case $hyoo_crowd_unit_kind.give:
+                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 🏅 ', this.self, ' '), $mol_dev_format_native($hyoo_crowd_peer_level[this.data] ?? this.data));
+                case $hyoo_crowd_unit_kind.data:
+                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 📦 ', this.head, '!', this.self, ' '), $mol_dev_format_native(this.data));
+            }
+        }
+    }
+    $.$hyoo_crowd_unit = $hyoo_crowd_unit;
+    const offset = {
+        land_lo: 0,
+        land_hi: 4,
+        auth_lo: 8,
+        auth_hi: 12,
+        head_lo: 16,
+        head_hi: 20,
+        self_lo: 24,
+        self_hi: 28,
+        next_lo: 32,
+        next_hi: 36,
+        prev_lo: 40,
+        prev_hi: 44,
+        time: 48,
+        size: 54,
+        data: 56,
+    };
+    class $hyoo_crowd_unit_bin extends DataView {
+        static from_buffer(buffer) {
+            const size = Math.ceil(Math.abs(buffer[offset.size / 2]) / 8) * 8 + offset.data + $mol_crypto_auditor_sign_size;
+            return new this(buffer.slice(0, size / 2).buffer);
+        }
+        static from_unit(unit) {
+            if (unit.bin)
+                return unit.bin;
+            const type = unit.data === null
+                ? 0
+                : unit.data instanceof Uint8Array
+                    ? -1
+                    : 1;
+            const buff = type === 0 ? null
+                : type > 0 ? $mol_charset_encode(JSON.stringify(unit.data))
+                    : unit.data;
+            const size = buff?.byteLength ?? 0;
+            if (type > 0 && size > 2 ** 15 - 1)
+                throw new Error(`Too large json data: ${size} > ${2 ** 15 - 1}`);
+            if (type < 0 && size > 2 ** 15)
+                throw new Error(`Too large binary data: ${size} > ${2 ** 15}`);
+            const total = offset.data + Math.ceil(size / 8) * 8 + $mol_crypto_auditor_sign_size;
+            const mem = new Uint8Array(total);
+            const bin = new $hyoo_crowd_unit_bin(mem.buffer);
+            const land = $mol_int62_from_string(unit.land);
+            bin.setInt32(offset.land_lo, land.lo, true);
+            bin.setInt32(offset.land_hi, land.hi, true);
+            const auth = $mol_int62_from_string(unit.auth);
+            bin.setInt32(offset.auth_lo, auth.lo, true);
+            bin.setInt32(offset.auth_hi, auth.hi, true);
+            const head = $mol_int62_from_string(unit.head);
+            bin.setInt32(offset.head_lo, head.lo, true);
+            bin.setInt32(offset.head_hi, head.hi, true);
+            const self = $mol_int62_from_string(unit.self);
+            bin.setInt32(offset.self_lo, self.lo, true);
+            bin.setInt32(offset.self_hi, self.hi, true);
+            const next = $mol_int62_from_string(unit.next);
+            bin.setInt32(offset.next_lo, next.lo, true);
+            bin.setInt32(offset.next_hi, next.hi, true);
+            const prev = $mol_int62_from_string(unit.prev);
+            bin.setInt32(offset.prev_lo, prev.lo, true);
+            bin.setInt32(offset.prev_hi, prev.hi, true);
+            bin.setInt32(offset.time, unit.time, true);
+            bin.setInt16(offset.size, type * size, true);
+            if (buff)
+                mem.set(buff, offset.data);
+            return bin;
+        }
+        sign(next) {
+            const sign_offset = this.byteOffset + this.byteLength - $mol_crypto_auditor_sign_size;
+            const buff = new Uint8Array(this.buffer, sign_offset, $mol_crypto_auditor_sign_size);
+            if (!next)
+                return buff;
+            buff.set(next);
+            return buff;
+        }
+        size() {
+            return Math.ceil(Math.abs(this.getInt16(offset.size, true)) / 8) * 8 + offset.data + $mol_crypto_auditor_sign_size;
+        }
+        sens() {
+            return new Uint8Array(this.buffer, this.byteOffset, this.size() - $mol_crypto_auditor_sign_size);
+        }
+        unit() {
+            const land = $mol_int62_to_string({
+                lo: this.getInt32(offset.land_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.land_hi, true) << 1 >> 1,
+            });
+            const auth = $mol_int62_to_string({
+                lo: this.getInt32(offset.auth_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.auth_hi, true) << 1 >> 1,
+            });
+            const head = $mol_int62_to_string({
+                lo: this.getInt32(offset.head_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.head_hi, true) << 1 >> 1,
+            });
+            const self = $mol_int62_to_string({
+                lo: this.getInt32(offset.self_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.self_hi, true) << 1 >> 1,
+            });
+            const next = $mol_int62_to_string({
+                lo: this.getInt32(offset.next_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.next_hi, true) << 1 >> 1,
+            });
+            const prev = $mol_int62_to_string({
+                lo: this.getInt32(offset.prev_lo, true) << 1 >> 1,
+                hi: this.getInt32(offset.prev_hi, true) << 1 >> 1,
+            });
+            const time = this.getInt32(offset.time, true) << 1 >> 1;
+            const type_size = this.getInt16(offset.size, true);
+            let data = null;
+            if (type_size) {
+                try {
+                    var buff = new Uint8Array(this.buffer, this.byteOffset + offset.data, Math.abs(type_size));
+                }
+                catch (error) {
+                    error['message'] += `\nhead=${head};self=${self}`;
+                    $mol_fail_hidden(error);
+                }
+                if (type_size < 0)
+                    data = buff;
+                else
+                    data = JSON.parse($mol_charset_decode(buff));
+            }
+            return new $hyoo_crowd_unit(land, auth, head, self, next, prev, time, data, this);
+        }
+    }
+    $.$hyoo_crowd_unit_bin = $hyoo_crowd_unit_bin;
+    function $hyoo_crowd_unit_compare(left, right) {
+        return (left.group() - right.group())
+            || (left.time - right.time)
+            || ((left.auth > right.auth) ? 1 : (left.auth < right.auth) ? -1 : 0)
+            || ((left.self > right.self) ? 1 : (left.self < right.self) ? -1 : 0)
+            || ((left.head > right.head) ? 1 : (left.head < right.head) ? -1 : 0)
+            || ((left.prev > right.prev) ? 1 : (left.prev < right.prev) ? -1 : 0)
+            || ((left.next > right.next) ? 1 : (left.next < right.next) ? -1 : 0)
+            || ((left.land > right.land) ? 1 : (left.land < right.land) ? -1 : 0);
+    }
+    $.$hyoo_crowd_unit_compare = $hyoo_crowd_unit_compare;
+})($ || ($ = {}));
+//hyoo/crowd/unit/unit.ts
+;
+"use strict";
+var $;
+(function ($) {
+    let $mol_wire_cursor;
+    (function ($mol_wire_cursor) {
+        $mol_wire_cursor[$mol_wire_cursor["stale"] = -1] = "stale";
+        $mol_wire_cursor[$mol_wire_cursor["doubt"] = -2] = "doubt";
+        $mol_wire_cursor[$mol_wire_cursor["fresh"] = -3] = "fresh";
+        $mol_wire_cursor[$mol_wire_cursor["final"] = -4] = "final";
+    })($mol_wire_cursor = $.$mol_wire_cursor || ($.$mol_wire_cursor = {}));
+})($ || ($ = {}));
+//mol/wire/cursor/cursor.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_wire_pub extends Object {
+        data = [];
+        static get [Symbol.species]() {
+            return Array;
+        }
+        sub_from = 0;
+        get sub_list() {
+            const res = [];
+            for (let i = this.sub_from; i < this.data.length; i += 2) {
+                res.push(this.data[i]);
+            }
+            return res;
+        }
+        get sub_empty() {
+            return this.sub_from === this.data.length;
+        }
+        sub_on(sub, pub_pos) {
+            const pos = this.data.length;
+            this.data.push(sub, pub_pos);
+            return pos;
+        }
+        sub_off(sub_pos) {
+            if (!(sub_pos < this.data.length)) {
+                $mol_fail(new Error(`Wrong pos ${sub_pos}`));
+            }
+            const end = this.data.length - 2;
+            if (sub_pos !== end) {
+                this.peer_move(end, sub_pos);
+            }
+            this.data.pop();
+            this.data.pop();
+            if (this.data.length === this.sub_from)
+                this.reap();
+        }
+        reap() { }
+        promote() {
+            $mol_wire_auto()?.track_next(this);
+        }
+        fresh() { }
+        complete() { }
+        emit(quant = $mol_wire_cursor.stale) {
+            for (let i = this.sub_from; i < this.data.length; i += 2) {
+                ;
+                this.data[i].absorb(quant);
+            }
+        }
+        peer_move(from_pos, to_pos) {
+            const peer = this.data[from_pos];
+            const self_pos = this.data[from_pos + 1];
+            this.data[to_pos] = peer;
+            this.data[to_pos + 1] = self_pos;
+            peer.peer_repos(self_pos, to_pos);
+        }
+        peer_repos(peer_pos, self_pos) {
+            this.data[peer_pos + 1] = self_pos;
+        }
+    }
+    $.$mol_wire_pub = $mol_wire_pub;
+})($ || ($ = {}));
+//mol/wire/pub/pub.ts
+;
+"use strict";
+//mol/wire/sub/sub.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $.$mol_wire_auto_sub = null;
+    function $mol_wire_auto(next = $.$mol_wire_auto_sub) {
+        return $.$mol_wire_auto_sub = next;
+    }
+    $.$mol_wire_auto = $mol_wire_auto;
+    $.$mol_wire_affected = [];
+})($ || ($ = {}));
+//mol/wire/wire.ts
 ;
 "use strict";
 var $;
@@ -1382,609 +2523,6 @@ var $;
 //mol/dom/context/context.ts
 ;
 "use strict";
-//node/node.ts
-;
-"use strict";
-var $node = new Proxy({ require }, {
-    get(target, name, wrapper) {
-        if (target[name])
-            return target[name];
-        const mod = target.require('module');
-        if (mod.builtinModules.indexOf(name) >= 0)
-            return target.require(name);
-        if (name[0] === '.')
-            return target.require(name);
-        const path = target.require('path');
-        const fs = target.require('fs');
-        let dir = path.resolve('.');
-        const suffix = `./node_modules/${name}`;
-        const $$ = $;
-        while (!fs.existsSync(path.join(dir, suffix))) {
-            const parent = path.resolve(dir, '..');
-            if (parent === dir) {
-                $$.$mol_exec('.', 'npm', 'install', '--omit=dev', name);
-                try {
-                    $$.$mol_exec('.', 'npm', 'install', '--omit=dev', '@types/' + name);
-                }
-                catch { }
-                break;
-            }
-            else {
-                dir = parent;
-            }
-        }
-        return target.require(name);
-    },
-    set(target, name, value) {
-        target[name] = value;
-        return true;
-    },
-});
-require = (req => Object.assign(function require(name) {
-    return $node[name];
-}, req))(require);
-//node/node.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_log3_area_lazy(event) {
-        const self = this;
-        const stack = self.$mol_log3_stack;
-        const deep = stack.length;
-        let logged = false;
-        stack.push(() => {
-            logged = true;
-            self.$mol_log3_area.call(self, event);
-        });
-        return () => {
-            if (logged)
-                self.console.groupEnd();
-            if (stack.length > deep)
-                stack.length = deep;
-        };
-    }
-    $.$mol_log3_area_lazy = $mol_log3_area_lazy;
-    $.$mol_log3_stack = [];
-})($ || ($ = {}));
-//mol/log3/log3.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_span extends $mol_object2 {
-        uri;
-        source;
-        row;
-        col;
-        length;
-        constructor(uri, source, row, col, length) {
-            super();
-            this.uri = uri;
-            this.source = source;
-            this.row = row;
-            this.col = col;
-            this.length = length;
-            this[Symbol.toStringTag] = `${this.uri}#${this.row}:${this.col}/${this.length}`;
-        }
-        static unknown = $mol_span.begin('?');
-        static begin(uri, source = '') {
-            return new $mol_span(uri, source, 1, 1, 0);
-        }
-        static end(uri, source) {
-            return new $mol_span(uri, source, 1, source.length + 1, length);
-        }
-        static entire(uri, source) {
-            return new $mol_span(uri, source, 1, 1, source.length);
-        }
-        toString() {
-            return this[Symbol.toStringTag];
-        }
-        toJSON() {
-            return {
-                uri: this.uri,
-                row: this.row,
-                col: this.col,
-                length: this.length
-            };
-        }
-        error(message, Class = Error) {
-            return new Class(`${message}${this}`);
-        }
-        span(row, col, length) {
-            return new $mol_span(this.uri, this.source, row, col, length);
-        }
-        after(length = 0) {
-            return new $mol_span(this.uri, this.source, this.row, this.col + this.length, length);
-        }
-        slice(begin, end = -1) {
-            let len = this.length;
-            if (begin < 0)
-                begin += len;
-            if (end < 0)
-                end += len;
-            if (begin < 0 || begin > len)
-                this.$.$mol_fail(`Begin value '${begin}' out of range ${this}`);
-            if (end < 0 || end > len)
-                this.$.$mol_fail(`End value '${end}' out of range ${this}`);
-            if (end < begin)
-                this.$.$mol_fail(`End value '${end}' can't be less than begin value ${this}`);
-            return this.span(this.row, this.col + begin, end - begin);
-        }
-    }
-    $.$mol_span = $mol_span;
-})($ || ($ = {}));
-//mol/span/span.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_tree2_to_string(tree) {
-        let output = [];
-        function dump(tree, prefix = '') {
-            if (tree.type.length) {
-                if (!prefix.length) {
-                    prefix = "\t";
-                }
-                output.push(tree.type);
-                if (tree.kids.length == 1) {
-                    output.push(' ');
-                    dump(tree.kids[0], prefix);
-                    return;
-                }
-                output.push("\n");
-            }
-            else if (tree.value.length || prefix.length) {
-                output.push("\\" + tree.value + "\n");
-            }
-            for (const kid of tree.kids) {
-                output.push(prefix);
-                dump(kid, prefix + "\t");
-            }
-        }
-        dump(tree);
-        return output.join('');
-    }
-    $.$mol_tree2_to_string = $mol_tree2_to_string;
-})($ || ($ = {}));
-//mol/tree2/to/string/string.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_tree2 extends Object {
-        type;
-        value;
-        kids;
-        span;
-        constructor(type, value, kids, span) {
-            super();
-            this.type = type;
-            this.value = value;
-            this.kids = kids;
-            this.span = span;
-            this[Symbol.toStringTag] = type || '\\' + value;
-        }
-        static list(kids, span = $mol_span.unknown) {
-            return new $mol_tree2('', '', kids, span);
-        }
-        list(kids) {
-            return $mol_tree2.list(kids, this.span);
-        }
-        static data(value, kids = [], span = $mol_span.unknown) {
-            const chunks = value.split('\n');
-            if (chunks.length > 1) {
-                let kid_span = span.span(span.row, span.col, 0);
-                const data = chunks.map(chunk => {
-                    kid_span = kid_span.after(chunk.length);
-                    return new $mol_tree2('', chunk, [], kid_span);
-                });
-                kids = [...data, ...kids];
-                value = '';
-            }
-            return new $mol_tree2('', value, kids, span);
-        }
-        data(value, kids = []) {
-            return $mol_tree2.data(value, kids, this.span);
-        }
-        static struct(type, kids = [], span = $mol_span.unknown) {
-            if (/[ \n\t\\]/.test(type)) {
-                $$.$mol_fail(span.error(`Wrong type ${JSON.stringify(type)}`));
-            }
-            return new $mol_tree2(type, '', kids, span);
-        }
-        struct(type, kids = []) {
-            return $mol_tree2.struct(type, kids, this.span);
-        }
-        clone(kids, span = this.span) {
-            return new $mol_tree2(this.type, this.value, kids, span);
-        }
-        text() {
-            var values = [];
-            for (var kid of this.kids) {
-                if (kid.type)
-                    continue;
-                values.push(kid.value);
-            }
-            return this.value + values.join('\n');
-        }
-        static fromString(str, uri = 'unknown') {
-            return $$.$mol_tree2_from_string(str, uri);
-        }
-        toString() {
-            return $$.$mol_tree2_to_string(this);
-        }
-        insert(value, ...path) {
-            if (path.length === 0)
-                return value;
-            const type = path[0];
-            if (typeof type === 'string') {
-                let replaced = false;
-                const sub = this.kids.map((item, index) => {
-                    if (item.type !== type)
-                        return item;
-                    replaced = true;
-                    return item.insert(value, ...path.slice(1));
-                }).filter(Boolean);
-                if (!replaced && value) {
-                    sub.push(this.struct(type, []).insert(value, ...path.slice(1)));
-                }
-                return this.clone(sub);
-            }
-            else if (typeof type === 'number') {
-                const sub = this.kids.slice();
-                sub[type] = (sub[type] || this.list([]))
-                    .insert(value, ...path.slice(1));
-                return this.clone(sub.filter(Boolean));
-            }
-            else {
-                const kids = ((this.kids.length === 0) ? [this.list([])] : this.kids)
-                    .map(item => item.insert(value, ...path.slice(1)))
-                    .filter(Boolean);
-                return this.clone(kids);
-            }
-        }
-        select(...path) {
-            let next = [this];
-            for (const type of path) {
-                if (!next.length)
-                    break;
-                const prev = next;
-                next = [];
-                for (var item of prev) {
-                    switch (typeof (type)) {
-                        case 'string':
-                            for (var child of item.kids) {
-                                if (child.type == type) {
-                                    next.push(child);
-                                }
-                            }
-                            break;
-                        case 'number':
-                            if (type < item.kids.length)
-                                next.push(item.kids[type]);
-                            break;
-                        default: next.push(...item.kids);
-                    }
-                }
-            }
-            return this.list(next);
-        }
-        filter(path, value) {
-            const sub = this.kids.filter(item => {
-                var found = item.select(...path);
-                if (value === undefined) {
-                    return Boolean(found.kids.length);
-                }
-                else {
-                    return found.kids.some(child => child.value == value);
-                }
-            });
-            return this.clone(sub);
-        }
-        hack(belt, context = {}) {
-            return [].concat(...this.kids.map(child => {
-                let handle = belt[child.type] || belt[''];
-                if (!handle || handle === Object.prototype[child.type]) {
-                    handle = (input, belt, context) => [
-                        input.clone(input.hack(belt, context), context.span)
-                    ];
-                }
-                try {
-                    return handle(child, belt, context);
-                }
-                catch (error) {
-                    error.message += `\n${child.clone([])}${child.span}`;
-                    $mol_fail_hidden(error);
-                }
-            }));
-        }
-        error(message, Class = Error) {
-            return this.span.error(`${message}\n${this.clone([])}`, Class);
-        }
-    }
-    $.$mol_tree2 = $mol_tree2;
-    class $mol_tree2_empty extends $mol_tree2 {
-        constructor() {
-            super('', '', [], $mol_span.unknown);
-        }
-    }
-    $.$mol_tree2_empty = $mol_tree2_empty;
-})($ || ($ = {}));
-//mol/tree2/tree2.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_error_syntax extends SyntaxError {
-        reason;
-        line;
-        span;
-        constructor(reason, line, span) {
-            super(`${reason}\n${span}\n${line.substring(0, span.col - 1).replace(/\S/g, ' ')}${''.padEnd(span.length, '!')}\n${line}`);
-            this.reason = reason;
-            this.line = line;
-            this.span = span;
-        }
-    }
-    $.$mol_error_syntax = $mol_error_syntax;
-})($ || ($ = {}));
-//mol/error/syntax/syntax.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_tree2_from_string(str, uri = '?') {
-        const span = $mol_span.entire(uri, str);
-        var root = $mol_tree2.list([], span);
-        var stack = [root];
-        var pos = 0, row = 0, min_indent = 0;
-        while (str.length > pos) {
-            var indent = 0;
-            var line_start = pos;
-            row++;
-            while (str.length > pos && str[pos] == '\t') {
-                indent++;
-                pos++;
-            }
-            if (!root.kids.length) {
-                min_indent = indent;
-            }
-            indent -= min_indent;
-            if (indent < 0 || indent >= stack.length) {
-                const sp = span.span(row, 1, pos - line_start);
-                while (str.length > pos && str[pos] != '\n') {
-                    pos++;
-                }
-                if (indent < 0) {
-                    if (str.length > pos) {
-                        this.$mol_fail(new this.$mol_error_syntax(`Too few tabs`, str.substring(line_start, pos), sp));
-                    }
-                }
-                else {
-                    this.$mol_fail(new this.$mol_error_syntax(`Too many tabs`, str.substring(line_start, pos), sp));
-                }
-            }
-            stack.length = indent + 1;
-            var parent = stack[indent];
-            while (str.length > pos && str[pos] != '\\' && str[pos] != '\n') {
-                var error_start = pos;
-                while (str.length > pos && (str[pos] == ' ' || str[pos] == '\t')) {
-                    pos++;
-                }
-                if (pos > error_start) {
-                    let line_end = str.indexOf('\n', pos);
-                    if (line_end === -1)
-                        line_end = str.length;
-                    const sp = span.span(row, error_start - line_start + 1, pos - error_start);
-                    this.$mol_fail(new this.$mol_error_syntax(`Wrong nodes separator`, str.substring(line_start, line_end), sp));
-                }
-                var type_start = pos;
-                while (str.length > pos &&
-                    str[pos] != '\\' &&
-                    str[pos] != ' ' &&
-                    str[pos] != '\t' &&
-                    str[pos] != '\n') {
-                    pos++;
-                }
-                if (pos > type_start) {
-                    let next = new $mol_tree2(str.slice(type_start, pos), '', [], span.span(row, type_start - line_start + 1, pos - type_start));
-                    const parent_kids = parent.kids;
-                    parent_kids.push(next);
-                    parent = next;
-                }
-                if (str.length > pos && str[pos] == ' ') {
-                    pos++;
-                }
-            }
-            if (str.length > pos && str[pos] == '\\') {
-                var data_start = pos;
-                while (str.length > pos && str[pos] != '\n') {
-                    pos++;
-                }
-                let next = new $mol_tree2('', str.slice(data_start + 1, pos), [], span.span(row, data_start - line_start + 2, pos - data_start - 1));
-                const parent_kids = parent.kids;
-                parent_kids.push(next);
-                parent = next;
-            }
-            if (str.length === pos && stack.length > 0) {
-                const sp = span.span(row, pos - line_start + 1, 1);
-                this.$mol_fail(new this.$mol_error_syntax(`Unexpected EOF, LF required`, str.substring(line_start, str.length), sp));
-            }
-            stack.push(parent);
-            pos++;
-        }
-        return root;
-    }
-    $.$mol_tree2_from_string = $mol_tree2_from_string;
-})($ || ($ = {}));
-//mol/tree2/from/string/string.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_tree2_from_json(json, span = $mol_span.unknown) {
-        if (typeof json === 'boolean' || typeof json === 'number' || json === null) {
-            return new $mol_tree2(String(json), '', [], span);
-        }
-        if (typeof json === 'string') {
-            return $mol_tree2.data(json, [], span);
-        }
-        if (Array.isArray(json)) {
-            const sub = json.map(json => $mol_tree2_from_json(json, span));
-            return new $mol_tree2('/', '', sub, span);
-        }
-        if (ArrayBuffer.isView(json)) {
-            const buf = new Uint8Array(json.buffer, json.byteOffset, json.byteLength);
-            return $mol_tree2.data(String.fromCharCode(...buf), [], span);
-        }
-        if (json instanceof Date) {
-            return new $mol_tree2('', json.toISOString(), [], span);
-        }
-        if (typeof json.toJSON === 'function') {
-            return $mol_tree2_from_json(json.toJSON());
-        }
-        if (json instanceof Error) {
-            const { name, message, stack } = json;
-            json = { ...json, name, message, stack };
-        }
-        const sub = [];
-        for (var key in json) {
-            const val = json[key];
-            if (val === undefined)
-                continue;
-            const subsub = $mol_tree2_from_json(val, span);
-            if (/^[^\n\t\\ ]+$/.test(key)) {
-                sub.push(new $mol_tree2(key, '', [subsub], span));
-            }
-            else {
-                sub.push($mol_tree2.data(key, [subsub], span));
-            }
-        }
-        return new $mol_tree2('*', '', sub, span);
-    }
-    $.$mol_tree2_from_json = $mol_tree2_from_json;
-})($ || ($ = {}));
-//mol/tree2/from/json/json.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_term_color {
-        static reset = this.ansi(0, 0);
-        static bold = this.ansi(1, 22);
-        static italic = this.ansi(3, 23);
-        static underline = this.ansi(4, 24);
-        static inverse = this.ansi(7, 27);
-        static hidden = this.ansi(8, 28);
-        static strike = this.ansi(9, 29);
-        static gray = this.ansi(90, 39);
-        static red = this.ansi(91, 39);
-        static green = this.ansi(92, 39);
-        static yellow = this.ansi(93, 39);
-        static blue = this.ansi(94, 39);
-        static magenta = this.ansi(95, 39);
-        static cyan = this.ansi(96, 39);
-        static Gray = (str) => this.inverse(this.gray(str));
-        static Red = (str) => this.inverse(this.red(str));
-        static Green = (str) => this.inverse(this.green(str));
-        static Yellow = (str) => this.inverse(this.yellow(str));
-        static Blue = (str) => this.inverse(this.blue(str));
-        static Magenta = (str) => this.inverse(this.magenta(str));
-        static Cyan = (str) => this.inverse(this.cyan(str));
-        static ansi(open, close) {
-            if (typeof process === 'undefined')
-                return String;
-            if (!process.stdout.isTTY)
-                return String;
-            const prefix = `\x1b[${open}m`;
-            const postfix = `\x1b[${close}m`;
-            const suffix_regexp = new RegExp(postfix.replace('[', '\\['), 'g');
-            return function colorer(str) {
-                str = String(str);
-                if (str === '')
-                    return str;
-                const suffix = str.replace(suffix_regexp, prefix);
-                return prefix + suffix + postfix;
-            };
-        }
-    }
-    $.$mol_term_color = $mol_term_color;
-})($ || ($ = {}));
-//mol/term/color/color.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_log3_node_make(level, output, type, color) {
-        return function $mol_log3_logger(event) {
-            if (!event.time)
-                event = { time: new Date().toISOString(), ...event };
-            let tree = this.$mol_tree2_from_json(event);
-            tree = tree.struct(type, tree.kids);
-            let str = color(tree.toString());
-            this.console[level](str);
-            const self = this;
-            return () => self.console.groupEnd();
-        };
-    }
-    $.$mol_log3_node_make = $mol_log3_node_make;
-    $.$mol_log3_come = $mol_log3_node_make('info', 'stdout', 'come', $mol_term_color.blue);
-    $.$mol_log3_done = $mol_log3_node_make('info', 'stdout', 'done', $mol_term_color.green);
-    $.$mol_log3_fail = $mol_log3_node_make('error', 'stderr', 'fail', $mol_term_color.red);
-    $.$mol_log3_warn = $mol_log3_node_make('warn', 'stderr', 'warn', $mol_term_color.yellow);
-    $.$mol_log3_rise = $mol_log3_node_make('log', 'stdout', 'rise', $mol_term_color.magenta);
-    $.$mol_log3_area = $mol_log3_node_make('log', 'stdout', 'area', $mol_term_color.cyan);
-})($ || ($ = {}));
-//mol/log3/log3.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_env() {
-        return {};
-    }
-    $.$mol_env = $mol_env;
-})($ || ($ = {}));
-//mol/env/env.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_env = function $mol_env() {
-        return this.process.env;
-    };
-})($ || ($ = {}));
-//mol/env/env.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_exec(dir, command, ...args) {
-        let [app, ...args0] = command.split(' ');
-        args = [...args0, ...args];
-        this.$mol_log3_come({
-            place: '$mol_exec',
-            dir: $node.path.relative('', dir),
-            message: 'Run',
-            command: `${app} ${args.join(' ')}`,
-        });
-        var res = $node['child_process'].spawnSync(app, args, {
-            cwd: $node.path.resolve(dir),
-            shell: true,
-            env: this.$mol_env(),
-        });
-        if (res.status || res.error)
-            return $mol_fail(res.error || new Error(res.stderr.toString()));
-        if (!res.stdout)
-            res.stdout = Buffer.from([]);
-        return res;
-    }
-    $.$mol_exec = $mol_exec;
-})($ || ($ = {}));
-//mol/exec/exec.node.ts
-;
-"use strict";
 var $;
 (function ($) {
     $.$mol_dom_context = new $node.jsdom.JSDOM('', { url: 'https://localhost/' }).window;
@@ -2047,212 +2585,6 @@ var $;
     $.$mol_state_local = $mol_state_local;
 })($ || ($ = {}));
 //mol/state/local/local.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const TextEncoder = globalThis.TextEncoder ?? $node.util.TextEncoder;
-    const encoder = new TextEncoder();
-    function $mol_charset_encode(value) {
-        return encoder.encode(value);
-    }
-    $.$mol_charset_encode = $mol_charset_encode;
-})($ || ($ = {}));
-//mol/charset/encode/encode.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_int62_string_ensure(str) {
-        if (typeof str !== 'string')
-            return null;
-        return $mol_int62_from_string(str) && str;
-    }
-    $.$mol_int62_string_ensure = $mol_int62_string_ensure;
-    $.$mol_int62_max = (2 ** 30) - 1;
-    $.$mol_int62_min = -(2 ** 30);
-    $.$mol_int62_range = $.$mol_int62_max - $.$mol_int62_min + 1;
-    function $mol_int62_to_string({ lo, hi }) {
-        lo = (lo + $.$mol_int62_range) % $.$mol_int62_range;
-        hi = (hi + $.$mol_int62_range) % $.$mol_int62_range;
-        return lo.toString(36) + '_' + hi.toString(36);
-    }
-    $.$mol_int62_to_string = $mol_int62_to_string;
-    function $mol_int62_from_string(str) {
-        const [str_lo, str_hi] = str.split('_');
-        const int_lo = parseInt(str_lo, 36);
-        const int_hi = parseInt(str_hi, 36);
-        if (int_lo.toString(36) !== str_lo || int_hi.toString(36) !== str_hi) {
-            return null;
-        }
-        return {
-            lo: (int_lo - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
-            hi: (int_hi - $.$mol_int62_min) % $.$mol_int62_range + $.$mol_int62_min,
-        };
-    }
-    $.$mol_int62_from_string = $mol_int62_from_string;
-    function $mol_int62_compare(left_lo, left_hi, right_lo, right_hi) {
-        return (right_hi - left_hi) || (right_lo - left_lo);
-    }
-    $.$mol_int62_compare = $mol_int62_compare;
-    function $mol_int62_inc(lo, hi, max = $.$mol_int62_max) {
-        if (lo === max) {
-            return { lo: -max, hi: hi + 1 };
-        }
-        else {
-            return { lo: lo + 1, hi };
-        }
-    }
-    $.$mol_int62_inc = $mol_int62_inc;
-    function $mol_int62_random() {
-        return {
-            lo: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
-            hi: Math.floor(Math.random() * $.$mol_int62_range + $.$mol_int62_min),
-        };
-    }
-    $.$mol_int62_random = $mol_int62_random;
-    function $mol_int62_hash_string(str) {
-        return $mol_int62_to_string($mol_int62_hash_buffer($mol_charset_encode(str)));
-    }
-    $.$mol_int62_hash_string = $mol_int62_hash_string;
-    function $mol_int62_hash_buffer(buf, seed = { lo: 0, hi: 0 }) {
-        let h1 = 0xdeadbeef ^ seed.lo;
-        let h2 = 0x41c6ce57 ^ seed.hi;
-        for (const byte of buf) {
-            h1 = Math.imul(h1 ^ byte, 2654435761);
-            h2 = Math.imul(h2 ^ byte, 1597334677);
-        }
-        h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
-        h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
-        return { lo: h1 << 1 >> 1, hi: h2 << 1 >> 1 };
-    }
-    $.$mol_int62_hash_buffer = $mol_int62_hash_buffer;
-})($ || ($ = {}));
-//mol/int62/int62.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $.$mol_crypto_native = $node.crypto.webcrypto;
-})($ || ($ = {}));
-//mol/crypto/native/native.node.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const algorithm = {
-        name: 'ECDSA',
-        hash: 'SHA-256',
-        namedCurve: "P-256",
-    };
-    async function $mol_crypto_auditor_pair() {
-        const pair = await $mol_crypto_native.subtle.generateKey(algorithm, true, ['sign', 'verify']);
-        return {
-            public: new $mol_crypto_auditor_public(pair.publicKey),
-            private: new $mol_crypto_auditor_private(pair.privateKey),
-        };
-    }
-    $.$mol_crypto_auditor_pair = $mol_crypto_auditor_pair;
-    class $mol_crypto_auditor_public extends Object {
-        native;
-        static size = 86;
-        constructor(native) {
-            super();
-            this.native = native;
-        }
-        static async from(serial) {
-            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
-                crv: "P-256",
-                ext: true,
-                key_ops: ['verify'],
-                kty: "EC",
-                x: serial.slice(0, 43),
-                y: serial.slice(43, 86),
-            }, algorithm, true, ['verify']));
-        }
-        async serial() {
-            const { x, y } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
-            return x + y;
-        }
-        async verify(data, sign) {
-            return await $mol_crypto_native.subtle.verify(algorithm, this.native, sign, data);
-        }
-    }
-    $.$mol_crypto_auditor_public = $mol_crypto_auditor_public;
-    class $mol_crypto_auditor_private extends Object {
-        native;
-        static size = 129;
-        constructor(native) {
-            super();
-            this.native = native;
-        }
-        static async from(serial) {
-            return new this(await $mol_crypto_native.subtle.importKey('jwk', {
-                crv: "P-256",
-                ext: true,
-                key_ops: ['sign'],
-                kty: "EC",
-                x: serial.slice(0, 43),
-                y: serial.slice(43, 86),
-                d: serial.slice(86, 129),
-            }, algorithm, true, ['sign']));
-        }
-        async serial() {
-            const { x, y, d } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
-            return x + y + d;
-        }
-        async sign(data) {
-            return await $mol_crypto_native.subtle.sign(algorithm, this.native, data);
-        }
-        async public() {
-            return await $mol_crypto_auditor_public.from($mol_crypto_auditor_private_to_public(await this.serial()));
-        }
-    }
-    $.$mol_crypto_auditor_private = $mol_crypto_auditor_private;
-    $.$mol_crypto_auditor_sign_size = 64;
-    function $mol_crypto_auditor_private_to_public(serial) {
-        return serial.slice(0, 86);
-    }
-    $.$mol_crypto_auditor_private_to_public = $mol_crypto_auditor_private_to_public;
-})($ || ($ = {}));
-//mol/crypto/auditor/auditor.ts
-;
-"use strict";
-var $;
-(function ($) {
-    let $hyoo_crowd_peer_level;
-    (function ($hyoo_crowd_peer_level) {
-        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["get"] = 0] = "get";
-        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["add"] = 1] = "add";
-        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["mod"] = 2] = "mod";
-        $hyoo_crowd_peer_level[$hyoo_crowd_peer_level["law"] = 3] = "law";
-    })($hyoo_crowd_peer_level = $.$hyoo_crowd_peer_level || ($.$hyoo_crowd_peer_level = {}));
-    class $hyoo_crowd_peer extends Object {
-        key_public;
-        key_public_serial;
-        key_private;
-        key_private_serial;
-        id;
-        constructor(key_public, key_public_serial, key_private, key_private_serial) {
-            super();
-            this.key_public = key_public;
-            this.key_public_serial = key_public_serial;
-            this.key_private = key_private;
-            this.key_private_serial = key_private_serial;
-            this.id = $mol_int62_hash_string(this.key_public_serial);
-        }
-        static async generate() {
-            const pair = await $$.$mol_crypto_auditor_pair();
-            const serial = await pair.private.serial();
-            return new this(pair.public, $mol_crypto_auditor_private_to_public(serial), pair.private, serial);
-        }
-        static async restore(serial) {
-            return new this(await $$.$mol_crypto_auditor_public.from(serial), $mol_crypto_auditor_private_to_public(serial), await $$.$mol_crypto_auditor_private.from(serial), serial);
-        }
-    }
-    $.$hyoo_crowd_peer = $hyoo_crowd_peer;
-})($ || ($ = {}));
-//hyoo/crowd/peer/peer.ts
 ;
 "use strict";
 var $;
@@ -2344,338 +2676,6 @@ var $;
 //mol/memo/memo.ts
 ;
 "use strict";
-//mol/data/value/value.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_data_setup(value, config) {
-        return Object.assign(value, {
-            config,
-            Value: null
-        });
-    }
-    $.$mol_data_setup = $mol_data_setup;
-})($ || ($ = {}));
-//mol/data/setup/setup.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_diff_path(...paths) {
-        const limit = Math.min(...paths.map(path => path.length));
-        lookup: for (var i = 0; i < limit; ++i) {
-            const first = paths[0][i];
-            for (let j = 1; j < paths.length; ++j) {
-                if (paths[j][i] !== first)
-                    break lookup;
-            }
-        }
-        return {
-            prefix: paths[0].slice(0, i),
-            suffix: paths.map(path => path.slice(i)),
-        };
-    }
-    $.$mol_diff_path = $mol_diff_path;
-})($ || ($ = {}));
-//mol/diff/path/path.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_error_mix extends Error {
-        errors;
-        constructor(message, ...errors) {
-            super(message);
-            this.errors = errors;
-            if (errors.length) {
-                const stacks = [...errors.map(error => error.stack), this.stack];
-                const diff = $mol_diff_path(...stacks.map(stack => {
-                    if (!stack)
-                        return [];
-                    return stack.split('\n').reverse();
-                }));
-                const head = diff.prefix.reverse().join('\n');
-                const tails = diff.suffix.map(path => path.reverse().map(line => line.replace(/^(?!\s+at)/, '\tat (.) ')).join('\n')).join('\n\tat (.) -----\n');
-                this.stack = `Error: ${this.constructor.name}\n\tat (.) /"""\\\n${tails}\n\tat (.) \\___/\n${head}`;
-                this.message += errors.map(error => '\n' + error.message).join('');
-            }
-        }
-        toJSON() {
-            return this.message;
-        }
-    }
-    $.$mol_error_mix = $mol_error_mix;
-})($ || ($ = {}));
-//mol/error/mix/mix.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_data_error extends $mol_error_mix {
-    }
-    $.$mol_data_error = $mol_data_error;
-})($ || ($ = {}));
-//mol/data/error/error.ts
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_data_enum(name, dict) {
-        const index = {};
-        for (let key in dict) {
-            if (Number.isNaN(Number(key))) {
-                index[dict[key]] = key;
-            }
-        }
-        return $mol_data_setup((value) => {
-            if (typeof index[value] !== 'string') {
-                return $mol_fail(new $mol_data_error(`${value} is not value of ${name} enum`));
-            }
-            return value;
-        }, { name, dict });
-    }
-    $.$mol_data_enum = $mol_data_enum;
-})($ || ($ = {}));
-//mol/data/enum/enum.ts
-;
-"use strict";
-//mol/charset/encoding/encoding.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const decoders = {};
-    function $mol_charset_decode(buffer, encoding = 'utf8') {
-        let decoder = decoders[encoding];
-        if (!decoder)
-            decoder = decoders[encoding] = new TextDecoder(encoding);
-        return decoder.decode(buffer);
-    }
-    $.$mol_charset_decode = $mol_charset_decode;
-})($ || ($ = {}));
-//mol/charset/decode/decode.ts
-;
-"use strict";
-var $;
-(function ($) {
-    const level = $mol_data_enum('level', $hyoo_crowd_peer_level);
-    let $hyoo_crowd_unit_kind;
-    (function ($hyoo_crowd_unit_kind) {
-        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["grab"] = 0] = "grab";
-        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["join"] = 1] = "join";
-        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["give"] = 2] = "give";
-        $hyoo_crowd_unit_kind[$hyoo_crowd_unit_kind["data"] = 3] = "data";
-    })($hyoo_crowd_unit_kind = $.$hyoo_crowd_unit_kind || ($.$hyoo_crowd_unit_kind = {}));
-    let $hyoo_crowd_unit_group;
-    (function ($hyoo_crowd_unit_group) {
-        $hyoo_crowd_unit_group[$hyoo_crowd_unit_group["auth"] = 0] = "auth";
-        $hyoo_crowd_unit_group[$hyoo_crowd_unit_group["data"] = 1] = "data";
-    })($hyoo_crowd_unit_group = $.$hyoo_crowd_unit_group || ($.$hyoo_crowd_unit_group = {}));
-    class $hyoo_crowd_unit extends Object {
-        land;
-        auth;
-        head;
-        self;
-        next;
-        prev;
-        time;
-        data;
-        bin;
-        constructor(land, auth, head, self, next, prev, time, data, bin) {
-            super();
-            this.land = land;
-            this.auth = auth;
-            this.head = head;
-            this.self = self;
-            this.next = next;
-            this.prev = prev;
-            this.time = time;
-            this.data = data;
-            this.bin = bin;
-        }
-        kind() {
-            if (this.head === this.self && this.auth === this.self) {
-                if (this.head === this.land) {
-                    return $hyoo_crowd_unit_kind.grab;
-                }
-                else {
-                    return $hyoo_crowd_unit_kind.join;
-                }
-            }
-            if (this.head === this.land) {
-                return $hyoo_crowd_unit_kind.give;
-            }
-            return $hyoo_crowd_unit_kind.data;
-        }
-        group() {
-            return this.kind() === $hyoo_crowd_unit_kind.data
-                ? $hyoo_crowd_unit_group.data
-                : $hyoo_crowd_unit_group.auth;
-        }
-        level() {
-            switch (this.kind()) {
-                case $hyoo_crowd_unit_kind.grab: return $hyoo_crowd_peer_level.law;
-                case $hyoo_crowd_unit_kind.give: return level(this.data);
-                default: $mol_fail(new Error(`Wrong unit kind for getting level: ${this.kind()}`));
-            }
-        }
-        [Symbol.toPrimitive]() {
-            return JSON.stringify(this);
-        }
-        [$mol_dev_format_head]() {
-            switch (this.kind()) {
-                case $hyoo_crowd_unit_kind.grab:
-                    return $mol_dev_format_div({}, $mol_dev_format_native(this), ' 👑');
-                case $hyoo_crowd_unit_kind.join:
-                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 🔑 ', this.self));
-                case $hyoo_crowd_unit_kind.give:
-                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 🏅 ', this.self, ' '), $mol_dev_format_native($hyoo_crowd_peer_level[this.data] ?? this.data));
-                case $hyoo_crowd_unit_kind.data:
-                    return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(' 📦 ', this.head, '!', this.self, ' '), $mol_dev_format_native(this.data));
-            }
-        }
-    }
-    $.$hyoo_crowd_unit = $hyoo_crowd_unit;
-    const offset = {
-        land_lo: 0,
-        land_hi: 4,
-        auth_lo: 8,
-        auth_hi: 12,
-        head_lo: 16,
-        head_hi: 20,
-        self_lo: 24,
-        self_hi: 28,
-        next_lo: 32,
-        next_hi: 36,
-        prev_lo: 40,
-        prev_hi: 44,
-        time: 48,
-        size: 54,
-        data: 56,
-    };
-    class $hyoo_crowd_unit_bin extends DataView {
-        static from_buffer(buffer) {
-            const size = Math.ceil(Math.abs(buffer[offset.size / 2]) / 8) * 8 + offset.data + $mol_crypto_auditor_sign_size;
-            return new this(buffer.slice(0, size / 2).buffer);
-        }
-        static from_unit(unit) {
-            if (unit.bin)
-                return unit.bin;
-            const type = unit.data === null
-                ? 0
-                : unit.data instanceof Uint8Array
-                    ? -1
-                    : 1;
-            const buff = type === 0 ? null
-                : type > 0 ? $mol_charset_encode(JSON.stringify(unit.data))
-                    : unit.data;
-            const size = buff?.byteLength ?? 0;
-            if (type > 0 && size > 2 ** 15 - 1)
-                throw new Error(`Too large json data: ${size} > ${2 ** 15 - 1}`);
-            if (type < 0 && size > 2 ** 15)
-                throw new Error(`Too large binary data: ${size} > ${2 ** 15}`);
-            const total = offset.data + Math.ceil(size / 8) * 8 + $mol_crypto_auditor_sign_size;
-            const mem = new Uint8Array(total);
-            const bin = new $hyoo_crowd_unit_bin(mem.buffer);
-            const land = $mol_int62_from_string(unit.land);
-            bin.setInt32(offset.land_lo, land.lo, true);
-            bin.setInt32(offset.land_hi, land.hi, true);
-            const auth = $mol_int62_from_string(unit.auth);
-            bin.setInt32(offset.auth_lo, auth.lo, true);
-            bin.setInt32(offset.auth_hi, auth.hi, true);
-            const head = $mol_int62_from_string(unit.head);
-            bin.setInt32(offset.head_lo, head.lo, true);
-            bin.setInt32(offset.head_hi, head.hi, true);
-            const self = $mol_int62_from_string(unit.self);
-            bin.setInt32(offset.self_lo, self.lo, true);
-            bin.setInt32(offset.self_hi, self.hi, true);
-            const next = $mol_int62_from_string(unit.next);
-            bin.setInt32(offset.next_lo, next.lo, true);
-            bin.setInt32(offset.next_hi, next.hi, true);
-            const prev = $mol_int62_from_string(unit.prev);
-            bin.setInt32(offset.prev_lo, prev.lo, true);
-            bin.setInt32(offset.prev_hi, prev.hi, true);
-            bin.setInt32(offset.time, unit.time, true);
-            bin.setInt16(offset.size, type * size, true);
-            if (buff)
-                mem.set(buff, offset.data);
-            return bin;
-        }
-        sign(next) {
-            const sign_offset = this.byteOffset + this.byteLength - $mol_crypto_auditor_sign_size;
-            const buff = new Uint8Array(this.buffer, sign_offset, $mol_crypto_auditor_sign_size);
-            if (!next)
-                return buff;
-            buff.set(next);
-            return buff;
-        }
-        size() {
-            return Math.ceil(Math.abs(this.getInt16(offset.size, true)) / 8) * 8 + offset.data + $mol_crypto_auditor_sign_size;
-        }
-        sens() {
-            return new Uint8Array(this.buffer, this.byteOffset, this.size() - $mol_crypto_auditor_sign_size);
-        }
-        unit() {
-            const land = $mol_int62_to_string({
-                lo: this.getInt32(offset.land_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.land_hi, true) << 1 >> 1,
-            });
-            const auth = $mol_int62_to_string({
-                lo: this.getInt32(offset.auth_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.auth_hi, true) << 1 >> 1,
-            });
-            const head = $mol_int62_to_string({
-                lo: this.getInt32(offset.head_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.head_hi, true) << 1 >> 1,
-            });
-            const self = $mol_int62_to_string({
-                lo: this.getInt32(offset.self_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.self_hi, true) << 1 >> 1,
-            });
-            const next = $mol_int62_to_string({
-                lo: this.getInt32(offset.next_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.next_hi, true) << 1 >> 1,
-            });
-            const prev = $mol_int62_to_string({
-                lo: this.getInt32(offset.prev_lo, true) << 1 >> 1,
-                hi: this.getInt32(offset.prev_hi, true) << 1 >> 1,
-            });
-            const time = this.getInt32(offset.time, true) << 1 >> 1;
-            const type_size = this.getInt16(offset.size, true);
-            let data = null;
-            if (type_size) {
-                try {
-                    var buff = new Uint8Array(this.buffer, this.byteOffset + offset.data, Math.abs(type_size));
-                }
-                catch (error) {
-                    error['message'] += `\nhead=${head};self=${self}`;
-                    $mol_fail_hidden(error);
-                }
-                if (type_size < 0)
-                    data = buff;
-                else
-                    data = JSON.parse($mol_charset_decode(buff));
-            }
-            return new $hyoo_crowd_unit(land, auth, head, self, next, prev, time, data, this);
-        }
-    }
-    $.$hyoo_crowd_unit_bin = $hyoo_crowd_unit_bin;
-    function $hyoo_crowd_unit_compare(left, right) {
-        return (left.group() - right.group())
-            || (left.time - right.time)
-            || ((left.auth > right.auth) ? 1 : (left.auth < right.auth) ? -1 : 0)
-            || ((left.self > right.self) ? 1 : (left.self < right.self) ? -1 : 0)
-            || ((left.head > right.head) ? 1 : (left.head < right.head) ? -1 : 0)
-            || ((left.prev > right.prev) ? 1 : (left.prev < right.prev) ? -1 : 0)
-            || ((left.next > right.next) ? 1 : (left.next < right.next) ? -1 : 0)
-            || ((left.land > right.land) ? 1 : (left.land < right.land) ? -1 : 0);
-    }
-    $.$hyoo_crowd_unit_compare = $hyoo_crowd_unit_compare;
-})($ || ($ = {}));
-//hyoo/crowd/unit/unit.ts
-;
-"use strict";
 var $;
 (function ($) {
     function $hyoo_crowd_time_now() {
@@ -2762,16 +2762,18 @@ var $;
     const offset = {
         land_lo: 0,
         land_hi: 4,
-        clocks: 8,
+        count: 8,
+        clocks: 16,
     };
     class $hyoo_crowd_clock_bin extends DataView {
-        static from(land_id, clocks) {
+        static from(land_id, clocks, count) {
             const size = offset.clocks + clocks[0].size * 16;
             const mem = new Uint8Array(size);
             const bin = new $hyoo_crowd_clock_bin(mem.buffer);
             const land = $mol_int62_from_string(land_id);
             bin.setInt32(offset.land_lo, land.lo ^ (1 << 31), true);
             bin.setInt32(offset.land_hi, land.hi, true);
+            bin.setInt32(offset.count, count, true);
             let cursor = offset.clocks;
             for (const [peer_id, time] of clocks[0]) {
                 const peer = $mol_int62_from_string(peer_id);
@@ -2788,6 +2790,9 @@ var $;
                 lo: this.getInt32(offset.land_lo, true) << 1 >> 1,
                 hi: this.getInt32(offset.land_hi, true) << 1 >> 1,
             });
+        }
+        count() {
+            return this.getInt32(offset.count, true);
         }
     }
     $.$hyoo_crowd_clock_bin = $hyoo_crowd_clock_bin;
@@ -2854,7 +2859,7 @@ var $;
 (function ($) {
     class $hyoo_crowd_reg extends $hyoo_crowd_node {
         value(next) {
-            const unit = this.units()[0];
+            const unit = this.units().at(-1);
             if (next === undefined)
                 return unit?.data ?? null;
             if ($mol_compare_deep(unit?.data, next))
@@ -2950,7 +2955,7 @@ var $;
             return this._clocks;
         }
         get clocks_bin() {
-            return new Uint8Array($hyoo_crowd_clock_bin.from(this.id(), this._clocks).buffer);
+            return new Uint8Array($hyoo_crowd_clock_bin.from(this.id(), this._clocks, this._unit_all.size).buffer);
         }
         pub = new $mol_wire_pub;
         _clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
@@ -3699,6 +3704,7 @@ var $;
 var $;
 (function ($) {
     class $hyoo_sync_yard extends $mol_object2 {
+        db_unit_persisted = new WeakSet();
         log_pack(data) {
             return data;
         }
@@ -3797,16 +3803,19 @@ var $;
         }
         db_land_sync(land) {
             this.db_land_init(land);
-            const db_clocks = this.db_land_clocks(land.id());
             land.clocks;
-            const units = land.delta(db_clocks);
+            const units = [];
+            for (const unit of land._unit_all.values()) {
+                if (this.db_unit_persisted.has(unit))
+                    continue;
+                units.push(unit);
+            }
             if (!units.length)
                 return;
             $mol_wire_sync(this.world()).sign_units(units);
             $mol_wire_sync(this).db_land_save(land, units);
-            for (const unit of units) {
-                db_clocks[unit.group()].see_peer(unit.auth, unit.time);
-            }
+            for (const unit of units)
+                this.db_unit_persisted.add(unit);
         }
         db_land_init(land) {
             try {
@@ -3822,13 +3831,10 @@ var $;
                 });
                 units = [];
             }
+            for (const unit of units)
+                this.db_unit_persisted.add(unit);
             units.sort($hyoo_crowd_unit_compare);
-            const clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock];
-            this.db_land_clocks(land.id(), clocks);
             land.apply(units);
-            for (const unit of units) {
-                clocks[unit.group()].see_peer(unit.auth, unit.time);
-            }
         }
         async db_land_load(land) {
             return [];
@@ -3913,6 +3919,9 @@ var $;
                     const bin = new $hyoo_crowd_clock_bin(message.buffer, message.byteOffset, message.byteLength);
                     for (let group = 0; group < clocks.length; ++group) {
                         clocks[group].see_bin(bin, group);
+                    }
+                    if (bin.count() + land.delta(clocks).length < land._unit_all.size) {
+                        this.line_land_clocks({ line, land }, clocks = [new $hyoo_crowd_clock, new $hyoo_crowd_clock]);
                     }
                     const lands = this.line_lands(line);
                     if (lands.includes(land)) {
@@ -6080,7 +6089,8 @@ var $;
             this.world();
             const socket = new $node.ws.Server({
                 server: this.http(),
-                handleProtocols: (ways, req) => ways.has('$hyoo_sync') ? '$hyoo_sync' : false
+                verifyClient: ({ origin, secure, req }) => { console.log(req.headers); return 'sec-websocket-protocol' in req.headers; },
+                handleProtocols: (ways, req) => ways.has('$hyoo_sync_protocol_1') ? '$hyoo_sync_protocol_1' : false
             });
             socket.on('connection', line => {
                 this.slaves([...this.slaves(), line]);

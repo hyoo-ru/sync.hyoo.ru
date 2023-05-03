@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6cbc3c1";
+let $hyoo_sync_revision = "f7b824b";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -6129,7 +6129,7 @@ var $;
             if (!link)
                 return;
             this.reconnects();
-            const line = new $node['ws'].WebSocket('ws:' + link, { protocol: 'hyoo_sync_protocol_1' });
+            const line = new $node['ws'].WebSocket('ws:' + link, '$hyoo_sync_protocol_1');
             line.binaryType = 'arraybuffer';
             line.onmessage = async (event) => {
                 if (event.data instanceof ArrayBuffer) {

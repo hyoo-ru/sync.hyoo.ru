@@ -530,7 +530,7 @@ namespace $ {
 
 			this.reconnects()
 
-			const line = new $node['ws'].WebSocket( 'ws:' + link, { protocol: '$hyoo_sync_protocol_1' } )
+			const line = new $node['ws'].WebSocket( 'ws:' + link, { protocol: 'hyoo_sync_protocol_1' } )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

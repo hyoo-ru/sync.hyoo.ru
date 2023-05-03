@@ -1,6 +1,8 @@
 namespace $ {
 	export class $hyoo_sync_yard< Line > extends $mol_object2 {
 		
+		db_unit_persisted = new WeakSet< $hyoo_crowd_unit >()
+		
 		log_pack( data: any ) {
 			return data
 		}
@@ -82,7 +84,6 @@ namespace $ {
 			
 		}
 		
-		
 		@ $mol_mem
 		sync() {
 			
@@ -156,20 +157,19 @@ namespace $ {
 			
 			this.db_land_init( land )
 			
-			const db_clocks = this.db_land_clocks( land.id() )!
 			land.clocks
-			// const ahead = land.clocks.some( ( land_clock, i )=> land_clock.ahead( db_clocks[i] ) )
-			// if( !ahead ) return
 			
-			const units = land.delta( db_clocks )
+			const units = [] as $hyoo_crowd_unit[]
+			for( const unit of land._unit_all.values() ) {
+				if( this.db_unit_persisted.has( unit ) ) continue
+				units.push( unit )
+			}
 			if( !units.length ) return
 			
 			$mol_wire_sync( this.world() ).sign_units( units )
 			$mol_wire_sync( this ).db_land_save( land, units )
 			
-			for( const unit of units ) {
-				db_clocks[ unit.group() ].see_peer( unit.auth, unit.time )
-			}
+			for( const unit of units ) this.db_unit_persisted.add( unit )
 			
 			// this.$.$mol_log3_rise({
 			// 	place: this,
@@ -198,16 +198,10 @@ namespace $ {
 				units = []
 			}
 			
+			for( const unit of units ) this.db_unit_persisted.add( unit )
+			
 			units.sort( $hyoo_crowd_unit_compare )
-
-			const clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] as const
-			this.db_land_clocks( land.id(), clocks )
-			
 			land.apply( units )
-			
-			for( const unit of units ) {
-				clocks[ unit.group() ].see_peer( unit.auth, unit.time )
-			}
 			
 			// this.$.$mol_log3_rise({
 			// 	place: this,
@@ -383,6 +377,10 @@ namespace $ {
 					
 					for( let group = 0; group < clocks.length; ++group ) {
 						clocks[ group ].see_bin( bin, group )
+					}
+					
+					if( bin.count() + land.delta( clocks ).length < land._unit_all.size ) {
+						this.line_land_clocks( { line, land }, clocks = [ new $hyoo_crowd_clock, new $hyoo_crowd_clock ] )
 					}
 					
 					const lands = this.line_lands( line )

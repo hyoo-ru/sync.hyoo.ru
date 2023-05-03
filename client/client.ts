@@ -102,7 +102,7 @@ namespace $ {
 			this.reconnects()
 			
 			const link = this.master_link()
-			const line = new $mol_dom_context.WebSocket( link, [ '$hyoo_sync' ] )
+			const line = new $mol_dom_context.WebSocket( link, [ '$hyoo_sync_protocol_1' ] )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

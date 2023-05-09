@@ -24,10 +24,12 @@ namespace $ {
 		@ $mol_mem
 		http() {
 			
-			const server = $node.http.createServer( $mol_wire_async( (
+			type self = this
+			const server = $node.http.createServer( $mol_wire_async( function http_handler(
+				this: self,
 				req: InstanceType< $node['http']['IncomingMessage'] >,
 				res: InstanceType< $node['http']['ServerResponse'] >,
-			)=> {
+			) {
 				
 				try {
 				
@@ -41,13 +43,23 @@ namespace $ {
 				// 	query: req.url,
 				// })
 				
+				if( !query_str ) {
+					res.writeHead( 301, {
+						'Content-Type': 'text/plain;charset=utf-8',
+						'Location': '/watch/',
+						'Access-Control-Allow-Origin': '*',
+					} )
+					res.end( '$hyoo_sync_server ' + $hyoo_sync_revision )
+					return
+				}
+				
 				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
 					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? ''
 					
 					try {
 						
-						const content = $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\/$/, '/index.html' ) ).toString()
+						const content = $node.fs.readFileSync( __dirname + '/' + query_str.replace( /\.\./g, '' ).replace( /\/$/, '/index.html' ) ).toString()
 						
 						res.writeHead( 200, {
 							'Access-Control-Allow-Origin': '*',
@@ -68,8 +80,15 @@ namespace $ {
 					return
 				}
 				
-				const query = $hyoo_harp_from_string( query_str ) as $hyoo_harp_query<string> & {
-					blob: {
+				const query = $hyoo_harp_from_string( query_str ) as {
+					log?: {},
+					land?: {
+						'='?: [[ string ]],
+					},
+					search?: {
+						'='?: [[ string ]],
+					},
+					blob?: {
 						land: $hyoo_harp_query<string>,
 						head: $hyoo_harp_query<string>,
 					},
@@ -114,22 +133,7 @@ namespace $ {
 					return
 				}
 				
-				if( !query.land ) {
-					res.writeHead( 301, {
-						'Content-Type': 'text/plain;charset=utf-8',
-						'Location': '/watch/',
-						'Access-Control-Allow-Origin': '*',
-					} )
-					res.end( '$hyoo_sync_server ' + $hyoo_sync_revision )
-					return
-				}
-				
-				const entry = query.land["="]![0][0]
-				const land = world.land( entry )
-				
-				const reply = {
-					[ entry as string ]: {} as Record< string, any >
-				}
+				const reply = {} as Record< string, Record< string, any > >
 				
 				const accept = req.headers.accept ?? 'application/json'
 				
@@ -216,15 +220,44 @@ namespace $ {
 					
 				}
 				
-				proceed( reply[ entry ], land.chief, query.land )
-				
-				const response = {
-					_query: {
-						[ query_str ]: {
-							reply: [ `land=${ entry }` ],
+				const entry = $mol_int62_string_ensure( query.land?.["="]![0][0] ?? '' )
+				if( entry ) {
+					
+					const land = world.land( entry )
+					
+					reply[ entry ] = {}
+					proceed( reply[ entry ], land.chief, query.land! )
+					
+					var response = {
+						_query: {
+							[ query_str ]: {
+								reply: [ `land=${ entry }=` ],
+							},
 						},
-					},
-					land: reply,
+						land: reply,
+					}
+					
+				} else {
+					
+					const prefix = query.search?.["="]![0][0] ?? ''
+					if( !prefix ) return res.writeHead( 404 ).end()
+					
+					const lands = this.land_search( prefix ).map( id => world.land( id ) )
+					
+					for( const land of lands ) {
+						reply[ land.id() ] = {}
+						proceed( reply[ land.id() ], land.chief, query.search! )
+					}
+					
+					var response = {
+						_query: {
+							[ query_str ]: {
+								reply: lands.map( land => `land=${ land.id() }=` ),
+							},
+						},
+						land: reply,
+					}
+					
 				}
 				
 				switch( accept ) {
@@ -322,7 +355,7 @@ namespace $ {
 					res.end( message )
 				}
 				
-			} ) )
+			}.bind( this ) ) )
 			
 			server.listen( this.port() )
 			
@@ -371,6 +404,10 @@ namespace $ {
 				CREATE INDEX IF NOT EXISTS Land2 ON Unit2 ( land );
 			`)
 			
+			await db.query(`
+				CREATE INDEX IF NOT EXISTS Data2 ON Unit2 ( data );
+			`)
+			
 			this.$.$mol_log3_rise({
 				place: this,
 				message: 'Base Ready',
@@ -404,6 +441,22 @@ namespace $ {
 			})
 			
 			return units
+		}
+		
+		async db_land_search( from: string, to = from + '\xFF' ) {
+			
+			const link = this.db_link()
+			if( !link ) return new Set< $mol_int62_string >()
+			
+			const db = await this.db()
+			if( !db ) return new Set< $mol_int62_string >()
+			
+			const res = await db.query<{ land: $mol_int62_string }>(
+				`SELECT land FROM Unit2 WHERE data::text LIKE $1::text`,
+				[ `"${from}%` ],
+			)
+			
+			return new Set< $mol_int62_string >( res.rows.map( row => row.land ) )
 		}
 		
 		async db_land_save( land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[] ) {

@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "827fd0d";
+let $hyoo_sync_revision = "bc1bc17";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -5769,14 +5769,23 @@ var $;
             return $mol_key(data);
         }
         http() {
-            const server = $node.http.createServer($mol_wire_async((req, res) => {
+            const server = $node.http.createServer($mol_wire_async(function http_handler(req, res) {
                 try {
                     const world = this.world();
                     const query_str = req.url.slice(1);
+                    if (!query_str) {
+                        res.writeHead(301, {
+                            'Content-Type': 'text/plain;charset=utf-8',
+                            'Location': '/watch/',
+                            'Access-Control-Allow-Origin': '*',
+                        });
+                        res.end('$hyoo_sync_server ' + $hyoo_sync_revision);
+                        return;
+                    }
                     if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
                         const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
                         try {
-                            const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\/$/, '/index.html')).toString();
+                            const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\.\./g, '').replace(/\/$/, '/index.html')).toString();
                             res.writeHead(200, {
                                 'Access-Control-Allow-Origin': '*',
                                 'Content-Type': {
@@ -5822,20 +5831,7 @@ var $;
                         res.end(node.buffer());
                         return;
                     }
-                    if (!query.land) {
-                        res.writeHead(301, {
-                            'Content-Type': 'text/plain;charset=utf-8',
-                            'Location': '/watch/',
-                            'Access-Control-Allow-Origin': '*',
-                        });
-                        res.end('$hyoo_sync_server ' + $hyoo_sync_revision);
-                        return;
-                    }
-                    const entry = query.land["="][0][0];
-                    const land = world.land(entry);
-                    const reply = {
-                        [entry]: {}
-                    };
+                    const reply = {};
                     const accept = req.headers.accept ?? 'application/json';
                     const proceed = (data, node, query) => {
                         for (let fetch in query) {
@@ -5901,15 +5897,38 @@ var $;
                             }
                         }
                     };
-                    proceed(reply[entry], land.chief, query.land);
-                    const response = {
-                        _query: {
-                            [query_str]: {
-                                reply: [`land=${entry}`],
+                    const entry = $mol_int62_string_ensure(query.land?.["="][0][0] ?? '');
+                    if (entry) {
+                        const land = world.land(entry);
+                        reply[entry] = {};
+                        proceed(reply[entry], land.chief, query.land);
+                        var response = {
+                            _query: {
+                                [query_str]: {
+                                    reply: [`land=${entry}=`],
+                                },
                             },
-                        },
-                        land: reply,
-                    };
+                            land: reply,
+                        };
+                    }
+                    else {
+                        const prefix = query.search?.["="][0][0] ?? '';
+                        if (!prefix)
+                            return res.writeHead(404).end();
+                        const lands = this.land_search(prefix).map(id => world.land(id));
+                        for (const land of lands) {
+                            reply[land.id()] = {};
+                            proceed(reply[land.id()], land.chief, query.search);
+                        }
+                        var response = {
+                            _query: {
+                                [query_str]: {
+                                    reply: lands.map(land => `land=${land.id()}=`),
+                                },
+                            },
+                            land: reply,
+                        };
+                    }
                     switch (accept) {
                         case 'text/html':
                             res.writeHead(200, {
@@ -5994,7 +6013,7 @@ var $;
                     });
                     res.end(message);
                 }
-            }));
+            }.bind(this)));
             server.listen(this.port());
             this.$.$mol_log3_come({
                 place: this,
@@ -6030,6 +6049,9 @@ var $;
             await db.query(`
 				CREATE INDEX IF NOT EXISTS Land2 ON Unit2 ( land );
 			`);
+            await db.query(`
+				CREATE INDEX IF NOT EXISTS Data2 ON Unit2 ( data );
+			`);
             this.$.$mol_log3_rise({
                 place: this,
                 message: 'Base Ready',
@@ -6049,6 +6071,16 @@ var $;
                 return bin.unit();
             });
             return units;
+        }
+        async db_land_search(from, to = from + '\xFF') {
+            const link = this.db_link();
+            if (!link)
+                return new Set();
+            const db = await this.db();
+            if (!db)
+                return new Set();
+            const res = await db.query(`SELECT land FROM Unit2 WHERE data::text LIKE $1::text`, [`"${from}%`]);
+            return new Set(res.rows.map(row => row.land));
         }
         async db_land_save(land, units) {
             const link = this.db_link();

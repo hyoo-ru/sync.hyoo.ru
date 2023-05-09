@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "bc1bc17";
+let $hyoo_sync_revision = "b0b46e6";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -6050,7 +6050,7 @@ var $;
 				CREATE INDEX IF NOT EXISTS Land2 ON Unit2 ( land );
 			`);
             await db.query(`
-				CREATE INDEX IF NOT EXISTS Data2 ON Unit2 ( data );
+				DROP INDEX IF EXISTS Data2;
 			`);
             this.$.$mol_log3_rise({
                 place: this,

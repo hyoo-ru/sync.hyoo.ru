@@ -405,8 +405,11 @@ namespace $ {
 			`)
 			
 			await db.query(`
-				CREATE INDEX IF NOT EXISTS Data2 ON Unit2 ( data );
+				DROP INDEX IF EXISTS Data2;
 			`)
+			// await db.query(`
+			// 	CREATE INDEX IF NOT EXISTS Data2 ON Unit2 ( data );
+			// `)
 			
 			this.$.$mol_log3_rise({
 				place: this,

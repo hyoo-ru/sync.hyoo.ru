@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "7497b73";
+let $hyoo_sync_revision = "209c00c";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -9000,9 +9000,12 @@ var $;
         master_cursor(next = 0) {
             return next;
         }
+        master_list() {
+            return this.$.$hyoo_sync_masters;
+        }
         master_link() {
             const scheme = this.$.$mol_dom_context.document.location.protocol.replace(/^http/, 'ws');
-            const host = this.$.$hyoo_sync_masters[this.master_cursor()];
+            const host = this.master_list()[this.master_cursor()];
             return `${scheme}//${host}`;
         }
         master() {
@@ -10045,263 +10048,6 @@ var $;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
 //mol/deck/deck.view.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_labeler extends $mol_list {
-        rows() {
-            return [
-                this.Label(),
-                this.Content()
-            ];
-        }
-        label() {
-            return [
-                this.title()
-            ];
-        }
-        Label() {
-            const obj = new this.$.$mol_view();
-            obj.minimal_height = () => 32;
-            obj.sub = () => this.label();
-            return obj;
-        }
-        content() {
-            return [];
-        }
-        Content() {
-            const obj = new this.$.$mol_view();
-            obj.minimal_height = () => 24;
-            obj.sub = () => this.content();
-            return obj;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_labeler.prototype, "Label", null);
-    __decorate([
-        $mol_mem
-    ], $mol_labeler.prototype, "Content", null);
-    $.$mol_labeler = $mol_labeler;
-})($ || ($ = {}));
-//mol/labeler/-view.tree/labeler.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: .5rem .75rem 0;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n}\n");
-})($ || ($ = {}));
-//mol/labeler/-css/labeler.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_form_field extends $mol_labeler {
-        bids() {
-            return [];
-        }
-        label() {
-            return [
-                this.name(),
-                this.Bid()
-            ];
-        }
-        content() {
-            return [
-                this.control()
-            ];
-        }
-        name() {
-            return "";
-        }
-        bid() {
-            return "";
-        }
-        Bid() {
-            const obj = new this.$.$mol_view();
-            obj.sub = () => [
-                this.bid()
-            ];
-            return obj;
-        }
-        control() {
-            return null;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_form_field.prototype, "Bid", null);
-    $.$mol_form_field = $mol_form_field;
-})($ || ($ = {}));
-//mol/form/field/-view.tree/field.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_form_field extends $.$mol_form_field {
-            bid() {
-                return this.bids().filter(Boolean)[0] ?? '';
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_form_field.prototype, "bid", null);
-        $$.$mol_form_field = $mol_form_field;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//mol/form/field/field.view.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/form/field/field.view.css", "[mol_form_field] {\n\talign-items: stretch;\n}\n\n[mol_form_field_bid] {\n\tcolor: var(--mol_theme_focus);\n\tdisplay: inline-block;\n\ttext-shadow: 0 0;\n}\n\n[mol_form_field_content] {\n\tborder-radius: var(--mol_gap_round);\n}\n");
-})($ || ($ = {}));
-//mol/form/field/-css/field.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_row extends $mol_view {
-    }
-    $.$mol_row = $mol_row;
-})($ || ($ = {}));
-//mol/row/-view.tree/row.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: var(--mol_gap_block);\n\tgap: var(--mol_gap_block);\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmax-width: 100%;\n}\n");
-})($ || ($ = {}));
-//mol/row/-css/row.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_form extends $mol_list {
-        submit_allowed() {
-            return true;
-        }
-        submit_blocked() {
-            return false;
-        }
-        event() {
-            return {
-                ...super.event(),
-                keydown: (event) => this.keydown(event)
-            };
-        }
-        submit(event) {
-            if (event !== undefined)
-                return event;
-            return null;
-        }
-        rows() {
-            return [
-                this.Body(),
-                this.Foot()
-            ];
-        }
-        keydown(event) {
-            if (event !== undefined)
-                return event;
-            return null;
-        }
-        form_fields() {
-            return [];
-        }
-        body() {
-            return this.form_fields();
-        }
-        Body() {
-            const obj = new this.$.$mol_list();
-            obj.sub = () => this.body();
-            return obj;
-        }
-        buttons() {
-            return [];
-        }
-        foot() {
-            return this.buttons();
-        }
-        Foot() {
-            const obj = new this.$.$mol_row();
-            obj.sub = () => this.foot();
-            return obj;
-        }
-    }
-    __decorate([
-        $mol_mem
-    ], $mol_form.prototype, "submit", null);
-    __decorate([
-        $mol_mem
-    ], $mol_form.prototype, "keydown", null);
-    __decorate([
-        $mol_mem
-    ], $mol_form.prototype, "Body", null);
-    __decorate([
-        $mol_mem
-    ], $mol_form.prototype, "Foot", null);
-    $.$mol_form = $mol_form;
-})($ || ($ = {}));
-//mol/form/-view.tree/form.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        class $mol_form extends $.$mol_form {
-            form_fields() {
-                return [...this.view_find(view => view instanceof $mol_form_field)]
-                    .map(path => path[path.length - 1]);
-            }
-            submit_allowed() {
-                return this.form_fields().every(field => !field.bid());
-            }
-            submit_blocked() {
-                return !this.submit_allowed();
-            }
-            keydown(next) {
-                if (next.ctrlKey && next.keyCode === $mol_keyboard_code.enter && !this.submit_blocked())
-                    this.submit(event);
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_form.prototype, "form_fields", null);
-        __decorate([
-            $mol_mem
-        ], $mol_form.prototype, "submit_allowed", null);
-        $$.$mol_form = $mol_form;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-//mol/form/form.view.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/form/form.view.css", "[mol_form] {\r\n\tgap: var(--mol_gap_block);\r\n}\r\n\r\n[mol_form_body] {\r\n\tgap: var(--mol_gap_block);\r\n}");
-})($ || ($ = {}));
-//mol/form/-css/form.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
-    class $mol_bar extends $mol_view {
-    }
-    $.$mol_bar = $mol_bar;
-})($ || ($ = {}));
-//mol/bar/-view.tree/bar.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/bar/bar.view.css", "[mol_bar] {\n\tdisplay: flex;\n\t/* box-shadow: inset 0 0 0 1px var(--mol_theme_line); */\n\tborder-radius: var(--mol_gap_round);\n}\n");
-})($ || ($ = {}));
-//mol/bar/-css/bar.view.css.ts
 ;
 "use strict";
 var $;
@@ -13451,28 +13197,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $mol_button_major extends $mol_button_typed {
-        attr() {
-            return {
-                ...super.attr(),
-                mol_theme: "$mol_theme_accent"
-            };
-        }
-    }
-    $.$mol_button_major = $mol_button_major;
-})($ || ($ = {}));
-//mol/button/major/-view.tree/major.view.tree.ts
-;
-"use strict";
-var $;
-(function ($) {
-    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major][disabled] {\n\topacity: .5;\n\tfilter: grayscale();\n}\n");
-})($ || ($ = {}));
-//mol/button/major/-css/major.view.css.ts
-;
-"use strict";
-var $;
-(function ($) {
     class $mol_text_list extends $mol_text {
         auto_scroll() {
             return null;
@@ -13522,7 +13246,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    class $hyoo_sync_watch_world extends $mol_book2_catalog {
+    class $hyoo_sync_watch_land extends $mol_book2_catalog {
         yard() {
             const obj = new this.$.$hyoo_sync_client();
             return obj;
@@ -13533,11 +13257,13 @@ var $;
         menu_title() {
             return "Lands";
         }
-        menu_head() {
-            return [
-                this.Land_config(),
-                this.Menu_tools()
+        Menu_title() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.Land_avatar(),
+                this.land_id()
             ];
+            return obj;
         }
         menu_link_content(id) {
             return [
@@ -13582,49 +13308,14 @@ var $;
             ];
             return obj;
         }
-        level_options() {
-            return [
-                "Law",
-                "Mod",
-                "Add"
-            ];
-        }
-        Grab() {
-            const obj = new this.$.$mol_form();
-            obj.body = () => [
-                this.Def_labeler(),
-                this.Self_labeler()
-            ];
-            obj.buttons = () => [
-                this.Grab_submit()
-            ];
-            return obj;
-        }
-        Land_avatar() {
-            const obj = new this.$.$mol_avatar();
-            obj.id = () => this.land_id();
-            return obj;
-        }
         land_id(next) {
             if (next !== undefined)
                 return next;
             return "";
         }
-        Land_id() {
-            const obj = new this.$.$mol_search();
-            obj.hint = () => "Land Id";
-            obj.query = (next) => this.land_id(next);
-            return obj;
-        }
-        land_config() {
-            return [
-                this.Land_avatar(),
-                this.Land_id()
-            ];
-        }
-        Land_config() {
-            const obj = new this.$.$mol_bar();
-            obj.sub = () => this.land_config();
+        Land_avatar() {
+            const obj = new this.$.$mol_avatar();
+            obj.id = () => this.land_id();
             return obj;
         }
         node_id(id) {
@@ -13734,142 +13425,67 @@ var $;
             obj.uri = () => this.node_blob(id);
             return obj;
         }
-        def_level(next) {
-            if (next !== undefined)
-                return next;
-            return 2;
-        }
-        Def_level() {
-            const obj = new this.$.$mol_switch();
-            obj.options = () => this.level_options();
-            obj.value = (next) => this.def_level(next);
-            return obj;
-        }
-        Def_labeler() {
-            const obj = new this.$.$mol_form_field();
-            obj.name = () => "Common Level";
-            obj.Content = () => this.Def_level();
-            return obj;
-        }
-        self_level(next) {
-            if (next !== undefined)
-                return next;
-            return 0;
-        }
-        Self_level() {
-            const obj = new this.$.$mol_switch();
-            obj.options = () => this.level_options();
-            obj.value = (next) => this.self_level(next);
-            return obj;
-        }
-        Self_labeler() {
-            const obj = new this.$.$mol_form_field();
-            obj.name = () => "Your Level";
-            obj.Content = () => this.Self_level();
-            return obj;
-        }
-        grab_submit(next) {
-            if (next !== undefined)
-                return next;
-            return null;
-        }
-        Grab_submit() {
-            const obj = new this.$.$mol_button_major();
-            obj.title = () => "Grab New Land";
-            obj.click = (next) => this.grab_submit(next);
-            return obj;
-        }
     }
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "yard", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_output", null);
+    ], $hyoo_sync_watch_land.prototype, "yard", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Grab", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Land_avatar", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "land_id", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Land_id", null);
-    __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Land_config", null);
+    ], $hyoo_sync_watch_land.prototype, "Menu_title", null);
     __decorate([
         $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_avatar", null);
+    ], $hyoo_sync_watch_land.prototype, "Node", null);
     __decorate([
         $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "download_blob", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Download", null);
+    ], $hyoo_sync_watch_land.prototype, "Node_output", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "node_output", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_units", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_list", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_link", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_links", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_text", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_md", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_html", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_json", null);
-    __decorate([
-        $mol_mem_key
-    ], $hyoo_sync_watch_world.prototype, "Node_blob", null);
+    ], $hyoo_sync_watch_land.prototype, "land_id", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "def_level", null);
+    ], $hyoo_sync_watch_land.prototype, "Land_avatar", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_avatar", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "download_blob", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Download", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Def_level", null);
+    ], $hyoo_sync_watch_land.prototype, "node_output", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Def_labeler", null);
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_units", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "self_level", null);
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_list", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Self_level", null);
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_link", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Self_labeler", null);
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_links", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "grab_submit", null);
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_text", null);
     __decorate([
-        $mol_mem
-    ], $hyoo_sync_watch_world.prototype, "Grab_submit", null);
-    $.$hyoo_sync_watch_world = $hyoo_sync_watch_world;
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_md", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_html", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_json", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_land.prototype, "Node_blob", null);
+    $.$hyoo_sync_watch_land = $hyoo_sync_watch_land;
 })($ || ($ = {}));
-//hyoo/sync/watch/world/-view.tree/world.view.tree.ts
+//hyoo/sync/watch/land/-view.tree/land.view.tree.ts
 ;
 "use strict";
 var $;
@@ -14478,26 +14094,16 @@ var $;
 (function ($) {
     var $$;
     (function ($$) {
-        class $hyoo_sync_watch_world extends $.$hyoo_sync_watch_world {
+        class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
             land_id(next) {
-                return (this.$.$mol_state_arg.value('land', next) ?? '');
+                return $mol_int62_string_ensure(this.$.$mol_state_arg.value('land', next) ?? '');
             }
             land() {
                 const id = this.land_id();
                 return id ? this.yard().land(id) : null;
             }
-            menu_head() {
-                return [
-                    this.Land_config(),
-                    ...this.land_id() ? [] : [this.Menu_tools()],
-                ];
-            }
-            grab_submit() {
-                const rules = [[], [], []];
-                rules[this.def_level()]?.push('0_0');
-                rules[this.self_level()]?.push('');
-                const land = this.yard().land_grab(...rules);
-                this.land_id(land.id());
+            menu_title() {
+                return this.land_id() ?? '';
             }
             spreads() {
                 const land = this.land();
@@ -14509,11 +14115,6 @@ var $;
                     spreads[head] = this.Node(head);
                 }
                 return spreads;
-            }
-            menu_body() {
-                if (!this.land())
-                    return [this.Grab()];
-                return super.menu_body();
             }
             node_id(id) {
                 return id;
@@ -14555,24 +14156,581 @@ var $;
         }
         __decorate([
             $mol_mem
-        ], $hyoo_sync_watch_world.prototype, "menu_head", null);
-        __decorate([
-            $mol_mem
-        ], $hyoo_sync_watch_world.prototype, "spreads", null);
-        __decorate([
-            $mol_mem
-        ], $hyoo_sync_watch_world.prototype, "menu_body", null);
-        $$.$hyoo_sync_watch_world = $hyoo_sync_watch_world;
+        ], $hyoo_sync_watch_land.prototype, "spreads", null);
+        $$.$hyoo_sync_watch_land = $hyoo_sync_watch_land;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
-//hyoo/sync/watch/world/world.view.ts
+//hyoo/sync/watch/land/land.view.ts
 ;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/world/world.view.css", "\n[hyoo_sync_watch_world_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_land_config] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_menu_tools] {\n\tflex-shrink: 0;\n}\n\n[hyoo_sync_watch_world_land_avatar] {\n\tmargin: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_land_id] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_menu_link] {\n\tgap: var(--mol_gap_block);\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_world_node_output_switch] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_world_node_dump] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_world_node_body] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_world_node_json] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_world_node_list] {\n\tpadding: var(--mol_gap_text);\n}\n");
+    $mol_style_attach("hyoo/sync/watch/land/land.view.css", "\n[hyoo_sync_watch_land_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_land_land_config] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_land_menu_tools] {\n\tflex-shrink: 0;\n}\n\n[hyoo_sync_watch_land_menu_title] {\n\tmargin: var(--mol_gap_text);\n\tgap: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_land_land_id] {\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_land_menu_link] {\n\tgap: var(--mol_gap_block);\n\tfont-family: monospace;\n}\n\n[hyoo_sync_watch_land_node_output_switch] {\n\tflex-shrink: 1;\n}\n\n[hyoo_sync_watch_land_node_dump] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_land_node] {\n\tflex-basis: 50rem;\n\tflex-grow: 1;\n}\n\n[hyoo_sync_watch_land_node_body] {\n\tpadding: var(--mol_gap_block);\n}\n\n[hyoo_sync_watch_land_node_json] {\n\tpadding: var(--mol_gap_text);\n}\n\n[hyoo_sync_watch_land_node_list] {\n\tpadding: var(--mol_gap_text);\n}\n");
 })($ || ($ = {}));
-//hyoo/sync/watch/world/-css/world.view.css.ts
+//hyoo/sync/watch/land/-css/land.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_labeler extends $mol_list {
+        rows() {
+            return [
+                this.Label(),
+                this.Content()
+            ];
+        }
+        label() {
+            return [
+                this.title()
+            ];
+        }
+        Label() {
+            const obj = new this.$.$mol_view();
+            obj.minimal_height = () => 32;
+            obj.sub = () => this.label();
+            return obj;
+        }
+        content() {
+            return [];
+        }
+        Content() {
+            const obj = new this.$.$mol_view();
+            obj.minimal_height = () => 24;
+            obj.sub = () => this.content();
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_labeler.prototype, "Label", null);
+    __decorate([
+        $mol_mem
+    ], $mol_labeler.prototype, "Content", null);
+    $.$mol_labeler = $mol_labeler;
+})($ || ($ = {}));
+//mol/labeler/-view.tree/labeler.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: .5rem .75rem 0;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n}\n");
+})($ || ($ = {}));
+//mol/labeler/-css/labeler.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_form_field extends $mol_labeler {
+        bids() {
+            return [];
+        }
+        label() {
+            return [
+                this.name(),
+                this.Bid()
+            ];
+        }
+        content() {
+            return [
+                this.control()
+            ];
+        }
+        name() {
+            return "";
+        }
+        bid() {
+            return "";
+        }
+        Bid() {
+            const obj = new this.$.$mol_view();
+            obj.sub = () => [
+                this.bid()
+            ];
+            return obj;
+        }
+        control() {
+            return null;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_form_field.prototype, "Bid", null);
+    $.$mol_form_field = $mol_form_field;
+})($ || ($ = {}));
+//mol/form/field/-view.tree/field.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_form_field extends $.$mol_form_field {
+            bid() {
+                return this.bids().filter(Boolean)[0] ?? '';
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_form_field.prototype, "bid", null);
+        $$.$mol_form_field = $mol_form_field;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/form/field/field.view.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/form/field/field.view.css", "[mol_form_field] {\n\talign-items: stretch;\n}\n\n[mol_form_field_bid] {\n\tcolor: var(--mol_theme_focus);\n\tdisplay: inline-block;\n\ttext-shadow: 0 0;\n}\n\n[mol_form_field_content] {\n\tborder-radius: var(--mol_gap_round);\n}\n");
+})($ || ($ = {}));
+//mol/form/field/-css/field.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_row extends $mol_view {
+    }
+    $.$mol_row = $mol_row;
+})($ || ($ = {}));
+//mol/row/-view.tree/row.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/row/row.view.css", "[mol_row] {\n\tdisplay: flex;\n\tflex-wrap: wrap;\n\talign-items: flex-start;\n\talign-content: flex-start;\n\tjustify-content: flex-start;\n\tpadding: var(--mol_gap_block);\n\tgap: var(--mol_gap_block);\n\tflex: 0 0 auto;\n\tbox-sizing: border-box;\n\tmax-width: 100%;\n}\n\n[mol_row] > * {\n\tmax-width: 100%;\n}\n");
+})($ || ($ = {}));
+//mol/row/-css/row.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_form extends $mol_list {
+        submit_allowed() {
+            return true;
+        }
+        submit_blocked() {
+            return false;
+        }
+        event() {
+            return {
+                ...super.event(),
+                keydown: (event) => this.keydown(event)
+            };
+        }
+        submit(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        rows() {
+            return [
+                this.Body(),
+                this.Foot()
+            ];
+        }
+        keydown(event) {
+            if (event !== undefined)
+                return event;
+            return null;
+        }
+        form_fields() {
+            return [];
+        }
+        body() {
+            return this.form_fields();
+        }
+        Body() {
+            const obj = new this.$.$mol_list();
+            obj.sub = () => this.body();
+            return obj;
+        }
+        buttons() {
+            return [];
+        }
+        foot() {
+            return this.buttons();
+        }
+        Foot() {
+            const obj = new this.$.$mol_row();
+            obj.sub = () => this.foot();
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $mol_form.prototype, "submit", null);
+    __decorate([
+        $mol_mem
+    ], $mol_form.prototype, "keydown", null);
+    __decorate([
+        $mol_mem
+    ], $mol_form.prototype, "Body", null);
+    __decorate([
+        $mol_mem
+    ], $mol_form.prototype, "Foot", null);
+    $.$mol_form = $mol_form;
+})($ || ($ = {}));
+//mol/form/-view.tree/form.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $mol_form extends $.$mol_form {
+            form_fields() {
+                return [...this.view_find(view => view instanceof $mol_form_field)]
+                    .map(path => path[path.length - 1]);
+            }
+            submit_allowed() {
+                return this.form_fields().every(field => !field.bid());
+            }
+            submit_blocked() {
+                return !this.submit_allowed();
+            }
+            keydown(next) {
+                if (next.ctrlKey && next.keyCode === $mol_keyboard_code.enter && !this.submit_blocked())
+                    this.submit(event);
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "form_fields", null);
+        __decorate([
+            $mol_mem
+        ], $mol_form.prototype, "submit_allowed", null);
+        $$.$mol_form = $mol_form;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//mol/form/form.view.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/form/form.view.css", "[mol_form] {\r\n\tgap: var(--mol_gap_block);\r\n}\r\n\r\n[mol_form_body] {\r\n\tgap: var(--mol_gap_block);\r\n}");
+})($ || ($ = {}));
+//mol/form/-css/form.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $mol_button_major extends $mol_button_typed {
+        attr() {
+            return {
+                ...super.attr(),
+                mol_theme: "$mol_theme_accent"
+            };
+        }
+    }
+    $.$mol_button_major = $mol_button_major;
+})($ || ($ = {}));
+//mol/button/major/-view.tree/major.view.tree.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/button/major/major.view.css", "[mol_button_major][disabled] {\n\topacity: .5;\n\tfilter: grayscale();\n}\n");
+})($ || ($ = {}));
+//mol/button/major/-css/major.view.css.ts
+;
+"use strict";
+var $;
+(function ($) {
+    class $hyoo_sync_watch_search extends $mol_book2_catalog {
+        title() {
+            return "Lands";
+        }
+        param() {
+            return "land";
+        }
+        query(next) {
+            if (next !== undefined)
+                return next;
+            return "";
+        }
+        menu_head() {
+            return [
+                this.Query(),
+                this.Menu_tools()
+            ];
+        }
+        body() {
+            return [];
+        }
+        menu_link_content(id) {
+            return [
+                this.Land_avatar(id),
+                this.Menu_link_title(id)
+            ];
+        }
+        Land(id) {
+            const obj = new this.$.$hyoo_sync_watch_land();
+            obj.yard = () => this.yard();
+            obj.title = () => this.land_id(id);
+            obj.menu_tools = () => [
+                this.Spread_close()
+            ];
+            return obj;
+        }
+        level_options() {
+            return [
+                "Law",
+                "Mod",
+                "Add"
+            ];
+        }
+        Grab() {
+            const obj = new this.$.$mol_form();
+            obj.body = () => [
+                this.Def_labeler(),
+                this.Self_labeler()
+            ];
+            obj.buttons = () => [
+                this.Grab_submit()
+            ];
+            return obj;
+        }
+        search_query(next) {
+            if (next !== undefined)
+                return next;
+            return "";
+        }
+        search_start(next) {
+            if (next !== undefined)
+                return next;
+            return null;
+        }
+        Query() {
+            const obj = new this.$.$mol_search();
+            obj.Clear = () => null;
+            obj.query = (next) => this.search_query(next);
+            obj.submit = (next) => this.search_start(next);
+            return obj;
+        }
+        land_id(id) {
+            return "";
+        }
+        Land_avatar(id) {
+            const obj = new this.$.$mol_avatar();
+            obj.id = () => this.land_id(id);
+            return obj;
+        }
+        yard() {
+            const obj = new this.$.$hyoo_sync_client();
+            return obj;
+        }
+        def_level(next) {
+            if (next !== undefined)
+                return next;
+            return 2;
+        }
+        Def_level() {
+            const obj = new this.$.$mol_switch();
+            obj.options = () => this.level_options();
+            obj.value = (next) => this.def_level(next);
+            return obj;
+        }
+        Def_labeler() {
+            const obj = new this.$.$mol_form_field();
+            obj.name = () => "Common Level";
+            obj.Content = () => this.Def_level();
+            return obj;
+        }
+        self_level(next) {
+            if (next !== undefined)
+                return next;
+            return 0;
+        }
+        Self_level() {
+            const obj = new this.$.$mol_switch();
+            obj.options = () => this.level_options();
+            obj.value = (next) => this.self_level(next);
+            return obj;
+        }
+        Self_labeler() {
+            const obj = new this.$.$mol_form_field();
+            obj.name = () => "Your Level";
+            obj.Content = () => this.Self_level();
+            return obj;
+        }
+        grab_submit(next) {
+            if (next !== undefined)
+                return next;
+            return null;
+        }
+        Grab_submit() {
+            const obj = new this.$.$mol_button_major();
+            obj.title = () => "Grab New Land";
+            obj.click = (next) => this.grab_submit(next);
+            return obj;
+        }
+    }
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "query", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_search.prototype, "Land", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Grab", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "search_query", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "search_start", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Query", null);
+    __decorate([
+        $mol_mem_key
+    ], $hyoo_sync_watch_search.prototype, "Land_avatar", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "yard", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "def_level", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Def_level", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Def_labeler", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "self_level", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Self_level", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Self_labeler", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "grab_submit", null);
+    __decorate([
+        $mol_mem
+    ], $hyoo_sync_watch_search.prototype, "Grab_submit", null);
+    $.$hyoo_sync_watch_search = $hyoo_sync_watch_search;
+})($ || ($ = {}));
+//hyoo/sync/watch/search/-view.tree/search.view.tree.ts
+;
+"use strict";
+//hyoo/harp/query/query.ts
+;
+"use strict";
+var $;
+(function ($) {
+    function $hyoo_harp_to_string(query) {
+        return Object.entries(query).map(([field, harp]) => {
+            if (field === '+')
+                return '';
+            if (field === '=')
+                return '';
+            if (field === '!=')
+                return '';
+            if (!harp)
+                return '';
+            const harp2 = harp;
+            const order = harp2['+'] === true ? '+' : harp2['+'] === false ? '-' : '';
+            const filter = harp2['='] ? '=' : harp2['!='] ? '!=' : '';
+            const name = encodeURIComponent(field);
+            let values = (harp2['='] || harp2['!='] || []).map(([min, max]) => {
+                if (max === undefined || min === max)
+                    return encodeURIComponent(String(min)) + '=';
+                min = (min === undefined) ? '' : encodeURIComponent(String(min));
+                max = (max === undefined) ? '' : encodeURIComponent(String(max));
+                return `${min}@${max}=`;
+            }).join('');
+            let fetch = $hyoo_harp_to_string(harp);
+            if (fetch)
+                fetch = `(${fetch})`;
+            return `${order}${name}${filter}${values}${fetch}`;
+        }).filter(Boolean).join(';');
+    }
+    $.$hyoo_harp_to_string = $hyoo_harp_to_string;
+})($ || ($ = {}));
+//hyoo/harp/to/string/string.ts
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $hyoo_sync_watch_search extends $.$hyoo_sync_watch_search {
+            query(next) {
+                return this.$.$mol_state_arg.value('search', next) ?? '';
+            }
+            search_query(next) {
+                return next ?? this.query();
+            }
+            search_start() {
+                this.query(this.search_query());
+            }
+            found_lands() {
+                const query = this.query();
+                if (!query)
+                    return [];
+                const id = $mol_int62_string_ensure(query);
+                if (id)
+                    return [id];
+                const request = $hyoo_harp_to_string({
+                    search: {
+                        '=': [[query]],
+                    },
+                });
+                const origin = this.$.$mol_dom_context.location.protocol + '//' + this.yard().master_list()[this.yard().master_cursor()];
+                const response = this.$.$mol_fetch.json(`${origin}/${request}`);
+                return Object.keys(response.land);
+            }
+            spreads() {
+                const spreads = {};
+                for (const land of this.found_lands()) {
+                    spreads[land] = this.Land(land);
+                }
+                return spreads;
+            }
+            land_id(id) {
+                return id;
+            }
+            menu_links() {
+                const links = super.menu_links();
+                if (links.length)
+                    return links;
+                return [this.Grab()];
+            }
+            grab_submit() {
+                const rules = [[], [], []];
+                rules[this.def_level()]?.push('0_0');
+                rules[this.self_level()]?.push('');
+                const land = this.yard().land_grab(...rules);
+                this.land_id(land.id());
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $hyoo_sync_watch_search.prototype, "search_query", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_sync_watch_search.prototype, "found_lands", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_sync_watch_search.prototype, "spreads", null);
+        __decorate([
+            $mol_mem
+        ], $hyoo_sync_watch_search.prototype, "menu_links", null);
+        $$.$hyoo_sync_watch_search = $hyoo_sync_watch_search;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+//hyoo/sync/watch/search/search.view.ts
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("hyoo/sync/watch/search/search.view.css", "[hyoo_sync_watch_search_menu_link] {\n\tgap: var(--mol_gap_block);\n}\n");
+})($ || ($ = {}));
+//hyoo/sync/watch/search/-css/search.view.css.ts
 ;
 "use strict";
 var $;
@@ -16096,7 +16254,8 @@ var $;
         Row_field_land(id) {
             const obj = new this.$.$mol_link();
             obj.arg = () => ({
-                section: "world",
+                section: "search",
+                search: this.row_field_text(id),
                 land: this.row_field_text(id)
             });
             obj.sub = () => [
@@ -16384,7 +16543,7 @@ var $;
         }
         spreads() {
             return {
-                world: this.World(),
+                search: this.Search(),
                 log: this.Log()
             };
         }
@@ -16410,8 +16569,8 @@ var $;
             obj.yard = () => this.yard();
             return obj;
         }
-        World() {
-            const obj = new this.$.$hyoo_sync_watch_world();
+        Search() {
+            const obj = new this.$.$hyoo_sync_watch_search();
             obj.yard = () => this.yard();
             obj.menu_tools = () => [
                 this.Spread_close()
@@ -16443,7 +16602,7 @@ var $;
     ], $hyoo_sync_watch.prototype, "Online", null);
     __decorate([
         $mol_mem
-    ], $hyoo_sync_watch.prototype, "World", null);
+    ], $hyoo_sync_watch.prototype, "Search", null);
     __decorate([
         $mol_mem
     ], $hyoo_sync_watch.prototype, "Log", null);
@@ -16454,7 +16613,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_world_menu_head] {\n\tflex-wrap: nowrap;\n}\n");
+    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_land_menu_head] {\n\tflex-wrap: nowrap;\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/-css/watch.view.css.ts
 

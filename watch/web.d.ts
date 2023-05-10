@@ -2446,6 +2446,7 @@ declare namespace $ {
         db_land_search(from: string | number, to?: string | number): Promise<Set<`${string}_${string}`>>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         master_cursor(next?: number): number;
+        master_list(): string[];
         master_link(): string;
         master(): any;
         server(): any;
@@ -2729,85 +2730,6 @@ declare namespace $.$$ {
         switch_options(): Record<string, string>;
         Content(): $mol_view;
     }
-}
-
-declare namespace $ {
-    class $mol_labeler extends $mol_list {
-        rows(): readonly any[];
-        label(): readonly $mol_view_content[];
-        Label(): $mol_view;
-        content(): readonly any[];
-        Content(): $mol_view;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_form_field extends $mol_labeler {
-        bids(): readonly string[];
-        label(): readonly any[];
-        content(): readonly any[];
-        name(): string;
-        bid(): string;
-        Bid(): $mol_view;
-        control(): any;
-    }
-}
-
-declare namespace $.$$ {
-    class $mol_form_field extends $.$mol_form_field {
-        bid(): string;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_row extends $mol_view {
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_form extends $mol_list {
-        submit_allowed(): boolean;
-        submit_blocked(): boolean;
-        event(): Record<string, any>;
-        submit(event?: any): any;
-        rows(): readonly any[];
-        keydown(event?: any): any;
-        form_fields(): readonly $mol_form_field[];
-        body(): readonly $mol_form_field[];
-        Body(): $$.$mol_list;
-        buttons(): readonly $mol_view[];
-        foot(): readonly $mol_view[];
-        Foot(): $mol_row;
-    }
-}
-
-declare namespace $.$$ {
-    class $mol_form extends $.$mol_form {
-        form_fields(): readonly $mol_form_field[];
-        submit_allowed(): boolean;
-        submit_blocked(): boolean;
-        keydown(next: KeyboardEvent): void;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
-    class $mol_bar extends $mol_view {
-    }
-}
-
-declare namespace $ {
 }
 
 declare namespace $ {
@@ -3637,15 +3559,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $mol_button_major extends $mol_button_typed {
-        attr(): Record<string, any>;
-    }
-}
-
-declare namespace $ {
-}
-
-declare namespace $ {
     class $mol_text_list extends $mol_text {
         auto_scroll(): any;
         attr(): Record<string, any>;
@@ -3662,24 +3575,19 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    class $hyoo_sync_watch_world extends $mol_book2_catalog {
+    class $hyoo_sync_watch_land extends $mol_book2_catalog {
         yard(): $hyoo_sync_client;
         param(): string;
         menu_title(): string;
-        menu_head(): readonly any[];
+        Menu_title(): $mol_view;
         menu_link_content(id: any): readonly any[];
         spreads(): Record<string, any>;
         Node(id: any): $mol_page;
         Node_output_switch(id: any): $$.$mol_switch;
         Node_output_content(id: any): $mol_view;
         Node_output(id: any): $$.$mol_deck;
-        level_options(): readonly any[];
-        Grab(): $$.$mol_form;
-        Land_avatar(): $$.$mol_avatar;
         land_id(next?: any): string;
-        Land_id(): $$.$mol_search;
-        land_config(): readonly any[];
-        Land_config(): $mol_bar;
+        Land_avatar(): $$.$mol_avatar;
         node_id(id: any): string;
         Node_avatar(id: any): $$.$mol_avatar;
         download_blob(id: any): Blob;
@@ -3702,14 +3610,6 @@ declare namespace $ {
         Node_json(id: any): $$.$mol_dump_value;
         node_blob(id: any): any;
         Node_blob(id: any): $$.$mol_embed_native;
-        def_level(next?: any): number;
-        Def_level(): $$.$mol_switch;
-        Def_labeler(): $$.$mol_form_field;
-        self_level(next?: any): number;
-        Self_level(): $$.$mol_switch;
-        Self_labeler(): $$.$mol_form_field;
-        grab_submit(next?: any): any;
-        Grab_submit(): $mol_button_major;
     }
 }
 
@@ -3797,13 +3697,11 @@ declare namespace $ {
 }
 
 declare namespace $.$$ {
-    class $hyoo_sync_watch_world extends $.$hyoo_sync_watch_world {
+    class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
         land_id(next?: string): `${string}_${string}`;
         land(): $hyoo_crowd_land | null;
-        menu_head(): $mol_view[];
-        grab_submit(): void;
+        menu_title(): `${string}_${string}`;
         spreads(): Record<string, $mol_view>;
-        menu_body(): readonly any[];
         node_id(id: $mol_int62_string): `${string}_${string}`;
         node_units(id: $mol_int62_string): $hyoo_crowd_unit[] & {
             dirty: boolean;
@@ -3816,6 +3714,144 @@ declare namespace $.$$ {
         node_blob(id: $mol_int62_string): string;
         download_blob(head: $mol_int62_string): Blob;
         download_name(head: $mol_int62_string): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_labeler extends $mol_list {
+        rows(): readonly any[];
+        label(): readonly $mol_view_content[];
+        Label(): $mol_view;
+        content(): readonly any[];
+        Content(): $mol_view;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_form_field extends $mol_labeler {
+        bids(): readonly string[];
+        label(): readonly any[];
+        content(): readonly any[];
+        name(): string;
+        bid(): string;
+        Bid(): $mol_view;
+        control(): any;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_form_field extends $.$mol_form_field {
+        bid(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_row extends $mol_view {
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_form extends $mol_list {
+        submit_allowed(): boolean;
+        submit_blocked(): boolean;
+        event(): Record<string, any>;
+        submit(event?: any): any;
+        rows(): readonly any[];
+        keydown(event?: any): any;
+        form_fields(): readonly $mol_form_field[];
+        body(): readonly $mol_form_field[];
+        Body(): $$.$mol_list;
+        buttons(): readonly $mol_view[];
+        foot(): readonly $mol_view[];
+        Foot(): $mol_row;
+    }
+}
+
+declare namespace $.$$ {
+    class $mol_form extends $.$mol_form {
+        form_fields(): readonly $mol_form_field[];
+        submit_allowed(): boolean;
+        submit_blocked(): boolean;
+        keydown(next: KeyboardEvent): void;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $mol_button_major extends $mol_button_typed {
+        attr(): Record<string, any>;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
+    class $hyoo_sync_watch_search extends $mol_book2_catalog {
+        title(): string;
+        param(): string;
+        query(next?: any): string;
+        menu_head(): readonly any[];
+        body(): readonly any[];
+        menu_link_content(id: any): readonly any[];
+        Land(id: any): $$.$hyoo_sync_watch_land;
+        level_options(): readonly any[];
+        Grab(): $$.$mol_form;
+        search_query(next?: any): string;
+        search_start(next?: any): any;
+        Query(): $$.$mol_search;
+        land_id(id: any): string;
+        Land_avatar(id: any): $$.$mol_avatar;
+        yard(): $hyoo_sync_client;
+        def_level(next?: any): number;
+        Def_level(): $$.$mol_switch;
+        Def_labeler(): $$.$mol_form_field;
+        self_level(next?: any): number;
+        Self_level(): $$.$mol_switch;
+        Self_labeler(): $$.$mol_form_field;
+        grab_submit(next?: any): any;
+        Grab_submit(): $mol_button_major;
+    }
+}
+
+declare namespace $ {
+    type $hyoo_harp_query<Field extends string = string> = {
+        [field in Field]: $hyoo_harp_query<never>;
+    } & {
+        '+'?: boolean;
+        '='?: any[][];
+        '!='?: any[][];
+    };
+}
+
+declare namespace $ {
+    function $hyoo_harp_to_string<Query extends $hyoo_harp_query>(query: Query): string;
+}
+
+declare namespace $.$$ {
+    class $hyoo_sync_watch_search extends $.$hyoo_sync_watch_search {
+        query(next?: string): string;
+        search_query(next?: string): string;
+        search_start(): void;
+        found_lands(): string[];
+        spreads(): Record<string, $mol_view>;
+        land_id(id: $mol_int62_string): `${string}_${string}`;
+        menu_links(): readonly any[];
+        grab_submit(): void;
     }
 }
 
@@ -4282,7 +4318,7 @@ declare namespace $ {
         Sources(): $mol_link_source;
         yard(): $hyoo_sync_client;
         Online(): $$.$hyoo_sync_online;
-        World(): $$.$hyoo_sync_watch_world;
+        Search(): $$.$hyoo_sync_watch_search;
         Log(): $$.$hyoo_sync_watch_log;
     }
 }

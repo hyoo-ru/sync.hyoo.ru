@@ -384,41 +384,6 @@ $mol_deck $mol_list
 			options <= switch_options *
 		<= Content $mol_view
 
-$mol_labeler $mol_list
-	rows /
-		<= Label $mol_view
-			minimal_height 32
-			sub <= label /$mol_view_content
-				<= title
-		<= Content $mol_view
-			minimal_height 24
-			sub <= content /
-
-$mol_form_field $mol_labeler
-	bids /string
-	label /
-		<= name \
-		<= Bid $mol_view
-			sub / <= bid \
-	content / <= control null
-
-$mol_row $mol_view
-
-$mol_form $mol_list
-	submit_allowed true
-	submit_blocked false
-	event *
-		^
-		keydown?event <=> keydown?event null
-	submit?event null
-	rows /
-		<= Body $mol_list
-			sub <= body <= form_fields /$mol_form_field
-		<= Foot $mol_row
-			sub <= foot <= buttons /$mol_view
-
-$mol_bar $mol_view
-
 $mol_icon_download $mol_icon path \M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z
 
 $mol_button_download $mol_button_minor
@@ -801,11 +766,6 @@ $mol_text_span $mol_paragraph
 		^
 		mol_text_type <= type \
 
-$mol_button_major $mol_button_typed
-	attr *
-		^
-		mol_theme \$mol_theme_accent
-
 $mol_text_list $mol_text
 	auto_scroll null
 	attr *
@@ -821,19 +781,14 @@ $mol_text_list_item $mol_paragraph
 		mol_text_list_item_index <= index 0
 
 
-$hyoo_sync_watch_world $mol_book2_catalog
+$hyoo_sync_watch_land $mol_book2_catalog
 	yard $hyoo_sync_client
 	param \head
 	menu_title \Lands
-	menu_head /
-		<= Land_config $mol_bar
-			sub <= land_config /
-				<= Land_avatar $mol_avatar
-					id <= land_id
-				<= Land_id $mol_search
-					hint \Land Id
-					query? <=> land_id? \
-		<= Menu_tools
+	Menu_title $mol_view sub /
+		<= Land_avatar $mol_avatar
+			id <= land_id? \
+		<= land_id? \
 	menu_link_content* /
 		<= Node_avatar* $mol_avatar
 			id <= node_id* \
@@ -882,6 +837,65 @@ $hyoo_sync_watch_world $mol_book2_catalog
 			<= Node_blob* $mol_embed_native
 				title \BLOB
 				uri <= node_blob* null
+
+$mol_labeler $mol_list
+	rows /
+		<= Label $mol_view
+			minimal_height 32
+			sub <= label /$mol_view_content
+				<= title
+		<= Content $mol_view
+			minimal_height 24
+			sub <= content /
+
+$mol_form_field $mol_labeler
+	bids /string
+	label /
+		<= name \
+		<= Bid $mol_view
+			sub / <= bid \
+	content / <= control null
+
+$mol_row $mol_view
+
+$mol_form $mol_list
+	submit_allowed true
+	submit_blocked false
+	event *
+		^
+		keydown?event <=> keydown?event null
+	submit?event null
+	rows /
+		<= Body $mol_list
+			sub <= body <= form_fields /$mol_form_field
+		<= Foot $mol_row
+			sub <= foot <= buttons /$mol_view
+
+$mol_button_major $mol_button_typed
+	attr *
+		^
+		mol_theme \$mol_theme_accent
+
+$hyoo_sync_watch_search $mol_book2_catalog
+	title \Lands
+	param \land
+	query? \
+	menu_head /
+		<= Query $mol_search
+			Clear null
+			query? <=> search_query? \
+			submit? <=> search_start? null
+		<= Menu_tools
+	body /
+	menu_link_content* /
+		<= Land_avatar* $mol_avatar
+			id <= land_id* \
+		<= Menu_link_title*
+	Land* $hyoo_sync_watch_land
+		yard <= yard $hyoo_sync_client
+		title <= land_id* \
+		menu_tools /
+			<= Spread_close
 	level_options /
 		\Law
 		\Mod
@@ -1048,7 +1062,8 @@ $hyoo_sync_watch_log $mol_page
 		text <= row_field_text* \
 	Row_field_land* $mol_link
 		arg *
-			section \world
+			section \search
+			search <= row_field_text*
 			land <= row_field_text*
 		sub /
 			<= Row_field_ava* $mol_avatar
@@ -1069,7 +1084,7 @@ $hyoo_sync_watch $mol_book2_catalog
 		<= Online $hyoo_sync_online
 			yard <= yard $hyoo_sync_client
 	spreads *
-		world <= World $hyoo_sync_watch_world
+		search <= Search $hyoo_sync_watch_search
 			yard <= yard
 			menu_tools /
 				<= Spread_close

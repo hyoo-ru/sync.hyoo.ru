@@ -24,7 +24,8 @@ $hyoo_sync_watch_log $mol_page
 		text <= row_field_text* \
 	Row_field_land* $mol_link
 		arg *
-			section \world
+			section \search
+			search <= row_field_text*
 			land <= row_field_text*
 		sub /
 			<= Row_field_ava* $mol_avatar

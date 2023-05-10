@@ -1,9 +1,9 @@
 namespace $.$$ {
 	
-	export class $hyoo_sync_watch_world extends $.$hyoo_sync_watch_world {
+	export class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
 		
 		land_id( next?: string ) {
-			return ( this.$.$mol_state_arg.value( 'land', next ) ?? '' ) as $mol_int62_string
+			return $mol_int62_string_ensure( this.$.$mol_state_arg.value( 'land', next ) ?? '' )!
 		}
 		
 		land() {
@@ -11,25 +11,8 @@ namespace $.$$ {
 			return id ? this.yard().land( id ) : null
 		}
 		
-		@ $mol_mem
-		menu_head() {
-			return [
-				this.Land_config(),
-				... this.land_id() ? [] : [ this.Menu_tools() ],
-			]
-		}
-		
-		grab_submit() {
-			
-			type Rule = $mol_int62_string | ''
-			const rules = [ [], [], [] ] as Rule[][]
-
-			rules[ this.def_level() ]?.push( '0_0' )
-			rules[ this.self_level() ]?.push( '' )
-			
-			const land = this.yard().land_grab( ... rules )
-			this.land_id( land.id() )
-			
+		menu_title() {
+			return this.land_id() ?? ''
 		}
 		
 		@ $mol_mem
@@ -47,12 +30,6 @@ namespace $.$$ {
 			}
 			
 			return spreads
-		}
-		
-		@ $mol_mem
-		menu_body() {
-			if( !this.land() ) return [ this.Grab() ]
-			return super.menu_body()
 		}
 		
 		node_id( id: $mol_int62_string ) {

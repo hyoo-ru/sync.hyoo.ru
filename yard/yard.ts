@@ -226,10 +226,14 @@ namespace $ {
 			return next
 		}
 		
+		master_list() {
+			return this.$.$hyoo_sync_masters
+		}
+		
 		@ $mol_mem
 		master_link() {
 			const scheme = this.$.$mol_dom_context.document.location.protocol.replace( /^http/ , 'ws' )
-			const host = this.$.$hyoo_sync_masters[ this.master_cursor() ]
+			const host = this.master_list()[ this.master_cursor() ]
 			return `${scheme}//${host}`
 		}
 		

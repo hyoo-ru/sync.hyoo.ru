@@ -12,7 +12,7 @@ $hyoo_sync_watch $mol_book2_catalog
 		<= Online $hyoo_sync_online
 			yard <= yard $hyoo_sync_client
 	spreads *
-		world <= World $hyoo_sync_watch_world
+		search <= Search $hyoo_sync_watch_search
 			yard <= yard
 			menu_tools /
 				<= Spread_close

@@ -404,9 +404,6 @@ namespace $ {
 				CREATE INDEX IF NOT EXISTS Land2 ON Unit2 ( land );
 			`)
 			
-			// await db.query(`
-			// 	DROP INDEX IF EXISTS Data2;
-			// `)
 			await db.query(`
 				CREATE INDEX IF NOT EXISTS Data2 ON Unit2 USING GIN ( data );
 			`)

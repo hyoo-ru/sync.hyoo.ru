@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "e158a77";
+let $hyoo_sync_revision = "d9c542d";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14096,10 +14096,10 @@ var $;
     (function ($$) {
         class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
             land_id(next) {
-                return $mol_int62_string_ensure(this.$.$mol_state_arg.value('land', next) ?? '');
+                return this.$.$mol_state_arg.value('land', next) ?? '';
             }
             land() {
-                const id = this.land_id();
+                const id = $mol_int62_string_ensure(this.land_id());
                 return id ? this.yard().land(id) : null;
             }
             menu_title() {
@@ -14464,6 +14464,7 @@ var $;
         }
         Land(id) {
             const obj = new this.$.$hyoo_sync_watch_land();
+            obj.land_id = () => this.land_id(id);
             obj.yard = () => this.yard();
             obj.title = () => this.land_id(id);
             obj.menu_tools = () => [

@@ -3698,9 +3698,9 @@ declare namespace $ {
 
 declare namespace $.$$ {
     class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
-        land_id(next?: string): `${string}_${string}`;
+        land_id(next?: string): string;
         land(): $hyoo_crowd_land | null;
-        menu_title(): `${string}_${string}`;
+        menu_title(): string;
         spreads(): Record<string, $mol_view>;
         node_id(id: $mol_int62_string): `${string}_${string}`;
         node_units(id: $mol_int62_string): $hyoo_crowd_unit[] & {

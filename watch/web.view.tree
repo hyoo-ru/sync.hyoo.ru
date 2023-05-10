@@ -892,6 +892,7 @@ $hyoo_sync_watch_search $mol_book2_catalog
 			id <= land_id* \
 		<= Menu_link_title*
 	Land* $hyoo_sync_watch_land
+		land_id <= land_id*
 		yard <= yard $hyoo_sync_client
 		title <= land_id* \
 		menu_tools /

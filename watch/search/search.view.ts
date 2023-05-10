@@ -72,7 +72,7 @@ namespace $.$$ {
 			rules[ this.self_level() ]?.push( '' )
 			
 			const land = this.yard().land_grab( ... rules )
-			this.land_id( land.id() )
+			this.query( land.id() )
 			
 		}
 		

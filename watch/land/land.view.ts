@@ -2,12 +2,12 @@ namespace $.$$ {
 	
 	export class $hyoo_sync_watch_land extends $.$hyoo_sync_watch_land {
 		
-		land_id( next?: string ) {
-			return $mol_int62_string_ensure( this.$.$mol_state_arg.value( 'land', next ) ?? '' )!
+		land_id( next?: string ): string {
+			return this.$.$mol_state_arg.value( 'land', next ) ?? ''
 		}
 		
 		land() {
-			const id = this.land_id()
+			const id = $mol_int62_string_ensure( this.land_id() )
 			return id ? this.yard().land( id ) : null
 		}
 		

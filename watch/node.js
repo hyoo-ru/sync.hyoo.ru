@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "209c00c";
+let $hyoo_sync_revision = "e158a77";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -14705,7 +14705,7 @@ var $;
                 rules[this.def_level()]?.push('0_0');
                 rules[this.self_level()]?.push('');
                 const land = this.yard().land_grab(...rules);
-                this.land_id(land.id());
+                this.query(land.id());
             }
         }
         __decorate([

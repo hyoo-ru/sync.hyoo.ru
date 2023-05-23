@@ -1,9 +1,9 @@
 /** @jsx $mol_jsx */
 namespace $ {
 	
-	export async function $hyoo_sync_peer( path: string ) {
+	export async function $hyoo_sync_peer( path: string, next?: string ) {
 		
-		let serial = $mol_state_local.value( '$hyoo_sync_peer' ) as string | null
+		let serial = $mol_state_local.value( '$hyoo_sync_peer', next ) as string | null
 		if( typeof serial === 'string' ) {
 			
 			return await $hyoo_crowd_peer.restore( serial )

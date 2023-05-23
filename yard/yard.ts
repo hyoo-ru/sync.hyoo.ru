@@ -8,8 +8,8 @@ namespace $ {
 		}
 		
 		@ $mol_mem
-		peer() {
-			return $mol_wire_sync( $hyoo_sync_peer )( this + '.peer()' )
+		peer( next?: string ) {
+			return $mol_wire_sync( $hyoo_sync_peer )( this + '.peer()', next )
 		}
 		
 		@ $mol_mem

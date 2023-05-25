@@ -473,7 +473,7 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $hyoo_sync_peer(path: string): Promise<$hyoo_crowd_peer>;
+    function $hyoo_sync_peer(path: string, next?: string): Promise<$hyoo_crowd_peer>;
 }
 
 declare namespace $ {

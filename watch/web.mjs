@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "d9c542d";
+let $hyoo_sync_revision = "3406820";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -7383,8 +7383,8 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    async function $hyoo_sync_peer(path) {
-        let serial = $mol_state_local.value('$hyoo_sync_peer');
+    async function $hyoo_sync_peer(path, next) {
+        let serial = $mol_state_local.value('$hyoo_sync_peer', next);
         if (typeof serial === 'string') {
             return await $hyoo_crowd_peer.restore(serial);
         }
@@ -8464,8 +8464,8 @@ var $;
         log_pack(data) {
             return data;
         }
-        peer() {
-            return $mol_wire_sync($hyoo_sync_peer)(this + '.peer()');
+        peer(next) {
+            return $mol_wire_sync($hyoo_sync_peer)(this + '.peer()', next);
         }
         world() {
             $mol_wire_solid();

@@ -1979,6 +1979,5 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/sync/auth/auth.ts
-;
-export default $
-//# sourceMappingURL=web.mjs.map
+
+//# sourceMappingURL=web.js.map

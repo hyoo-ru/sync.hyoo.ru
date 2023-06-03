@@ -2304,6 +2304,5 @@ var $;
     });
 })($ || ($ = {}));
 //hyoo/sync/auth/auth.ts
-;
-export default $
-//# sourceMappingURL=node.mjs.map
+
+//# sourceMappingURL=node.js.map

@@ -34,6 +34,5 @@ $.$$ = $
 "use strict";
 let $hyoo_sync_revision = "3406820";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
-;
-export default $
-//# sourceMappingURL=web.mjs.map
+
+//# sourceMappingURL=web.js.map

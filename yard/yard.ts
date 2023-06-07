@@ -25,7 +25,7 @@ namespace $ {
 			this.db_land_init( land )
 			
 			try {
-				this.db_land_sync( land )
+				this.land_sync( land )
 			} catch( error ) {
 				$mol_fail_log( error )
 			}

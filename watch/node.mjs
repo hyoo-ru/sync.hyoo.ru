@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "1b4f173";
+let $hyoo_sync_revision = "6efc2c3";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -17297,7 +17297,7 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_menu] {\n\tflex-basis: 20rem;\n}\n\n[hyoo_sync_watch_land_menu_head] {\n\tflex-wrap: nowrap;\n}\n");
+    $mol_style_attach("hyoo/sync/watch/watch.view.css", "[hyoo_sync_watch_land_menu_head] {\n\tflex-wrap: nowrap;\n}\n");
 })($ || ($ = {}));
 //hyoo/sync/watch/-css/watch.view.css.ts
 

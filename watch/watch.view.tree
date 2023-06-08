@@ -19,3 +19,5 @@ $hyoo_sync_watch $mol_book2_catalog
 		log <= Log $hyoo_sync_watch_log
 			tools /
 				<= Spread_close
+		safe <= Safe $hyoo_meta_safe
+			yard <= yard

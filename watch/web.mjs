@@ -17176,4 +17176,5 @@ var $;
 })($ || ($ = {}));
 //hyoo/sync/watch/-css/watch.view.css.ts
 
+export default $
 //# sourceMappingURL=web.js.map

@@ -35,4 +35,5 @@ $.$$ = $
 let $hyoo_sync_revision = "6efc2c3";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 
+export default $
 //# sourceMappingURL=web.js.map

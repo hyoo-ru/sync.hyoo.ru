@@ -1980,4 +1980,5 @@ var $;
 })($ || ($ = {}));
 //hyoo/sync/auth/auth.ts
 
+export default $
 //# sourceMappingURL=web.js.map

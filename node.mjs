@@ -6286,4 +6286,5 @@ var $;
 })($ || ($ = {}));
 //hyoo/sync/server/server.node.ts
 
+export default $
 //# sourceMappingURL=node.js.map

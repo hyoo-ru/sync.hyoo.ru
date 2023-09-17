@@ -52,7 +52,7 @@ namespace $.$$ {
 		}
 		
 		option_label( index: number ) {
-			return this.dictionary()[ index ].replace( /^ws(s?):/, '' )
+			return this.dictionary()[ index ].replace( /^ws(s?):\/\//, '' )
 		}
 		
 		value( next?: string ) {

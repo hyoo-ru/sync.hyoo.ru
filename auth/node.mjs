@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6efc2c3";
+let $hyoo_sync_revision = "9765699";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -1925,6 +1925,7 @@ var $;
             }
         };
         Reflect.defineProperty(descr2.value, 'name', { value: orig.name + ' ' });
+        Reflect.defineProperty(descr2.value, 'length', { value: orig.length });
         Object.assign(descr2.value, { orig });
         Reflect.defineProperty(host, field, descr2);
         return descr2;
@@ -1962,6 +1963,7 @@ var $;
             }
         };
         Reflect.defineProperty(descr2.value, 'name', { value: orig.name + ' ' });
+        Reflect.defineProperty(descr2.value, 'length', { value: orig.length });
         Object.assign(descr2.value, { orig });
         Reflect.defineProperty(host, field, descr2);
         return descr2;

@@ -32,7 +32,7 @@ $.$$ = $
 //hyoo/hyoo.ts
 ;
 "use strict";
-let $hyoo_sync_revision = "6efc2c3";
+let $hyoo_sync_revision = "9765699";
 //hyoo/sync/-meta.tree/revision.meta.tree.ts
 ;
 "use strict";
@@ -2430,6 +2430,7 @@ var $;
             }
         };
         Reflect.defineProperty(descr2.value, 'name', { value: orig.name + ' ' });
+        Reflect.defineProperty(descr2.value, 'length', { value: orig.length });
         Object.assign(descr2.value, { orig });
         Reflect.defineProperty(host, field, descr2);
         return descr2;
@@ -2467,6 +2468,7 @@ var $;
             }
         };
         Reflect.defineProperty(descr2.value, 'name', { value: orig.name + ' ' });
+        Reflect.defineProperty(descr2.value, 'length', { value: orig.length });
         Object.assign(descr2.value, { orig });
         Reflect.defineProperty(host, field, descr2);
         return descr2;
@@ -3861,12 +3863,11 @@ var $;
             return next;
         }
         master_list() {
-            return this.$.$hyoo_sync_masters;
+            const scheme = this.$.$mol_dom_context.document.location.protocol.replace(/^http/, 'ws');
+            return this.$.$hyoo_sync_masters.map(host => `${scheme}//${host}`);
         }
         master_link() {
-            const scheme = this.$.$mol_dom_context.document.location.protocol.replace(/^http/, 'ws');
-            const host = this.master_list()[this.master_cursor()];
-            return `${scheme}//${host}`;
+            return this.master_list()[this.master_cursor()];
         }
         master() {
             return null;

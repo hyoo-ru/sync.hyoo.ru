@@ -20,7 +20,7 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		sub() {
+		link_content() {
 			
 			try {
 				
@@ -45,6 +45,18 @@ namespace $.$$ {
 		@ $mol_mem
 		master_link() {
 			return this.yard().master_link().replace( /^ws(s?):/, 'http$1:' )
+		}
+		
+		master_id( index: number ) {
+			return this.dictionary()[ index ].replace( /^ws:/, 'http:' )
+		}
+		
+		option_label( index: number ) {
+			return this.dictionary()[ index ].replace( /^ws:\/\//, '' )
+		}
+		
+		value( next?: string ) {
+			return String( this.master_cursor( next == undefined ? undefined : Number( next ) ) )
 		}
 		
 	}

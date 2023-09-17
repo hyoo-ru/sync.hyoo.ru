@@ -48,11 +48,11 @@ namespace $.$$ {
 		}
 		
 		master_id( index: number ) {
-			return this.dictionary()[ index ].replace( /^ws:/, 'http:' )
+			return this.dictionary()[ index ].replace( /^ws(s?):/, 'http$1:' )
 		}
 		
 		option_label( index: number ) {
-			return this.dictionary()[ index ].replace( /^ws:\/\//, '' )
+			return this.dictionary()[ index ].replace( /^ws(s?):/, '' )
 		}
 		
 		value( next?: string ) {

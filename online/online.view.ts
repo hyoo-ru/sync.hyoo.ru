@@ -52,8 +52,9 @@ namespace $.$$ {
 		}
 		
 		option_label( index: number ) {
-			return this.dictionary()[ index ].replace( /^ws(s?):/, '' )
+			return this.dictionary()[ index ].replace( /^ws(s?):\/\//, '' )
 		}
+		
 		
 		value( next?: string ) {
 			return String( this.master_cursor( next == undefined ? undefined : Number( next ) ) )

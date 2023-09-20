@@ -217,7 +217,7 @@ declare namespace $ {
 /// <reference types="node" />
 /// <reference types="node" />
 declare namespace $ {
-    function $mol_exec(this: $, dir: string, command: string, ...args: string[]): import("node:child_process").SpawnSyncReturns<Buffer>;
+    function $mol_exec(this: $, dir: string, command: string, ...args: string[]): import("child_process").SpawnSyncReturns<Buffer>;
 }
 
 declare namespace $ {
@@ -1450,13 +1450,13 @@ declare namespace $ {
 declare namespace $ {
     class $hyoo_sync_server extends $hyoo_sync_yard<InstanceType<$node['ws']>> {
         log_pack(data: any): string | number;
-        http(): import("node:http").Server<typeof import("node:http").IncomingMessage, typeof import("node:http").ServerResponse>;
+        http(): import("http").Server<typeof import("http").IncomingMessage, typeof import("http").ServerResponse>;
         db_link(): string | undefined;
         db(): Promise<import("pg").Pool | null>;
         db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
         db_land_search(from: string, to?: string): Promise<Set<`${string}_${string}`>>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
-        server(): import("ws").Server<typeof import("ws"), typeof import("node:http").IncomingMessage>;
+        server(): import("ws").Server<typeof import("ws"), typeof import("http").IncomingMessage>;
         line_send_clocks(line: InstanceType<$node['ws']>, land: $hyoo_crowd_land): void;
         line_send_units(line: InstanceType<$node['ws']>, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         reconnects(reset?: null): number;

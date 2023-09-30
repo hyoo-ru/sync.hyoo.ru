@@ -301,13 +301,13 @@ namespace $ {
 			
 			this.line_send_units( line, units )
 			
-			this.$.$mol_log3_rise({
+			/*this.$.$mol_log3_rise({
 				place: this,
 				land: land.id(),
 				message: 'Sync Sent',
 				line: $mol_key( line ),
 				units: this.log_pack( units ),
-			})
+			})*/
 			
 			for( const unit of units ) {
 				clocks[ unit.group() ].see_peer( unit.auth, unit.time )

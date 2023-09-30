@@ -55,7 +55,7 @@ namespace $ {
 				
 				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
-					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? ''
+					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? 'html'
 					
 					try {
 						

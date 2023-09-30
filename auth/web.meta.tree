@@ -67,7 +67,8 @@
 	pack idea git \https://github.com/hyoo-ru/idea.hyoo.ru.git
 	pack intern git \https://github.com/hyoo-ru/intern.hyoo.ru.git
 \/hyoo/sync
-	build $hyoo_sync_revision \git rev-parse --short HEAD
+	- build $hyoo_sync_revision \git rev-parse --short HEAD
+	build $hyoo_sync_revision \echo echo
 \/mol
 	pack icon git \https://github.com/nin-jin/mol_icon.git
 \/hyoo/sync/auth

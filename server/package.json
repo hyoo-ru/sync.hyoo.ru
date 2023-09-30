@@ -1,6 +1,0 @@
-{
-  "name": "hyoo_sync",
-  "scripts": {
-    "start": "node node.js"
-  }
-}

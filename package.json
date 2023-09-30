@@ -1,6 +1,9 @@
 {
   "name": "hyoo_sync",
   "version": "0.0.1",
+  "scripts": {
+    "start": "node node.js port=$PORT"
+  },
   "exports": {
     "node": {
       "import": "./node.mjs",

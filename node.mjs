@@ -5803,7 +5803,7 @@ var $;
                         return;
                     }
                     if (/^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test(query_str)) {
-                        const ext = query_str.match(/\.(\w+)$/)?.[1] ?? '';
+                        const ext = query_str.match(/\.(\w+)$/)?.[1] ?? 'html';
                         try {
                             const content = $node.fs.readFileSync(__dirname + '/' + query_str.replace(/\.\./g, '').replace(/\/$/, '/index.html')).toString();
                             res.writeHead(200, {

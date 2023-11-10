@@ -78,6 +78,7 @@
     "$mol_fail_log",
     "$mol_fail_catch",
     "$mol_wire_plex",
+    "$mol_storage",
     "$hyoo_crowd_peer",
     "$hyoo_crowd",
     "$mol_int62",

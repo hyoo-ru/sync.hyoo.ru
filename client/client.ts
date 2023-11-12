@@ -89,7 +89,7 @@ namespace $ {
 			
 			await trans.commit()
 			
-			this.$.$mol_storage.native().persist()
+			this.$.$mol_storage.persist()
 			
 		}
 		

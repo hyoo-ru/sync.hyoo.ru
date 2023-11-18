@@ -196,6 +196,11 @@
     "$mol_crypto_auditor",
     "$mol_crypto",
     "$mol_crypto_native",
+    "$mol_base64_encode_safe",
+    "$mol_base64_encode",
+    "$mol_base64",
+    "$mol_base64_decode_safe",
+    "$mol_base64_decode",
     "$hyoo_sync_peer",
     "$hyoo_crowd_world",
     "$hyoo_crowd_land",
@@ -308,12 +313,9 @@
     "$hyoo_meta",
     "$mol_password",
     "$mol_icon_eye",
-    "$mol_base64_decode",
-    "$mol_base64",
     "$mol_crypto_secret",
     "$mol_wait_rest",
-    "$mol_after_work",
-    "$mol_base64_encode"
+    "$mol_after_work"
   ],
   "dependencies": {
     "jsdom": "*",

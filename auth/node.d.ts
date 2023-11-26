@@ -544,10 +544,6 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_base64_encode_safe(buffer: Uint8Array): string;
-}
-
-declare namespace $ {
     function $mol_base64_decode(base64: string): Uint8Array;
 }
 
@@ -556,7 +552,8 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_base64_decode_safe(str: string): Uint8Array;
+    function $mol_base64_url_encode(buffer: Uint8Array): string;
+    function $mol_base64_url_decode(str: string): Uint8Array;
 }
 
 declare namespace $ {

@@ -562,7 +562,12 @@ var $;
             if (!val)
                 return null;
             if ($.$mol_dev_format_head in val) {
-                return val[$.$mol_dev_format_head]();
+                try {
+                    return val[$.$mol_dev_format_head]();
+                }
+                catch (error) {
+                    return $.$mol_dev_format_accent($mol_dev_format_native(val), '💨', $mol_dev_format_native(error), '');
+                }
             }
             if (typeof val === 'function') {
                 return $mol_dev_format_native(val);
@@ -1951,16 +1956,6 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_base64_encode_safe(buffer) {
-        return $mol_base64_encode(buffer).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/, '');
-    }
-    $.$mol_base64_encode_safe = $mol_base64_encode_safe;
-})($ || ($ = {}));
-//mol/base64/encode/safe/safe.ts
-;
-"use strict";
-var $;
-(function ($) {
     function $mol_base64_decode(base64) {
         throw new Error('Not implemented');
     }
@@ -1982,12 +1977,16 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    function $mol_base64_decode_safe(str) {
+    function $mol_base64_url_encode(buffer) {
+        return $mol_base64_encode(buffer).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    }
+    $.$mol_base64_url_encode = $mol_base64_url_encode;
+    function $mol_base64_url_decode(str) {
         return $mol_base64_decode(str.replace(/-/g, '+').replace(/_/g, '/'));
     }
-    $.$mol_base64_decode_safe = $mol_base64_decode_safe;
+    $.$mol_base64_url_decode = $mol_base64_url_decode;
 })($ || ($ = {}));
-//mol/base64/decode/safe/safe.ts
+//mol/base64/url/url.ts
 ;
 "use strict";
 var $;
@@ -2015,8 +2014,8 @@ var $;
         }
         static async from(serial) {
             if (typeof serial !== 'string') {
-                serial = $mol_base64_encode_safe(serial.subarray(0, 32))
-                    + $mol_base64_encode_safe(serial.subarray(32, 64));
+                serial = $mol_base64_url_encode(serial.subarray(0, 32))
+                    + $mol_base64_url_encode(serial.subarray(32, 64));
             }
             return new this(await $mol_crypto_native.subtle.importKey('jwk', {
                 crv: "P-256",
@@ -2034,8 +2033,8 @@ var $;
         async toArray() {
             const { x, y, d } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
             return new Uint8Array([
-                ...$mol_base64_decode_safe(x),
-                ...$mol_base64_decode_safe(y),
+                ...$mol_base64_url_decode(x),
+                ...$mol_base64_url_decode(y),
             ]);
         }
         async verify(data, sign) {
@@ -2053,9 +2052,9 @@ var $;
         }
         static async from(serial) {
             if (typeof serial !== 'string') {
-                serial = $mol_base64_encode_safe(serial.subarray(0, 32))
-                    + $mol_base64_encode_safe(serial.subarray(32, 64))
-                    + $mol_base64_encode_safe(serial.subarray(64));
+                serial = $mol_base64_url_encode(serial.subarray(0, 32))
+                    + $mol_base64_url_encode(serial.subarray(32, 64))
+                    + $mol_base64_url_encode(serial.subarray(64));
             }
             return new this(await $mol_crypto_native.subtle.importKey('jwk', {
                 crv: "P-256",
@@ -2074,9 +2073,9 @@ var $;
         async toArray() {
             const { x, y, d } = await $mol_crypto_native.subtle.exportKey('jwk', this.native);
             return new Uint8Array([
-                ...$mol_base64_decode_safe(x),
-                ...$mol_base64_decode_safe(y),
-                ...$mol_base64_decode_safe(d),
+                ...$mol_base64_url_decode(x),
+                ...$mol_base64_url_decode(y),
+                ...$mol_base64_url_decode(d),
             ]);
         }
         async sign(data) {

@@ -6106,6 +6106,10 @@ var $;
 								padding: .5rem .75rem;
 								display: block;
 							}
+
+       							[hidden] {
+	      							display: none;
+							}
 							
 							section > title {
 								font-size: 1.5rem;

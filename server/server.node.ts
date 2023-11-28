@@ -313,7 +313,7 @@ namespace $ {
 									if( !name ) return ''
 									const tag = name.replace( /_.*$/, '' )
 									return [
-										Array.isArray( value ) && $mol_int62_string_ensure( value[0] ) )
+										Array.isArray( value ) && $mol_int62_string_ensure( value[0] )
 											? `<${tag} id="land=${id}=(${name})" hidden>`
 											: `<${tag} id="land=${id}=(${name})">`,
 										value,

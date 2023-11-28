@@ -6134,7 +6134,9 @@ var $;
                                         return '';
                                     const tag = name.replace(/_.*$/, '');
                                     return [
-                                        `<${tag} id="land=${id}=(${name})">`,
+                                        Array.isArray(value) && $mol_int62_string_ensure(value[0])
+                                            ? `<${tag} id="land=${id}=(${name})" hidden>`
+                                            : `<${tag} id="land=${id}=(${name})">`,
                                         value,
                                         `</${tag}>`,
                                     ];

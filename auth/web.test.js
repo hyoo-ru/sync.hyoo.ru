@@ -408,6 +408,43 @@ var $;
 //mol/type/writable/writable.test.ts
 ;
 "use strict";
+//mol/type/equals/equals.ts
+;
+"use strict";
+//mol/type/equals/equals.test.ts
+;
+"use strict";
+//mol/type/keys/extract/extract.test.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test_mocks.push($ => {
+        $.$mol_log3_come = () => { };
+        $.$mol_log3_done = () => { };
+        $.$mol_log3_fail = () => { };
+        $.$mol_log3_warn = () => { };
+        $.$mol_log3_rise = () => { };
+        $.$mol_log3_area = () => () => { };
+    });
+})($ || ($ = {}));
+//mol/log3/log3.test.ts
+;
+"use strict";
+var $;
+(function ($_1) {
+    $mol_test({
+        'FQN of anon function'($) {
+            const $$ = Object.assign($, { $mol_func_name_test: (() => () => { })() });
+            $mol_assert_equal($$.$mol_func_name_test.name, '');
+            $mol_assert_equal($$.$mol_func_name($$.$mol_func_name_test), '$mol_func_name_test');
+            $mol_assert_equal($$.$mol_func_name_test.name, '$mol_func_name_test');
+        },
+    });
+})($ || ($ = {}));
+//mol/func/name/name.test.ts
+;
+"use strict";
 var $;
 (function ($) {
     $mol_test({
@@ -1788,43 +1825,6 @@ var $;
     });
 })($ || ($ = {}));
 //mol/wire/probe/probe.test.ts
-;
-"use strict";
-//mol/type/equals/equals.ts
-;
-"use strict";
-//mol/type/equals/equals.test.ts
-;
-"use strict";
-//mol/type/keys/extract/extract.test.ts
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test_mocks.push($ => {
-        $.$mol_log3_come = () => { };
-        $.$mol_log3_done = () => { };
-        $.$mol_log3_fail = () => { };
-        $.$mol_log3_warn = () => { };
-        $.$mol_log3_rise = () => { };
-        $.$mol_log3_area = () => () => { };
-    });
-})($ || ($ = {}));
-//mol/log3/log3.test.ts
-;
-"use strict";
-var $;
-(function ($_1) {
-    $mol_test({
-        'FQN of anon function'($) {
-            const $$ = Object.assign($, { $mol_func_name_test: (() => () => { })() });
-            $mol_assert_equal($$.$mol_func_name_test.name, '');
-            $mol_assert_equal($$.$mol_func_name($$.$mol_func_name_test), '$mol_func_name_test');
-            $mol_assert_equal($$.$mol_func_name_test.name, '$mol_func_name_test');
-        },
-    });
-})($ || ($ = {}));
-//mol/func/name/name.test.ts
 ;
 "use strict";
 var $;

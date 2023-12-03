@@ -122,6 +122,7 @@ declare namespace $ {
         static toString(): string;
         destructor(): void;
         toString(): string;
+        static toJSON(): string;
         toJSON(): any;
     }
 }

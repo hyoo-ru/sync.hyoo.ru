@@ -104,7 +104,10 @@
     "$mol_dom_context",
     "$mol_dom",
     "$mol_storage",
+    "$mol_mem_persist",
     "$mol_wire_solid",
+    "$mol_mem_cached",
+    "$mol_wire_probe",
     "$hyoo_crowd_world",
     "$hyoo_crowd_land",
     "$mol_memo",
@@ -166,8 +169,7 @@
     "$hyoo_marked_paragraph",
     "$hyoo_crowd_dom",
     "$mol_dom_serialize",
-    "$mol_dom_parse",
-    "$mol_wire_probe"
+    "$mol_dom_parse"
   ],
   "dependencies": {
     "jsdom": "*",

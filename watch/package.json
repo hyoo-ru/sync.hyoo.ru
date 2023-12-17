@@ -145,11 +145,6 @@
     "$mol_charset_encoding",
     "$mol_charset_encode",
     "$mol_compare_array",
-    "$hyoo_lingua_translate",
-    "$hyoo_lingua",
-    "$mol_huggingface",
-    "$mol_fetch",
-    "$mol_dom_parse",
     "$mol_string",
     "$mol_icon_cross",
     "$mol_icon",
@@ -281,6 +276,7 @@
     "$hyoo_crowd_tokenizer",
     "$hyoo_crowd_dom",
     "$mol_dom_serialize",
+    "$mol_dom_parse",
     "$hyoo_crowd_json",
     "$hyoo_crowd_dict",
     "$hyoo_crowd_blob",
@@ -293,6 +289,7 @@
     "$hyoo_harp_to",
     "$hyoo_harp",
     "$hyoo_harp_query",
+    "$mol_fetch",
     "$hyoo_sync_watch_log",
     "$mol_date",
     "$mol_icon_calendar",
@@ -320,7 +317,7 @@
   "dependencies": {
     "jsdom": "*",
     "chokidar": "*",
-    "undici": "*",
-    "fake-indexeddb": "*"
+    "fake-indexeddb": "*",
+    "undici": "*"
   }
 }

@@ -6057,7 +6057,7 @@ var $;
                                     continue;
                                 case 'ref':
                                     const ids = node.sub(field, $hyoo_crowd_list).list();
-                                    data[fetch] = ids;
+                                    data[fetch] = ids.map(id => `land=${id}=`);
                                     for (const val of ids) {
                                         const id = $mol_int62_string_ensure(val);
                                         if (!id)

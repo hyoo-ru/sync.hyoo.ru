@@ -154,7 +154,7 @@ namespace $ {
 							case 'ref':
 								
 								const ids = node.sub( field, $hyoo_crowd_list ).list()
-								data[ fetch ] = ids
+								data[ fetch ] = ids.map( id => `land=${id}=` )
 								
 								for( const val of ids ) {
 									

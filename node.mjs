@@ -6108,13 +6108,9 @@ var $;
                                     }
                                     continue;
                                 default:
-                                    const nodes = node.sub(field, $hyoo_crowd_list).nodes($hyoo_crowd_struct);
-                                    data[fetch] = [];
-                                    for (const item of nodes) {
-                                        const sub = {};
-                                        data.push(sub);
-                                        proceed(sub, item, query[fetch]);
-                                    }
+                                    const item = node.sub(field, $hyoo_crowd_struct);
+                                    const sub = data[fetch] = {};
+                                    proceed(sub, item, query[fetch]);
                                     continue;
                             }
                         }

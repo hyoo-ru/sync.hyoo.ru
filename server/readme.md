@@ -29,7 +29,7 @@ Use `$hyoo_sync_client`. Example of WS URI: `wss://sync.hyoo.ru`.
 
 ### Query Data
 
-	GET /land=qwerty_qwerty[title_reg;author_ref[details_text]]
+	GET /land=qwerty_qwerty=(title_reg;author_ref(details_text))
 
 ## Query Logs
 

@@ -55,7 +55,7 @@ namespace $ {
 				
 				if( /^(?:watch|auth)\/(?:(?:\w+\.)+\w+)?/.test( query_str ) ) {
 					
-					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? ''
+					const ext = query_str.match(/\.(\w+)$/)?.[1] ?? 'html'
 					
 					try {
 						
@@ -285,6 +285,10 @@ namespace $ {
 								padding: .5rem .75rem;
 								display: block;
 							}
+
+       							[hidden] {
+	      							display: none;
+							}
 							
 							section > title {
 								font-size: 1.5rem;
@@ -313,7 +317,9 @@ namespace $ {
 									if( !name ) return ''
 									const tag = name.replace( /_.*$/, '' )
 									return [
-										`<${tag} id="land=${id}=(${name})">`,
+										Array.isArray( value ) && $mol_int62_string_ensure( value[0] )
+											? `<${tag} id="land=${id}=(${name})" hidden>`
+											: `<${tag} id="land=${id}=(${name})">`,
 										value,
 										`</${tag}>`,
 									]
@@ -583,7 +589,7 @@ namespace $ {
 
 			this.reconnects()
 
-			const line = new $node['ws'].WebSocket( 'ws:' + link, '$hyoo_sync_protocol_1' )
+			const line = new $node['ws'].WebSocket( 'wss:' + link, '$hyoo_sync_protocol_1' )
 			line.binaryType = 'arraybuffer'
 			
 			line.onmessage = async( event )=> {

@@ -88,6 +88,9 @@ namespace $ {
 			}
 			
 			await trans.commit()
+			
+			this.$.$mol_storage.persisted( true )
+			
 		}
 		
 		

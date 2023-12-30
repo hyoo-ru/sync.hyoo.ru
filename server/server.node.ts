@@ -209,7 +209,7 @@ namespace $ {
 										data[ fetch ] = $mol_dom_serialize( sanit( dom ) )
 									}
 								} else {
-									data[ fetch ] = blob.buffer()
+									data[ fetch ] = `blob(land=${ blob.land }=;head=${ blob.head })`
 								}
 								continue
 							

@@ -216,16 +216,10 @@ namespace $ {
 							
 							default:
 								
-								const nodes = node.sub( field, $hyoo_crowd_list ).nodes( $hyoo_crowd_struct )
-								data[ fetch ] = []
+								const item = node.sub( field, $hyoo_crowd_struct )
+								const sub = data[ fetch ] = {} as Record< string, any >
 								
-								for( const item of nodes ) {
-									
-									const sub = {} as Record< string, any >
-									data.push( sub )
-									proceed( sub, item, query[ fetch ] )
-									
-								}
+								proceed( sub, item, query[ fetch ] )
 								
 								continue
 							

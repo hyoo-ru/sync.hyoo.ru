@@ -6043,8 +6043,6 @@ var $;
                             if (/^!?=$/.test(fetch))
                                 continue;
                             const [_, field, type] = fetch.match(/^(\w+)_([a-z]+)$/) ?? ['', fetch, ''];
-                            if (!type)
-                                continue;
                             switch (type) {
                                 case 'reg':
                                     data[fetch] = node.sub(field, $hyoo_crowd_reg).value();

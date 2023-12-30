@@ -6094,7 +6094,7 @@ var $;
                                         }
                                     }
                                     else {
-                                        data[fetch] = `blob(land=${blob.land}=;head=${blob.head})`;
+                                        data[fetch] = `blob(land=${blob.land.id()}=;head=${blob.head}=)`;
                                     }
                                     continue;
                                 default:

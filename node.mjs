@@ -6108,6 +6108,7 @@ var $;
                                 default:
                                     const item = node.sub(field, $hyoo_crowd_struct);
                                     const sub = data[fetch] = {};
+                                    sub[''] = item.head;
                                     proceed(sub, item, query[fetch]);
                                     continue;
                             }

@@ -217,6 +217,7 @@ namespace $ {
 								
 								const item = node.sub( field, $hyoo_crowd_struct )
 								const sub = data[ fetch ] = {} as Record< string, any >
+								sub[''] = item.head
 								
 								proceed( sub, item, query[ fetch ] )
 								

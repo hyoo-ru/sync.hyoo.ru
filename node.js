@@ -6189,11 +6189,14 @@ var $;
 							}
 							
 						</style>`;
+                            let empty = true;
                             const html = Object.entries(reply).flatMap(([id, props]) => [
                                 props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<section id="land=${id}=">`,
                                 ...Object.entries(props).flatMap(([name, value]) => {
                                     if (!name)
                                         return '';
+                                    if (value)
+                                        empty = false;
                                     const tag = name.replace(/_.*$/, '');
                                     return [
                                         Array.isArray(value) && $mol_int62_string_ensure(value[0])
@@ -6205,7 +6208,7 @@ var $;
                                 }),
                                 props[''] ? `</a>` : `</section>`,
                             ]).join('');
-                            res.writeHead(html.replace(/<[^<>]+>/g, '') ? 200 : 404, {
+                            res.writeHead(empty ? 404 : 200, {
                                 'Content-Type': 'text/html;charset=utf-8',
                                 'Access-Control-Allow-Origin': '*',
                             });

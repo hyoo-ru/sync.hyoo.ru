@@ -6148,10 +6148,6 @@ var $;
                     }
                     switch (accept) {
                         case 'text/html':
-                            res.writeHead(200, {
-                                'Content-Type': 'text/html;charset=utf-8',
-                                'Access-Control-Allow-Origin': '*',
-                            });
                             const styles = `<style>
 							
 							body {
@@ -6208,8 +6204,12 @@ var $;
                                     ];
                                 }),
                                 props[''] ? `</a>` : `</section>`,
-                            ]);
-                            res.end(styles + html.join(''));
+                            ]).join('');
+                            res.writeHead(html.length < 500 ? 404 : 200, {
+                                'Content-Type': 'text/html;charset=utf-8',
+                                'Access-Control-Allow-Origin': '*',
+                            });
+                            res.end(styles + html);
                             break;
                         default:
                         case 'application/json':

@@ -273,11 +273,6 @@ namespace $ {
 					
 					case 'text/html':
 					
-						res.writeHead( 200, {
-							'Content-Type': 'text/html;charset=utf-8',
-							'Access-Control-Allow-Origin': '*',
-						} )
-						
 						const styles = `<style>
 							
 							body {
@@ -334,9 +329,14 @@ namespace $ {
 									]
 								} ),
 							props[''] ? `</a>` : `</section>`,
-						] )
+						] ).join( '' )
 						
-						res.end( styles + html.join('') )
+						res.writeHead( html.length < 500 ? 404 : 200, {
+							'Content-Type': 'text/html;charset=utf-8',
+							'Access-Control-Allow-Origin': '*',
+						} )
+						
+						res.end( styles + html )
 						break
 					
 					default:case 'application/json':

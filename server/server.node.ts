@@ -331,7 +331,7 @@ namespace $ {
 							props[''] ? `</a>` : `</section>`,
 						] ).join( '' )
 						
-						res.writeHead( html.length < 500 ? 404 : 200, {
+						res.writeHead( html.replace( /<[^<>]+>/g, '' ) ? 200 : 404, {
 							'Content-Type': 'text/html;charset=utf-8',
 							'Access-Control-Allow-Origin': '*',
 						} )

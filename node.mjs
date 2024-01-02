@@ -1284,9 +1284,6 @@ var $;
     function $mol_dev_format_auto(obj) {
         if (obj == null)
             return $.$mol_dev_format_shade(String(obj));
-        if (typeof obj === 'object' && $.$mol_dev_format_head in obj) {
-            return obj[$.$mol_dev_format_head]();
-        }
         return [
             'object',
             {
@@ -1951,7 +1948,12 @@ var $;
                 [$mol_wire_cursor.fresh]: '🟢',
                 [$mol_wire_cursor.final]: '🔵',
             }[this.cursor] ?? this.cursor.toString();
-            return $mol_dev_format_div({}, $mol_dev_format_native(this), $mol_dev_format_shade(cursor + ' '), $mol_dev_format_auto(this.cache));
+            return $mol_dev_format_div({}, $mol_owning_check(this, this.cache)
+                ? $mol_dev_format_auto({
+                    [$mol_dev_format_head]: () => $mol_dev_format_shade(cursor),
+                    [$mol_dev_format_body]: () => $mol_dev_format_native(this),
+                })
+                : $mol_dev_format_shade($mol_dev_format_native(this), cursor), $mol_dev_format_auto(this.cache));
         }
         get $() {
             return (this.host ?? this.task)['$'];
@@ -2419,17 +2421,18 @@ var $;
             const field = task.name + '()';
             let dict = Object.getOwnPropertyDescriptor(host ?? task, field)?.value;
             const prefix = host?.[Symbol.toStringTag] ?? (host instanceof Function ? $$.$mol_func_name(host) : host);
-            const id = `${prefix}.${task.name}(${$mol_key(key).replace(/^"|"$/g, "'")})`;
+            const key_str = $mol_key(key);
             if (dict) {
-                const existen = dict.get(id);
+                const existen = dict.get(key_str);
                 if (existen)
                     return existen;
             }
             else {
                 dict = (host ?? task)[field] = new Map();
             }
+            const id = `${prefix}.${task.name}(${key_str.replace(/^"|"$/g, "'")})`;
             const fiber = new $mol_wire_atom(id, task, host, [key]);
-            dict.set(id, fiber);
+            dict.set(key_str, fiber);
             return fiber;
         }
         static watching = new Set();
@@ -2484,7 +2487,7 @@ var $;
             }
             else {
                 ;
-                (this.host ?? this.task)[this.field()].delete(this[Symbol.toStringTag]);
+                (this.host ?? this.task)[this.field()].delete($mol_key(this.args[0]));
             }
         }
         put(next) {
@@ -6199,7 +6202,7 @@ var $;
                                         empty = false;
                                     const tag = name.replace(/_.*$/, '');
                                     return [
-                                        Array.isArray(value) && $mol_int62_string_ensure(value[0])
+                                        Array.isArray(value) && /^land=\w+=$/.test(value[0])
                                             ? `<${tag} id="land=${id}=(${name})" hidden>`
                                             : `<${tag} id="land=${id}=(${name})">`,
                                         value,

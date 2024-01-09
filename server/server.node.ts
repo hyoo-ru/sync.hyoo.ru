@@ -320,7 +320,7 @@ namespace $ {
 							props[''] ? `<a id="land=${id}=" href="${props['']}">` : `<section id="land=${id}=">`,
 								... Object.entries( props ).flatMap( ([ name, value ])=> {
 									if( !name ) return ''
-									if( value ) empty = false
+									if( ''+value ) empty = false
 									const tag = name.replace( /_.*$/, '' )
 									return [
 										Array.isArray( value ) && /^land=\w+=$/.test( value[0] )

@@ -1511,7 +1511,7 @@ declare namespace $ {
         db_link(): string | undefined;
         db(): Promise<import("pg").Pool | null>;
         db_land_load(land: $hyoo_crowd_land): Promise<$hyoo_crowd_unit[]>;
-        db_land_near(from: number, to: number): Promise<Set<`${string}_${string}`>>;
+        db_land_peer(peer: $mol_int62_string): Promise<Set<`${string}_${string}`>>;
         db_land_search(from: string, to?: string): Promise<Set<`${string}_${string}`>>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         server(): import("ws").Server<typeof import("ws"), typeof import("http").IncomingMessage>;

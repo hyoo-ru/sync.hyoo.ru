@@ -85,6 +85,11 @@ namespace $ {
 					land?: {
 						'='?: [[ string ]],
 					},
+					near?: {
+						time: {
+							'='?: [[ string, string ]],
+						}
+					},
 					search?: {
 						'='?: [[ string ]],
 					},
@@ -129,6 +134,20 @@ namespace $ {
 					} )
 					
 					res.end( node.buffer() )
+					
+					return
+				}
+				
+				if( query.near ) {
+					
+					const range = query.near.time["="]![0].map( Number ) as [ number, number ]
+					const lands = $mol_wire_sync( this ).db_land_near( ... range )
+					
+					res.writeHead( 200, {
+						'Content-Type': 'application/json',
+					} )
+					
+					res.end( JSON.stringify([ ... lands ]) )
 					
 					return
 				}
@@ -458,6 +477,22 @@ namespace $ {
 			})
 			
 			return units
+		}
+		
+		async db_land_near( from: number, to: number ) {
+			
+			const link = this.db_link()
+			if( !link ) return new Set< $mol_int62_string >()
+			
+			const db = await this.db()
+			if( !db ) return new Set< $mol_int62_string >()
+			
+			const res = await db.query<{ land: $mol_int62_string }>(
+				`SELECT land FROM Unit2 WHERE time BETWEEN $1 AND $2`,
+				[ from, to ],
+			)
+			
+			return new Set< $mol_int62_string >( res.rows.map( row => row.land ) )
 		}
 		
 		async db_land_search( from: string, to = from + '\xFF' ) {

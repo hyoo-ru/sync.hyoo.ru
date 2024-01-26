@@ -6039,6 +6039,15 @@ var $;
                         res.end(node.buffer());
                         return;
                     }
+                    if (query.near) {
+                        const range = query.near.time["="][0].map(Number);
+                        const lands = $mol_wire_sync(this).db_land_near(...range);
+                        res.writeHead(200, {
+                            'Content-Type': 'application/json',
+                        });
+                        res.end(JSON.stringify([...lands]));
+                        return;
+                    }
                     const reply = {};
                     const accept = req.headers.accept ?? 'application/json';
                     const proceed = (data, node, query) => {
@@ -6292,6 +6301,16 @@ var $;
                 return bin.unit();
             });
             return units;
+        }
+        async db_land_near(from, to) {
+            const link = this.db_link();
+            if (!link)
+                return new Set();
+            const db = await this.db();
+            if (!db)
+                return new Set();
+            const res = await db.query(`SELECT land FROM Unit2 WHERE time BETWEEN $1 AND $2`, [from, to]);
+            return new Set(res.rows.map(row => row.land));
         }
         async db_land_search(from, to = from + '\xFF') {
             const link = this.db_link();

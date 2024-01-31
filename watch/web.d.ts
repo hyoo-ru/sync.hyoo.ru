@@ -2134,15 +2134,8 @@ declare namespace $ {
 }
 
 declare namespace $ {
-    function $mol_diff_path<Item>(...paths: Item[][]): {
-        prefix: Item[];
-        suffix: Item[][];
-    };
-}
-
-declare namespace $ {
-    class $mol_error_mix extends Error {
-        errors: Error[];
+    class $mol_error_mix extends AggregateError {
+        name: string;
         constructor(message: string, ...errors: Error[]);
         toJSON(): string;
     }
@@ -2150,6 +2143,7 @@ declare namespace $ {
 
 declare namespace $ {
     class $mol_data_error extends $mol_error_mix {
+        name: string;
     }
 }
 

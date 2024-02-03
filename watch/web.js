@@ -233,9 +233,6 @@ var $;
         toString() {
             return this[Symbol.toStringTag] || this.constructor.name + '<>';
         }
-        toJSON() {
-            return this.toString();
-        }
     }
     $.$mol_object2 = $mol_object2;
 })($ || ($ = {}));

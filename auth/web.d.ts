@@ -588,3 +588,4 @@ declare namespace $ {
 }
 
 export = $;
+//# sourceMappingURL=web.d.ts.map

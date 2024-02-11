@@ -16,3 +16,4 @@ declare namespace $ {
 declare let $hyoo_sync_revision: string;
 
 export = $;
+//# sourceMappingURL=web.d.ts.map

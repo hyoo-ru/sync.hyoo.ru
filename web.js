@@ -11,7 +11,7 @@ var $;
 (function ($) {
 })($ || ($ = {}));
 module.exports = $;
-//mam.ts
+
 ;
 
 $node[ "../mam.ts" ] = $node[ "../mam.ts" ] = module.exports }.call( {} , {} )
@@ -30,10 +30,10 @@ $.$$ = $
 
 ;
 "use strict";
-//hyoo/hyoo.ts
+
 ;
 "use strict";
 let $hyoo_sync_revision = "echo";
-//hyoo/sync/-meta.tree/revision.meta.tree.ts
+
 
 //# sourceMappingURL=web.js.map

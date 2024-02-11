@@ -1,16 +1,16 @@
 "use strict";
 function require( path ){ return $node[ path ] };
 "use strict";
-//mol/type/error/error.ts
+
 ;
 "use strict";
-//mol/type/assert/assert.ts
+
 ;
 "use strict";
-//mol/type/assert/assert.test.ts
+
 ;
 "use strict";
-//mol/type/partial/deep/deep.test.ts
+
 ;
 "use strict";
 var $;
@@ -97,7 +97,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/test/test.test.ts
+
 ;
 "use strict";
 var $;
@@ -106,7 +106,7 @@ var $;
     }
     $.$mol_test_complete = $mol_test_complete;
 })($ || ($ = {}));
-//mol/test/test.web.test.ts
+
 ;
 "use strict";
 var $;
@@ -191,7 +191,7 @@ var $;
         }
     };
 })($ || ($ = {}));
-//mol/assert/assert.ts
+
 ;
 "use strict";
 var $;
@@ -229,7 +229,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/assert/assert.test.ts
+
 ;
 "use strict";
 var $;
@@ -319,7 +319,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/jsx/jsx.test.tsx
+
 ;
 "use strict";
 var $;
@@ -382,19 +382,19 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/delegate/delegate.test.ts
+
 ;
 "use strict";
-//mol/type/writable/writable.test.ts
+
 ;
 "use strict";
-//mol/type/equals/equals.ts
+
 ;
 "use strict";
-//mol/type/equals/equals.test.ts
+
 ;
 "use strict";
-//mol/type/keys/extract/extract.test.ts
+
 ;
 "use strict";
 var $;
@@ -408,7 +408,7 @@ var $;
         $.$mol_log3_area = () => () => { };
     });
 })($ || ($ = {}));
-//mol/log3/log3.test.ts
+
 ;
 "use strict";
 var $;
@@ -422,7 +422,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/func/name/name.test.ts
+
 ;
 "use strict";
 var $;
@@ -441,7 +441,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/object/object.test.ts
+
 ;
 "use strict";
 var $;
@@ -499,7 +499,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/pub/sub/sub.test.ts
+
 ;
 "use strict";
 var $;
@@ -537,7 +537,7 @@ var $;
     }
     $.$mol_after_mock_timeout = $mol_after_mock_timeout;
 })($ || ($ = {}));
-//mol/after/mock/mock.test.ts
+
 ;
 "use strict";
 var $;
@@ -546,7 +546,7 @@ var $;
         $.$mol_after_frame = $mol_after_mock_commmon;
     });
 })($ || ($ = {}));
-//mol/after/frame/frame.test.ts
+
 ;
 "use strict";
 var $;
@@ -628,10 +628,10 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/fiber/fiber.test.ts
+
 ;
 "use strict";
-//mol/type/tail/tail.test.ts
+
 ;
 "use strict";
 var $;
@@ -756,7 +756,7 @@ var $;
     }
     $.$mol_range2_array = $mol_range2_array;
 })($ || ($ = {}));
-//mol/range2/range2.ts
+
 ;
 "use strict";
 var $;
@@ -916,7 +916,7 @@ var $;
         }
     });
 })($ || ($ = {}));
-//mol/range2/range2.test.ts
+
 ;
 "use strict";
 var $;
@@ -1030,7 +1030,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/compare/deep/deep.test.tsx
+
 ;
 "use strict";
 var $;
@@ -1049,7 +1049,7 @@ var $;
     }
     $.$mol_promise = $mol_promise;
 })($ || ($ = {}));
-//mol/promise/promise/promise.ts
+
 ;
 "use strict";
 var $;
@@ -1070,7 +1070,7 @@ var $;
     }
     $.$mol_after_timeout = $mol_after_timeout;
 })($ || ($ = {}));
-//mol/after/timeout/timeout.ts
+
 ;
 "use strict";
 var $;
@@ -1079,7 +1079,7 @@ var $;
         $.$mol_after_timeout = $mol_after_mock_timeout;
     });
 })($ || ($ = {}));
-//mol/after/timeout/timeout.test.ts
+
 ;
 "use strict";
 var $;
@@ -1097,7 +1097,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/sync/sync.test.ts
+
 ;
 "use strict";
 var $;
@@ -1115,7 +1115,7 @@ var $;
     }
     $.$mol_wait_timeout = $mol_wait_timeout;
 })($ || ($ = {}));
-//mol/wait/timeout/timeout.ts
+
 ;
 "use strict";
 var $;
@@ -1145,7 +1145,7 @@ var $;
     }
     $.$mol_wire_async = $mol_wire_async;
 })($ || ($ = {}));
-//mol/wire/async/async.ts
+
 ;
 "use strict";
 var $;
@@ -1198,7 +1198,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/async/async.test.ts
+
 ;
 "use strict";
 var $;
@@ -1671,7 +1671,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/solo/solo.test.ts
+
 ;
 "use strict";
 var $;
@@ -1786,7 +1786,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/plex/plex.test.ts
+
 ;
 "use strict";
 var $;
@@ -1812,7 +1812,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/wire/probe/probe.test.ts
+
 ;
 "use strict";
 var $;
@@ -1873,10 +1873,10 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/key/key.test.tsx
+
 ;
 "use strict";
-//mol/type/foot/foot.test.ts
+
 ;
 "use strict";
 var $;
@@ -1942,14 +1942,14 @@ var $;
     ], $mol_wire_log, "active", null);
     $.$mol_wire_log = $mol_wire_log;
 })($ || ($ = {}));
-//mol/wire/log/log.ts
+
 ;
 "use strict";
 var $;
 (function ($) {
     $mol_wire_log.active();
 })($ || ($ = {}));
-//mol/wire/atom/atom.test.ts
+
 ;
 "use strict";
 var $;
@@ -1965,7 +1965,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/state/local/local.test.ts
+
 ;
 "use strict";
 var $;
@@ -1983,7 +1983,7 @@ var $;
         context.$mol_state_local = $mol_state_local_mock;
     });
 })($ || ($ = {}));
-//mol/state/local/local.mock.test.ts
+
 ;
 "use strict";
 var $;
@@ -1996,7 +1996,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/charset/encode/encode.test.ts
+
 ;
 "use strict";
 var $;
@@ -2011,7 +2011,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/base64/encode/encode.test.ts
+
 ;
 "use strict";
 var $;
@@ -2026,7 +2026,7 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/base64/decode/decode.test.ts
+
 ;
 "use strict";
 var $;
@@ -2093,6 +2093,6 @@ var $;
         },
     });
 })($ || ($ = {}));
-//mol/crypto/auditor/auditor.web.test.ts
+
 
 //# sourceMappingURL=web.test.js.map

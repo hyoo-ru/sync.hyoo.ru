@@ -1,7 +1,7 @@
 $hyoo_sync_online $mol_select
 	minimal_width 40
 	minimal_height 40
-	yard $hyoo_sync_yard
+	yard $hyoo_sync_yard<any>
 		master_list => dictionary
 		master_cursor? => master_cursor?
 	Filter null

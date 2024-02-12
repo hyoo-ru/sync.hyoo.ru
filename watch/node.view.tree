@@ -752,20 +752,6 @@ $mol_embed_any $mol_view
 		title <= title \
 		uri <= uri \
 
-$mol_text_list $mol_text
-	auto_scroll null
-	attr *
-		^
-		mol_text_list_type <= type \
-	Paragraph* $mol_text_list_item
-		index <= item_index*
-		sub <= block_content*
-
-$mol_text_list_item $mol_paragraph
-	attr *
-		^
-		mol_text_list_item_index <= index 0
-
 $mol_text $mol_list
 	uri_base \
 	text \
@@ -859,6 +845,20 @@ $mol_text_span $mol_paragraph
 		^
 		mol_text_type <= type \
 
+$mol_text_list $mol_text
+	auto_scroll null
+	attr *
+		^
+		mol_text_list_type <= type \
+	Paragraph* $mol_text_list_item
+		index <= item_index*
+		sub <= block_content*
+
+$mol_text_list_item $mol_paragraph
+	attr *
+		^
+		mol_text_list_item_index <= index 0
+
 
 $hyoo_sync_watch_land $mol_book2_catalog
 	yard $hyoo_sync_client
@@ -919,6 +919,19 @@ $hyoo_sync_watch_land $mol_book2_catalog
 
 $mol_row $mol_view
 
+$mol_form $mol_list
+	submit_allowed true
+	submit_blocked false
+	event *
+		^
+		keydown?event <=> keydown?event null
+	submit?event null
+	rows /
+		<= Body $mol_list
+			sub <= body <= form_fields /$mol_form_field
+		<= Foot $mol_row
+			sub <= foot <= buttons /$mol_view
+
 $mol_labeler $mol_list
 	rows /
 		<= Label $mol_view
@@ -936,19 +949,6 @@ $mol_form_field $mol_labeler
 		<= Bid $mol_view
 			sub / <= bid \
 	content / <= control null
-
-$mol_form $mol_list
-	submit_allowed true
-	submit_blocked false
-	event *
-		^
-		keydown?event <=> keydown?event null
-	submit?event null
-	rows /
-		<= Body $mol_list
-			sub <= body <= form_fields /$mol_form_field
-		<= Foot $mol_row
-			sub <= foot <= buttons /$mol_view
 
 $mol_button_major $mol_button_typed
 	attr *

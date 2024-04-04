@@ -309,7 +309,7 @@ namespace $ {
 								display: block;
 							}
 
-       							[hidden] {
+       							[hidden], style {
 	      							display: none;
 							}
 							

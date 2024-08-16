@@ -23,8 +23,7 @@ jobs:
     - run: 'cp -r hyoo/sync/watch/- hyoo/sync/server/-/watch'
     - run: 'cp -r hyoo/sync/auth/- hyoo/sync/server/-/auth'
     
-    - uses: alex-page/blazing-fast-gh-pages-deploy@v1.1.0
+    - uses: hyoo-ru/gh-deploy@v4.4.1
       if: github.ref == 'refs/heads/master'
       with:
-        repo-token: ${{ secrets.GH_PAT }}
-        site-directory: 'hyoo/sync/server/-'
+        folder: 'hyoo/sync/server/-'

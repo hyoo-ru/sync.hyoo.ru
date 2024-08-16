@@ -29,12 +29,12 @@ $hyoo_sync_watch_search $mol_book2_catalog
 				name \Common Level
 				Content <= Def_level $mol_switch
 					options <= level_options
-					value? <=> def_level? 2
+					value? <=> def_level? \2
 			<= Self_labeler $mol_form_field
 				name \Your Level
 				Content <= Self_level $mol_switch
 					options <= level_options
-					value? <=> self_level? 0
+					value? <=> self_level? \0
 		buttons /
 			<= Grab_submit $mol_button_major
 				title \Grab New Land

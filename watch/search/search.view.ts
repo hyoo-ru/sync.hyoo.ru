@@ -68,8 +68,8 @@ namespace $.$$ {
 			type Rule = $mol_int62_string | ''
 			const rules = [ [], [], [] ] as Rule[][]
 
-			rules[ this.def_level() ]?.push( '0_0' )
-			rules[ this.self_level() ]?.push( '' )
+			rules[ Number( this.def_level() ) ]?.push( '0_0' )
+			rules[ Number( this.self_level() ) ]?.push( '' )
 			
 			const land = this.yard().land_grab( ... rules )
 			this.query( land.id() )

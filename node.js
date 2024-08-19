@@ -6007,7 +6007,7 @@ var $;
     $.$hyoo_marked_script_line = $mol_regexp.from([
         vary([
             tab,
-            ['  ', { marker: ['  ', or, '++', or, '--', or, '**'] }],
+            [' ', { marker: ['  ', or, '++', or, '--', or, '**'] }, ' '],
         ]),
         { content: repeat(char_any) },
         line_end,

@@ -1620,7 +1620,7 @@ declare namespace $ {
         db_land_peer(peer: $mol_int62_string): Promise<Set<`${string}_${string}`>>;
         db_land_search(from: string, to?: string): Promise<Set<`${string}_${string}`>>;
         db_land_save(land: $hyoo_crowd_land, units: readonly $hyoo_crowd_unit[]): Promise<void>;
-        server(): import("ws").Server<typeof import("ws"), typeof import("http").IncomingMessage>;
+        server(): any;
         line_send_clocks(line: InstanceType<$node['ws']>, land: $hyoo_crowd_land): void;
         line_send_units(line: InstanceType<$node['ws']>, units: readonly $hyoo_crowd_unit[]): Promise<void>;
         reconnects(reset?: null): number;

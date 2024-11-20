@@ -435,11 +435,11 @@ declare namespace $ {
     function $mol_run_async(this: $, { dir, timeout, command, env }: $mol_run_options): import("child_process").SpawnSyncReturns<Buffer> | (Promise<$mol_run_error_context> & {
         destructor: () => void;
     });
-    function $mol_run(this: $, options: $mol_run_options): import("child_process").SpawnSyncReturns<Buffer> | $mol_run_error_context;
+    function $mol_run(this: $, options: $mol_run_options): $mol_run_error_context | import("child_process").SpawnSyncReturns<Buffer>;
 }
 
 declare namespace $ {
-    function $mol_exec(this: $, dir: string, command: string, ...args: readonly string[]): import("child_process").SpawnSyncReturns<Buffer> | $mol_run_error_context;
+    function $mol_exec(this: $, dir: string, command: string, ...args: readonly string[]): $mol_run_error_context | import("child_process").SpawnSyncReturns<Buffer>;
 }
 
 declare namespace $ {
@@ -1572,18 +1572,18 @@ declare namespace $ {
 declare namespace $ {
     let $hyoo_marked_flow: $mol_regexp<{
         [x: string]: string;
+        readonly script: string;
         readonly header: string;
-        readonly table: string;
         readonly list: string;
         readonly cut: string;
         readonly quote: string;
         readonly paragraph: string;
-        readonly script: string;
+        readonly table: string;
         readonly win_end: string;
         readonly mac_end: string;
-        readonly content: string;
-        readonly marker: string;
         readonly indent: string;
+        readonly marker: string;
+        readonly content: string;
         readonly kids: string;
     }>;
 }

@@ -36,7 +36,6 @@
     "$mol_charset_encode",
     "$mol_charset",
     "$node",
-    "$node_modules",
     "$mol_exec",
     "$mol_run",
     "$mol_error_mix",

@@ -349,7 +349,7 @@ namespace $ {
 			return next
 		}
 		
-		async line_receive( line: Line, message: Uint8Array ) {
+		async line_receive( line: Line, message: Uint8Array< ArrayBuffer > ) {
 			
 			if( !message.byteLength ) return
 			const view = new DataView( message.buffer, message.byteOffset, message.byteLength )

@@ -38,11 +38,6 @@ namespace $.$$ {
 		}
 		
 		@ $mol_mem
-		hint() {
-			return super.hint() + ' ' + $hyoo_sync_revision
-		}
-		
-		@ $mol_mem
 		master_link() {
 			return this.yard().master_link().replace( /^ws(s?):/, 'http$1:' )
 		}

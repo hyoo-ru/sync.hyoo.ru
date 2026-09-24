@@ -1,0 +1,10 @@
+{
+	"name": "hyoo_sync_watch",
+	"short_name": "hyoo_sync_watch",
+	"description": "",
+	"id": "hyoo_sync_watch",
+	"start_url": ".",
+	"display": "standalone",
+	"background_color": "#000000",
+	"theme_color": "#000000"
+}

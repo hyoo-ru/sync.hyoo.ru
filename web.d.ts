@@ -6,14 +6,13 @@ declare class $ extends _$_ {
 declare namespace $ {
     export type $ = typeof $$;
     export class $$ extends $ {
+        static $: $;
     }
     namespace $$ {
         type $$ = $;
     }
     export {};
 }
-
-declare let $hyoo_sync_revision: string;
 
 export = $;
 //# sourceMappingURL=web.d.ts.map

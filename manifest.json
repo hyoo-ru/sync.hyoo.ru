@@ -1,0 +1,10 @@
+{
+	"name": "hyoo_sync_server",
+	"short_name": "hyoo_sync_server",
+	"description": "",
+	"id": "hyoo_sync_server",
+	"start_url": ".",
+	"display": "standalone",
+	"background_color": "#000000",
+	"theme_color": "#000000"
+}

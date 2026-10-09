@@ -7310,7 +7310,7 @@ var $;
         { indent: $mol_regexp.repeat('  ') },
         { marker: '!' },
         ' ',
-        { content: $hyoo_marked_line_content },
+        [{ content: $hyoo_marked_line_content }],
         $mol_regexp.line_end,
     ]);
     $.$hyoo_marked_table_row = $mol_regexp.from({ content: [
@@ -7404,10 +7404,7 @@ var $;
                     NL);
             }
             if (token.script) {
-                return $mol_jsx("pre", null,
-                    NL,
-                    script_lines(token.script),
-                    NL);
+                return $mol_jsx("pre", null, script_lines(token.script));
             }
             if (token.quote) {
                 return $mol_jsx("blockquote", { style: "break-before: avoid" },

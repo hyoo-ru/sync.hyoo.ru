@@ -2286,28 +2286,31 @@ var $;
 "use strict";
 var $;
 (function ($) {
-    /** State of time moment */
-    class $mol_state_time extends $mol_object {
-        static task(precision, reset) {
-            if (precision) {
-                return new $mol_after_timeout(precision, () => this.task(precision, null));
-            }
-            else {
-                return new $mol_after_frame(() => this.task(precision, null));
-            }
-        }
-        static now(precision) {
-            this.task(precision);
-            return Date.now();
-        }
+    /** Convert a pseudo-synchronous (Suspense API) API to an explicit asynchronous one (for integrating with external systems). */
+    function $mol_wire_async(obj) {
+        let fiber;
+        const temp = $mol_wire_task.getter(obj);
+        return new Proxy(obj, {
+            get(obj, field) {
+                const val = obj[field];
+                if (typeof val !== 'function')
+                    return val;
+                let fiber;
+                const temp = $mol_wire_task.getter(val);
+                return function $mol_wire_async(...args) {
+                    fiber?.destructor();
+                    fiber = temp(obj, args);
+                    return fiber.async();
+                };
+            },
+            apply(obj, self, args) {
+                fiber?.destructor();
+                fiber = temp(self, args);
+                return fiber.async();
+            },
+        });
     }
-    __decorate([
-        $mol_mem_key
-    ], $mol_state_time, "task", null);
-    __decorate([
-        $mol_mem_key
-    ], $mol_state_time, "now", null);
-    $.$mol_state_time = $mol_state_time;
+    $.$mol_wire_async = $mol_wire_async;
 })($ || ($ = {}));
 
 ;
@@ -2341,18 +2344,9 @@ var $;
             }
             return next ?? $mol_wire_sync(native).persisted();
         }
-        static estimate() {
-            $mol_state_time.now(1000);
-            try {
-                return $mol_wire_sync(this.native() ?? {}).estimate();
-            }
-            catch (error) {
-                $mol_fail_log(error);
-                return {
-                    usage: 0,
-                    quota: 0,
-                };
-            }
+        static estimate(next) {
+            new this.$.$mol_after_timeout(1000, $mol_wire_async(() => this.estimate(null)));
+            return $mol_wire_sync(this.native() ?? {}).estimate();
         }
         static total() {
             return this.estimate().quota ?? 0;
